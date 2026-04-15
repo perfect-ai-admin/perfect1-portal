@@ -5,7 +5,8 @@ import { STAGE_MAP, OPEN_STAGES } from '../constants/pipeline';
 import { format } from 'date-fns';
 import { he } from 'date-fns/locale';
 import {
-  Users, TrendingUp, AlertTriangle, CheckCircle, Clock, UserX, Activity
+  Users, TrendingUp, TrendingDown, AlertTriangle, CheckCircle, Clock, UserX, Activity,
+  DollarSign, Target, Calendar, Flame, Snowflake, Thermometer, BarChart3
 } from 'lucide-react';
 import AgreementStatsWidget from '../components/shared/AgreementStatsWidget';
 
@@ -23,7 +24,21 @@ export default function CRMDashboard() {
 
   if (!data) return null;
 
-  const { kpis, stage_counts, top_agents, today_tasks, recent_activity } = data;
+  const {
+    kpis, stage_counts, top_agents, today_tasks, recent_activity,
+    trend_7d = [], temperature = { hot: 0, warm: 0, cold: 0 },
+    top_sources = [], month_compare = {}, stale_leads = [],
+  } = data;
+
+  const fmtMoney = (n) => {
+    const v = Number(n) || 0;
+    if (v >= 1_000_000) return `₪${(v / 1_000_000).toFixed(1)}M`;
+    if (v >= 1000) return `₪${(v / 1000).toFixed(1)}K`;
+    return `₪${v.toLocaleString('he-IL')}`;
+  };
+  const maxTrend = Math.max(...trend_7d.map(d => d.new_leads), 1);
+  const tempTotal = (temperature.hot || 0) + (temperature.warm || 0) + (temperature.cold || 0);
+  const maxSource = Math.max(...top_sources.map(s => s.total), 1);
 
   return (
     <div className="space-y-6">
@@ -70,6 +85,149 @@ export default function CRMDashboard() {
           highlight={kpis.no_activity > 0}
         />
       </div>
+
+      {/* Financial KPIs */}
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+        <KPICard
+          icon={DollarSign}
+          label="שווי Pipeline פתוח"
+          value={fmtMoney(kpis.pipeline_value)}
+          color="#0EA5E9"
+        />
+        <KPICard
+          icon={Target}
+          label="שווי הומר (סה״כ)"
+          value={fmtMoney(kpis.converted_value)}
+          color="#10B981"
+        />
+        <KPICard
+          icon={Target}
+          label="הומר החודש"
+          value={fmtMoney(kpis.converted_value_month)}
+          color="#14B8A6"
+        />
+        <KPICard
+          icon={BarChart3}
+          label="עסקה ממוצעת"
+          value={fmtMoney(kpis.avg_deal_size)}
+          color="#6366F1"
+        />
+        <KPICard
+          icon={Calendar}
+          label="זמן לסגירה (ימים)"
+          value={kpis.avg_days_to_close}
+          color="#A855F7"
+        />
+      </div>
+
+      {/* Month comparison */}
+      <div className="bg-white rounded-lg border border-slate-200 p-4">
+        <h2 className="text-sm font-medium text-slate-500 mb-4">השוואת חודש</h2>
+        <div className="grid grid-cols-2 gap-4">
+          <MonthCompareBlock
+            label="לידים חדשים"
+            current={month_compare.new_this_month}
+            previous={month_compare.new_prev_month}
+            changePct={month_compare.leads_change_pct}
+          />
+          <MonthCompareBlock
+            label="המרות"
+            current={month_compare.conv_this_month}
+            previous={month_compare.conv_prev_month}
+            changePct={month_compare.conv_change_pct}
+          />
+        </div>
+      </div>
+
+      {/* Trend chart (7 days) */}
+      <div className="bg-white rounded-lg border border-slate-200 p-4">
+        <h2 className="text-sm font-medium text-slate-500 mb-4">מגמה - 7 ימים אחרונים</h2>
+        <div className="flex items-end justify-between gap-2 h-40">
+          {trend_7d.map((d, i) => {
+            const h = Math.max((d.new_leads / maxTrend) * 100, 4);
+            return (
+              <div key={i} className="flex-1 flex flex-col items-center gap-1">
+                <span className="text-xs font-bold text-slate-600">{d.new_leads}</span>
+                <div className="w-full bg-slate-100 rounded-t flex-1 flex items-end">
+                  <div
+                    className="w-full bg-gradient-to-t from-[#1E3A5F] to-[#3B82F6] rounded-t transition-all duration-500"
+                    style={{ height: `${h}%` }}
+                  />
+                </div>
+                <span className="text-xs text-slate-400">{d.label}</span>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Temperature + Sources */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="bg-white rounded-lg border border-slate-200 p-4">
+          <h2 className="text-sm font-medium text-slate-500 mb-4">טמפרטורת לידים פעילים</h2>
+          <div className="space-y-3">
+            <TempBar icon={Flame} color="#EF4444" label="חם" count={temperature.hot} total={tempTotal} />
+            <TempBar icon={Thermometer} color="#F59E0B" label="פושר" count={temperature.warm} total={tempTotal} />
+            <TempBar icon={Snowflake} color="#3B82F6" label="קר" count={temperature.cold} total={tempTotal} />
+          </div>
+        </div>
+
+        <div className="bg-white rounded-lg border border-slate-200 p-4">
+          <h2 className="text-sm font-medium text-slate-500 mb-4">מקורות מובילים</h2>
+          {top_sources.length === 0 ? (
+            <p className="text-sm text-slate-400 text-center py-4">אין נתונים</p>
+          ) : (
+            <div className="space-y-2">
+              {top_sources.map(s => (
+                <div key={s.name} className="flex items-center gap-3">
+                  <span className="text-xs w-20 text-slate-600 truncate" title={s.name}>{s.name}</span>
+                  <div className="flex-1 bg-slate-100 rounded-full h-5 overflow-hidden">
+                    <div
+                      className="h-full bg-gradient-to-l from-[#8B5CF6] to-[#6366F1] rounded-full flex items-center justify-end px-2"
+                      style={{ width: `${Math.max((s.total / maxSource) * 100, 6)}%` }}
+                    >
+                      <span className="text-xs font-bold text-white">{s.total}</span>
+                    </div>
+                  </div>
+                  <span className="text-xs text-slate-400 w-12 text-left">{s.rate}%</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Stale leads */}
+      {stale_leads.length > 0 && (
+        <div className="bg-white rounded-lg border border-amber-200 bg-amber-50/30 p-4">
+          <div className="flex items-center gap-2 mb-4">
+            <AlertTriangle size={16} className="text-amber-500" />
+            <h2 className="text-sm font-medium text-slate-700">לידים מוזנחים - דורשים טיפול</h2>
+          </div>
+          <div className="space-y-2">
+            {stale_leads.map(lead => (
+              <div
+                key={lead.id}
+                onClick={() => navigate(`/CRM/leads/${lead.id}`)}
+                className="flex items-center justify-between p-3 bg-white border border-amber-100 rounded-lg hover:bg-amber-50 cursor-pointer"
+              >
+                <div className="flex items-center gap-3">
+                  <span className="w-8 h-8 rounded-full bg-amber-100 text-amber-700 text-xs flex items-center justify-center font-bold">
+                    {lead.days_old}ד
+                  </span>
+                  <div>
+                    <p className="text-sm font-medium text-slate-700">{lead.name}</p>
+                    <p className="text-xs text-slate-400">
+                      {STAGE_MAP[lead.stage]?.label || lead.stage} · ללא מגע {lead.days_old} ימים
+                    </p>
+                  </div>
+                </div>
+                <span className="text-xs text-amber-600 font-medium">פתח ליד ←</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Pipeline Funnel */}
@@ -212,6 +370,44 @@ function KPICard({ icon: Icon, label, value, color, highlight }) {
         <span className="text-xs text-slate-500">{label}</span>
       </div>
       <p className="text-2xl font-bold" style={{ color }}>{value}</p>
+    </div>
+  );
+}
+
+function MonthCompareBlock({ label, current = 0, previous = 0, changePct = 0 }) {
+  const up = changePct >= 0;
+  const ArrowIcon = up ? TrendingUp : TrendingDown;
+  const color = up ? '#10B981' : '#EF4444';
+  return (
+    <div className="p-3 bg-slate-50 rounded-lg">
+      <p className="text-xs text-slate-500 mb-1">{label}</p>
+      <div className="flex items-end gap-2">
+        <span className="text-2xl font-bold text-[#1E3A5F]">{current}</span>
+        <span className="text-xs text-slate-400 mb-1">מול {previous}</span>
+      </div>
+      <div className="flex items-center gap-1 mt-1" style={{ color }}>
+        <ArrowIcon size={14} />
+        <span className="text-xs font-bold">{up ? '+' : ''}{changePct}%</span>
+      </div>
+    </div>
+  );
+}
+
+function TempBar({ icon: Icon, color, label, count, total }) {
+  const pct = total > 0 ? Math.round((count / total) * 100) : 0;
+  return (
+    <div className="flex items-center gap-3">
+      <Icon size={16} style={{ color }} />
+      <span className="text-xs w-12 text-slate-600">{label}</span>
+      <div className="flex-1 bg-slate-100 rounded-full h-5 overflow-hidden">
+        <div
+          className="h-full rounded-full flex items-center justify-end px-2 transition-all duration-500"
+          style={{ width: `${Math.max(pct, 4)}%`, backgroundColor: color }}
+        >
+          <span className="text-xs font-bold text-white">{count}</span>
+        </div>
+      </div>
+      <span className="text-xs text-slate-400 w-10 text-left">{pct}%</span>
     </div>
   );
 }

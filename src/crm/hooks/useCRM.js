@@ -124,10 +124,15 @@ export function useCRMDashboard() {
       today.setHours(0, 0, 0, 0);
       const todayISO = today.toISOString();
       const now = new Date().toISOString();
+      const nowTs = Date.now();
+      const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+      const prevMonthStart = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+      const monthStartISO = monthStart.toISOString();
+      const prevMonthStartISO = prevMonthStart.toISOString();
 
       const { data: allLeads } = await supabase
         .from('leads')
-        .select('id, pipeline_stage, temperature, agent_id, sla_deadline, created_at, converted_at, estimated_value, contact_attempts')
+        .select('id, name, pipeline_stage, temperature, agent_id, sla_deadline, created_at, converted_at, estimated_value, contact_attempts, utm_source')
         .eq('source', 'sales_portal')
         .limit(2000);
 
@@ -141,12 +146,94 @@ export function useCRMDashboard() {
       });
 
       const newToday = leads.filter(l => l.created_at >= todayISO).length;
-      const converted = leads.filter(l => l.pipeline_stage === 'converted').length;
+      const convertedLeads = leads.filter(l => l.pipeline_stage === 'converted');
+      const converted = convertedLeads.length;
       const activeLeads = leads.filter(l => !closedStages.includes(l.pipeline_stage));
       const slaBreaches = activeLeads.filter(l => l.sla_deadline && l.sla_deadline < now).length;
       const noActivity = activeLeads.filter(l => (l.contact_attempts || 0) === 0).length;
       const totalProcessed = leads.filter(l => closedStages.includes(l.pipeline_stage)).length;
       const conversionRate = totalProcessed > 0 ? Math.round((converted / totalProcessed) * 100) : 0;
+
+      // Financial KPIs
+      const toNum = (v) => Number(v) || 0;
+      const pipelineValue = activeLeads.reduce((s, l) => s + toNum(l.estimated_value), 0);
+      const convertedValue = convertedLeads.reduce((s, l) => s + toNum(l.estimated_value), 0);
+      const convertedThisMonth = convertedLeads.filter(l => l.converted_at && l.converted_at >= monthStartISO);
+      const convertedPrevMonth = convertedLeads.filter(l => l.converted_at && l.converted_at >= prevMonthStartISO && l.converted_at < monthStartISO);
+      const convertedValueMonth = convertedThisMonth.reduce((s, l) => s + toNum(l.estimated_value), 0);
+      const avgDealSize = converted > 0 ? Math.round(convertedValue / converted) : 0;
+
+      // Avg time to close (days)
+      const closeTimes = convertedLeads
+        .filter(l => l.created_at && l.converted_at)
+        .map(l => (new Date(l.converted_at) - new Date(l.created_at)) / 86400000);
+      const avgDaysToClose = closeTimes.length > 0
+        ? Math.round((closeTimes.reduce((a, b) => a + b, 0) / closeTimes.length) * 10) / 10
+        : 0;
+
+      // 7-day trend (new leads per day)
+      const trend7d = [];
+      for (let i = 6; i >= 0; i--) {
+        const dayStart = new Date(today);
+        dayStart.setDate(dayStart.getDate() - i);
+        const dayEnd = new Date(dayStart);
+        dayEnd.setDate(dayEnd.getDate() + 1);
+        const dStart = dayStart.toISOString();
+        const dEnd = dayEnd.toISOString();
+        const dayLeads = leads.filter(l => l.created_at >= dStart && l.created_at < dEnd);
+        trend7d.push({
+          date: dayStart.toISOString().slice(5, 10),
+          label: dayStart.toLocaleDateString('he-IL', { weekday: 'short' }),
+          new_leads: dayLeads.length,
+          converted: dayLeads.filter(l => l.pipeline_stage === 'converted').length,
+        });
+      }
+
+      // Temperature distribution (active only)
+      const tempDist = { hot: 0, warm: 0, cold: 0 };
+      activeLeads.forEach(l => {
+        const t = (l.temperature || 'warm').toLowerCase();
+        if (tempDist[t] !== undefined) tempDist[t]++;
+      });
+
+      // Top sources
+      const sourceCounts = {};
+      leads.forEach(l => {
+        const src = l.utm_source || 'ישיר';
+        if (!sourceCounts[src]) sourceCounts[src] = { total: 0, converted: 0 };
+        sourceCounts[src].total++;
+        if (l.pipeline_stage === 'converted') sourceCounts[src].converted++;
+      });
+      const topSources = Object.entries(sourceCounts)
+        .map(([name, stats]) => ({
+          name,
+          ...stats,
+          rate: stats.total > 0 ? Math.round((stats.converted / stats.total) * 100) : 0,
+        }))
+        .sort((a, b) => b.total - a.total)
+        .slice(0, 6);
+
+      // Month-over-month comparison
+      const newThisMonth = leads.filter(l => l.created_at >= monthStartISO).length;
+      const newPrevMonth = leads.filter(l => l.created_at >= prevMonthStartISO && l.created_at < monthStartISO).length;
+      const leadsChangePct = newPrevMonth > 0
+        ? Math.round(((newThisMonth - newPrevMonth) / newPrevMonth) * 100)
+        : (newThisMonth > 0 ? 100 : 0);
+      const convChangePct = convertedPrevMonth.length > 0
+        ? Math.round(((convertedThisMonth.length - convertedPrevMonth.length) / convertedPrevMonth.length) * 100)
+        : (convertedThisMonth.length > 0 ? 100 : 0);
+
+      // Stale leads (oldest active, 0 contact attempts)
+      const staleLeads = activeLeads
+        .filter(l => (l.contact_attempts || 0) === 0)
+        .sort((a, b) => new Date(a.created_at) - new Date(b.created_at))
+        .slice(0, 5)
+        .map(l => ({
+          id: l.id,
+          name: l.name || 'ליד ללא שם',
+          days_old: Math.floor((nowTs - new Date(l.created_at).getTime()) / 86400000),
+          stage: l.pipeline_stage,
+        }));
 
       // Agent performance
       const agentStats = {};
@@ -183,7 +270,24 @@ export function useCRMDashboard() {
           sla_breaches: slaBreaches,
           no_activity: noActivity,
           total_leads: leads.length,
+          pipeline_value: pipelineValue,
+          converted_value: convertedValue,
+          converted_value_month: convertedValueMonth,
+          avg_deal_size: avgDealSize,
+          avg_days_to_close: avgDaysToClose,
         },
+        month_compare: {
+          new_this_month: newThisMonth,
+          new_prev_month: newPrevMonth,
+          leads_change_pct: leadsChangePct,
+          conv_this_month: convertedThisMonth.length,
+          conv_prev_month: convertedPrevMonth.length,
+          conv_change_pct: convChangePct,
+        },
+        trend_7d: trend7d,
+        temperature: tempDist,
+        top_sources: topSources,
+        stale_leads: staleLeads,
         stage_counts: stageCounts,
         top_agents: topAgents,
         today_tasks: todayTasks || [],
