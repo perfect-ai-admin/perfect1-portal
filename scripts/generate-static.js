@@ -550,6 +550,7 @@ function generateSPAFallbacks() {
   const spaRoutes = [
     // Landing pages
     '/open-osek-patur',
+    '/atzmaim-berega',
     // Calculators (React pages, not JSON content)
     '/calculators',
     '/calculators/net-income',
