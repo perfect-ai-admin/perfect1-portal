@@ -240,9 +240,13 @@ const PortalRoutes = () => (
 
     {/* Shared public pages */}
     <Route path="/About" element={<SafePage><About /></SafePage>} />
+    <Route path="/about" element={<SafePage><About /></SafePage>} />
     <Route path="/Terms" element={<SafePage><Terms /></SafePage>} />
+    <Route path="/terms" element={<SafePage><Terms /></SafePage>} />
     <Route path="/Privacy" element={<SafePage><Privacy /></SafePage>} />
+    <Route path="/privacy" element={<SafePage><Privacy /></SafePage>} />
     <Route path="/Accessibility" element={<SafePage><AccessibilityPage /></SafePage>} />
+    <Route path="/accessibility" element={<SafePage><AccessibilityPage /></SafePage>} />
 
     {/* Login — needed for CRM auth redirect */}
     <Route path="/login" element={<SafePage><Login /></SafePage>} />

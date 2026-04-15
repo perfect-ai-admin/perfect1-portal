@@ -554,6 +554,11 @@ function generateSPAFallbacks() {
     '/calculators',
     '/calculators/net-income',
     '/calculators/credit-points',
+    // Legal pages (lowercase aliases)
+    '/privacy',
+    '/terms',
+    '/about',
+    '/accessibility',
     // Osek Zeir — alternative URL aliases (primary routes get full SEO pages above)
     '/osek-zair-landing',
     '/open-osek-zair-online',
