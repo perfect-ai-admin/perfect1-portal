@@ -144,7 +144,7 @@ Deno.serve(async (req) => {
       pdesc: product_name || plan_name,
     });
 
-    const paymentLink = `https://direct.tranzila.com/${TRANZILA_TERMINAL}/newiframe.php?${linkParams.toString()}`;
+    const paymentLink = `https://direct.tranzila.com/${TRANZILA_TERMINAL}/iframenew.php?${linkParams.toString()}`;
 
     // Update lead payment_status
     await supabaseAdmin.from('leads').update({

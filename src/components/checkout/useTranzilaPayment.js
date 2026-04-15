@@ -91,7 +91,7 @@ export default function useTranzilaPayment({ onSuccess, onTimeout } = {}) {
         }
       }
 
-      const url = `https://direct.tranzila.com/${data.supplier}/newiframe.php?${urlParams.toString()}`;
+      const url = `https://direct.tranzila.com/${data.supplier}/iframenew.php?${urlParams.toString()}`;
       setIframeUrl(url);
       setPaymentId(data.paymentId);
       setIsCreating(false);
@@ -133,7 +133,7 @@ export default function useTranzilaPayment({ onSuccess, onTimeout } = {}) {
       }
     }
 
-    const url = `https://direct.tranzila.com/${supplier}/newiframe.php?${urlParams.toString()}`;
+    const url = `https://direct.tranzila.com/${supplier}/iframenew.php?${urlParams.toString()}`;
     setIframeUrl(url);
     setPaymentId(params.paymentId || existingPayment.id || '');
     confirmedRef.current = false;

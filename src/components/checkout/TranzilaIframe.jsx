@@ -91,8 +91,8 @@ export default function TranzilaIframe({ iframeUrl, paymentId, onPaymentDetected
   let formFields = {};
   try {
     const urlObj = new URL(iframeUrl);
-    // Use iframenew.php (correct POST endpoint) instead of newiframe.php (GET legacy)
-    formAction = `${urlObj.origin}${urlObj.pathname.replace('newiframe.php', 'iframenew.php')}`;
+    // iframenew.php is the correct POST endpoint per Tranzila docs
+    formAction = `${urlObj.origin}${urlObj.pathname}`;
     urlObj.searchParams.forEach((value, key) => {
       formFields[key] = value;
     });
