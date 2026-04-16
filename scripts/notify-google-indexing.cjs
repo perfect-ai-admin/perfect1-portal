@@ -33,6 +33,8 @@ const CATEGORY_URL_MAP = {
   'tech': '/tech',
   'mimun': '/mimun',
   'miktzoa': '/miktzoa',
+  'cities': '/cities',
+  'services': '/services',
 };
 
 function getChangedContentFiles() {

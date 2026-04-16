@@ -233,6 +233,10 @@ const PortalRoutes = () => (
     <Route path="/maam/:slug" element={<PortalWrapper><SEOArticlePage category="maam" /></PortalWrapper>} />
     <Route path="/miktzoa" element={<PortalWrapper><CategoryHubPage category="miktzoa" /></PortalWrapper>} />
     <Route path="/miktzoa/:slug" element={<PortalWrapper><SEOArticlePage category="miktzoa" /></PortalWrapper>} />
+    <Route path="/cities" element={<PortalWrapper><CategoryHubPage category="cities" /></PortalWrapper>} />
+    <Route path="/cities/:slug" element={<PortalWrapper><SEOArticlePage category="cities" /></PortalWrapper>} />
+    <Route path="/services" element={<PortalWrapper><CategoryHubPage category="services" /></PortalWrapper>} />
+    <Route path="/services/:slug" element={<PortalWrapper><SEOArticlePage category="services" /></PortalWrapper>} />
     <Route path="/guides" element={<PortalWrapper><CategoryHubPage category="guides" /></PortalWrapper>} />
     <Route path="/guides/:slug" element={<PortalWrapper><SEOArticlePage category="guides" /></PortalWrapper>} />
     <Route path="/compare/:slug" element={<PortalWrapper><ComparisonPage /></PortalWrapper>} />
@@ -341,6 +345,10 @@ const DevRoutes = () => (
     <Route path="/maam/:slug" element={<PortalWrapper><SEOArticlePage category="maam" /></PortalWrapper>} />
     <Route path="/miktzoa" element={<PortalWrapper><CategoryHubPage category="miktzoa" /></PortalWrapper>} />
     <Route path="/miktzoa/:slug" element={<PortalWrapper><SEOArticlePage category="miktzoa" /></PortalWrapper>} />
+    <Route path="/cities" element={<PortalWrapper><CategoryHubPage category="cities" /></PortalWrapper>} />
+    <Route path="/cities/:slug" element={<PortalWrapper><SEOArticlePage category="cities" /></PortalWrapper>} />
+    <Route path="/services" element={<PortalWrapper><CategoryHubPage category="services" /></PortalWrapper>} />
+    <Route path="/services/:slug" element={<PortalWrapper><SEOArticlePage category="services" /></PortalWrapper>} />
     <Route path="/guides" element={<PortalWrapper><CategoryHubPage category="guides" /></PortalWrapper>} />
     <Route path="/guides/:slug" element={<PortalWrapper><SEOArticlePage category="guides" /></PortalWrapper>} />
     <Route path="/compare/:slug" element={<PortalWrapper><ComparisonPage /></PortalWrapper>} />

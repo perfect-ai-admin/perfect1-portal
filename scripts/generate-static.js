@@ -29,7 +29,7 @@ function getBaseHtml() {
 // Discover all portal routes from content JSON files
 function discoverRoutes() {
   const routes = [];
-  const categories = ['osek-patur', 'osek-murshe', 'hevra-bam', 'osek-zeir', 'sgirat-tikim', 'guides', 'misui', 'maam', 'miktzoa'];
+  const categories = ['osek-patur', 'osek-murshe', 'hevra-bam', 'osek-zeir', 'sgirat-tikim', 'guides', 'misui', 'maam', 'miktzoa', 'cities', 'services'];
 
   for (const cat of categories) {
     // Category hub page

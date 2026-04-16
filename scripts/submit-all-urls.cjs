@@ -21,6 +21,8 @@ const CATEGORY_URL_MAP = {
   'misui': '/misui',
   'maam': '/maam',
   'miktzoa': '/miktzoa',
+  'cities': '/cities',
+  'services': '/services',
 };
 
 function getAllContentUrls() {
