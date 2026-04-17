@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Calculator, Award, ChevronLeft, Scale, TrendingUp, DollarSign, BarChart3, HelpCircle } from 'lucide-react';
+import { Calculator, Award, ChevronLeft, Scale, TrendingUp, DollarSign, BarChart3, HelpCircle, Shield } from 'lucide-react';
 import SEOHead from '@/components/seo/SEOHead';
 import PortalHeader from '../components/PortalHeader';
 import PortalFooter from '../components/PortalFooter';
@@ -36,6 +36,15 @@ const CALCULATORS = [
     icon: DollarSign,
     color: 'bg-orange-50 border-orange-200',
     iconColor: 'text-orange-600',
+    live: true,
+  },
+  {
+    slug: 'national-insurance',
+    title: 'מחשבון ביטוח לאומי לעצמאי',
+    description: 'חישוב ביטוח לאומי ומס בריאות לפי ההכנסה — כולל השוואה בין תרחישים',
+    icon: Shield,
+    color: 'bg-emerald-50 border-emerald-200',
+    iconColor: 'text-emerald-600',
     live: true,
   },
   {

@@ -610,6 +610,7 @@ function generateSPAFallbacks() {
     '/CRM/billing-alerts',
     '/CRM/settings',
     '/calculators/income-tax',
+    '/calculators/national-insurance',
     '/CRM/outreach',
     '/CRM/outreach/websites',
     '/CRM/outreach/contacts',

@@ -79,6 +79,22 @@ export const PORTAL_CATEGORIES = [
       { title: 'שאלות נפוצות', href: '/sgirat-tikim/faq', description: 'תשובות לשאלות נפוצות על סגירת עסק ותיקים' },
     ]
   },
+  {
+    id: 'amuta',
+    title: 'עמותה',
+    href: '/amuta',
+    icon: 'Heart',
+    description: 'מדריכים להקמה וניהול עמותות בישראל',
+    color: 'purple',
+    subcategories: [
+      { title: 'פתיחת עמותה', href: '/amuta/how-to-open', description: 'שלב אחר שלב — הקמה, רישום ברשם העמותות ומסמכים נדרשים' },
+      { title: 'כמה עולה לפתוח עמותה', href: '/amuta/cost', description: 'אגרות, עלויות רואה חשבון, עורך דין וניהול שוטף' },
+      { title: 'עמותה סעיף 46', href: '/amuta/section-46', description: 'פטור ממס לתורמים — איך מקבלים, תנאים ובדיקת עמותה' },
+      { title: 'ניהול תקין עמותה', href: '/amuta/proper-management', description: 'אישור ניהול תקין — מה זה, למה חשוב ואיך מקבלים' },
+      { title: 'רואה חשבון לעמותה', href: '/amuta/accountant', description: 'חובות חשבונאיות, דוחות כספיים ובחירת רואה חשבון' },
+      { title: 'שאלות נפוצות', href: '/amuta/faq', description: 'תשובות לשאלות הנפוצות על עמותות בישראל' },
+    ]
+  },
   // misui (מיסוי לעצמאים) — accessible via /calculators/net-income, not main nav
   // maam (מע"מ) — moved under מידע ומדריכים → מיסוי וחשבונאות
   // miktzoa (מדריכים לפי מקצוע) — moved under מידע ומדריכים → מדריכים לפתיחת עסק
@@ -108,7 +124,7 @@ export const PORTAL_CATEGORIES = [
     subcategories: [
       { title: 'מחשבון נטו לעצמאי', href: '/calculators/net-income', description: 'כמה נשאר נטו אחרי מס הכנסה, ביטוח לאומי והוצאות' },
       { title: 'מחשבון נקודות זיכוי', href: '/calculators/credit-points', description: 'כמה נקודות זיכוי מגיעות לכם וכמה מס תחסכו' },
-      { title: 'מחשבון מס לעצמאי', href: '/calculators', description: 'חישוב מס הכנסה לפי מדרגות מס (בקרוב)' },
+      { title: 'מחשבון מס הכנסה לעצמאי', href: '/calculators/income-tax', description: 'חישוב מס הכנסה לפי מדרגות מס, נקודות זיכוי והוצאות' },
       { title: 'מחשבון תקרת עוסק פטור', href: '/calculators', description: 'בדיקת תקרת ההכנסות השנתית לעוסק פטור (בקרוב)' },
       { title: 'פטור או מורשה?', href: '/calculators', description: 'כלי החלטה בין עוסק פטור לעוסק מורשה (בקרוב)' },
     ]
