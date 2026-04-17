@@ -238,6 +238,8 @@ const PortalRoutes = () => (
     <Route path="/hevra-bam/:slug" element={<PortalWrapper><SEOArticlePage category="hevra-bam" /></PortalWrapper>} />
     <Route path="/osek-zeir" element={<PortalWrapper><CategoryHubPage category="osek-zeir" /></PortalWrapper>} />
     <Route path="/osek-zeir/:slug" element={<PortalWrapper><SEOArticlePage category="osek-zeir" /></PortalWrapper>} />
+    <Route path="/amuta" element={<PortalWrapper><CategoryHubPage category="amuta" /></PortalWrapper>} />
+    <Route path="/amuta/:slug" element={<PortalWrapper><SEOArticlePage category="amuta" /></PortalWrapper>} />
     <Route path="/sgirat-tikim" element={<PortalWrapper><CategoryHubPage category="sgirat-tikim" /></PortalWrapper>} />
     <Route path="/sgirat-tikim/:slug" element={<PortalWrapper><SEOArticlePage category="sgirat-tikim" /></PortalWrapper>} />
     <Route path="/misui" element={<PortalWrapper><CategoryHubPage category="misui" /></PortalWrapper>} />
@@ -370,6 +372,8 @@ const DevRoutes = () => (
     <Route path="/hevra-bam/:slug" element={<PortalWrapper><SEOArticlePage category="hevra-bam" /></PortalWrapper>} />
     <Route path="/osek-zeir" element={<PortalWrapper><CategoryHubPage category="osek-zeir" /></PortalWrapper>} />
     <Route path="/osek-zeir/:slug" element={<PortalWrapper><SEOArticlePage category="osek-zeir" /></PortalWrapper>} />
+    <Route path="/amuta" element={<PortalWrapper><CategoryHubPage category="amuta" /></PortalWrapper>} />
+    <Route path="/amuta/:slug" element={<PortalWrapper><SEOArticlePage category="amuta" /></PortalWrapper>} />
     <Route path="/sgirat-tikim" element={<PortalWrapper><CategoryHubPage category="sgirat-tikim" /></PortalWrapper>} />
     <Route path="/sgirat-tikim/:slug" element={<PortalWrapper><SEOArticlePage category="sgirat-tikim" /></PortalWrapper>} />
     <Route path="/misui" element={<PortalWrapper><CategoryHubPage category="misui" /></PortalWrapper>} />

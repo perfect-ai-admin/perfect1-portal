@@ -29,7 +29,7 @@ function getBaseHtml() {
 // Discover all portal routes from content JSON files
 function discoverRoutes() {
   const routes = [];
-  const categories = ['osek-patur', 'osek-murshe', 'hevra-bam', 'osek-zeir', 'sgirat-tikim', 'guides', 'misui', 'maam', 'miktzoa', 'cities', 'services'];
+  const categories = ['osek-patur', 'osek-murshe', 'hevra-bam', 'osek-zeir', 'sgirat-tikim', 'amuta', 'guides', 'misui', 'maam', 'miktzoa', 'cities', 'services'];
 
   for (const cat of categories) {
     // Category hub page
@@ -120,6 +120,7 @@ function generateSchema(route) {
       'osek-murshe': 'עוסק מורשה',
       'hevra-bam': 'חברה בע"מ',
       'sgirat-tikim': 'סגירת תיקים',
+      'amuta': 'עמותה',
       'guides': 'מדריכים'
     };
     breadcrumbs.push({ name: catNames[route.category] || route.category, url: `${BASE_URL}/${route.category}` });
