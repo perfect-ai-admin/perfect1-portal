@@ -16,7 +16,8 @@
   "articles": [
     { "slug": "close-osek-patur", "title": "סגירת עוסק פטור — מדריך שלב אחר שלב", "readTime": 10 },
     { "slug": "close-osek-murshe", "title": "סגירת עוסק מורשה — מדריך מלא", "readTime": 12 },
-    { "slug": "close-company", "title": "סגירת חברה בע\"מ — מדריך מלא 2026", "readTime": 14 },
+    { "slug": "close-company", "title": "פירוק חברה מרצון — מדריך מלא 2026", "readTime": 14 },
+    { "slug": "fast-track-dissolution", "title": "פירוק מרצון בהליך מזורז — מדריך מלא", "readTime": 10 },
     { "slug": "authorities", "title": "סגירת תיקים מול רשויות — מדריך שלב אחר שלב", "readTime": 12 },
     { "slug": "consequences", "title": "חובות והשלכות סגירת עסק — כל מה שצריך לדעת", "readTime": 13 },
     { "slug": "faq", "title": "שאלות נפוצות על סגירת עסק — 20 שאלות ותשובות", "readTime": 15 }
