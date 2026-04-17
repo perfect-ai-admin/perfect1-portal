@@ -609,6 +609,13 @@ function generateSPAFallbacks() {
     '/CRM/subscriptions',
     '/CRM/billing-alerts',
     '/CRM/settings',
+    '/CRM/outreach',
+    '/CRM/outreach/websites',
+    '/CRM/outreach/contacts',
+    '/CRM/outreach/campaigns',
+    '/CRM/outreach/inbox',
+    '/CRM/outreach/templates',
+    '/CRM/outreach/domain-health',
   ];
 
   const baseHtml = getBaseHtml();

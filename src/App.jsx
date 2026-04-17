@@ -109,6 +109,17 @@ const CRMSettings = lazyWithRetry(() => import('./crm/pages/CRMSettings'));
 const CRMSubscriptions = lazyWithRetry(() => import('./crm/pages/CRMSubscriptions'));
 const CRMBillingAlerts = lazyWithRetry(() => import('./crm/pages/CRMBillingAlerts'));
 
+// Outreach Pages
+const OutreachOverview = lazyWithRetry(() => import('./crm/pages/outreach/OutreachOverview'));
+const OutreachWebsites = lazyWithRetry(() => import('./crm/pages/outreach/OutreachWebsites'));
+const OutreachWebsiteDetail = lazyWithRetry(() => import('./crm/pages/outreach/OutreachWebsiteDetail'));
+const OutreachContacts = lazyWithRetry(() => import('./crm/pages/outreach/OutreachContacts'));
+const OutreachCampaigns = lazyWithRetry(() => import('./crm/pages/outreach/OutreachCampaigns'));
+const OutreachCampaignDetail = lazyWithRetry(() => import('./crm/pages/outreach/OutreachCampaignDetail'));
+const OutreachInbox = lazyWithRetry(() => import('./crm/pages/outreach/OutreachInbox'));
+const OutreachTemplates = lazyWithRetry(() => import('./crm/pages/outreach/OutreachTemplates'));
+const OutreachDomainHealth = lazyWithRetry(() => import('./crm/pages/outreach/OutreachDomainHealth'));
+
 const PageLoader = () => (
   <div className="fixed inset-0 flex items-center justify-center">
     <div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div>
@@ -267,6 +278,15 @@ const PortalRoutes = () => (
       <Route path="subscriptions" element={<CRMSubscriptions />} />
       <Route path="billing-alerts" element={<CRMBillingAlerts />} />
       <Route path="settings" element={<CRMSettings />} />
+      <Route path="outreach" element={<OutreachOverview />} />
+      <Route path="outreach/websites" element={<OutreachWebsites />} />
+      <Route path="outreach/websites/:id" element={<OutreachWebsiteDetail />} />
+      <Route path="outreach/contacts" element={<OutreachContacts />} />
+      <Route path="outreach/campaigns" element={<OutreachCampaigns />} />
+      <Route path="outreach/campaigns/:id" element={<OutreachCampaignDetail />} />
+      <Route path="outreach/inbox" element={<OutreachInbox />} />
+      <Route path="outreach/templates" element={<OutreachTemplates />} />
+      <Route path="outreach/domain-health" element={<OutreachDomainHealth />} />
     </Route>
 
     {/* Blog articles REMOVED — belong to perfect-dashboard.com */}
@@ -293,6 +313,15 @@ const AppOnlyRoutes = () => (
       <Route path="subscriptions" element={<CRMSubscriptions />} />
       <Route path="billing-alerts" element={<CRMBillingAlerts />} />
       <Route path="settings" element={<CRMSettings />} />
+      <Route path="outreach" element={<OutreachOverview />} />
+      <Route path="outreach/websites" element={<OutreachWebsites />} />
+      <Route path="outreach/websites/:id" element={<OutreachWebsiteDetail />} />
+      <Route path="outreach/contacts" element={<OutreachContacts />} />
+      <Route path="outreach/campaigns" element={<OutreachCampaigns />} />
+      <Route path="outreach/campaigns/:id" element={<OutreachCampaignDetail />} />
+      <Route path="outreach/inbox" element={<OutreachInbox />} />
+      <Route path="outreach/templates" element={<OutreachTemplates />} />
+      <Route path="outreach/domain-health" element={<OutreachDomainHealth />} />
     </Route>
 
     {/* All other app routes (login, APP, pages, etc.) */}
@@ -366,6 +395,15 @@ const DevRoutes = () => (
       <Route path="subscriptions" element={<CRMSubscriptions />} />
       <Route path="billing-alerts" element={<CRMBillingAlerts />} />
       <Route path="settings" element={<CRMSettings />} />
+      <Route path="outreach" element={<OutreachOverview />} />
+      <Route path="outreach/websites" element={<OutreachWebsites />} />
+      <Route path="outreach/websites/:id" element={<OutreachWebsiteDetail />} />
+      <Route path="outreach/contacts" element={<OutreachContacts />} />
+      <Route path="outreach/campaigns" element={<OutreachCampaigns />} />
+      <Route path="outreach/campaigns/:id" element={<OutreachCampaignDetail />} />
+      <Route path="outreach/inbox" element={<OutreachInbox />} />
+      <Route path="outreach/templates" element={<OutreachTemplates />} />
+      <Route path="outreach/domain-health" element={<OutreachDomainHealth />} />
     </Route>
 
     {/* Shared public pages */}

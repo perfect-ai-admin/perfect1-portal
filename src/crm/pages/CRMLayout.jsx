@@ -3,11 +3,13 @@ import { Outlet, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import {
   LayoutDashboard, Columns3, Users, ListTodo, Settings, ChevronRight, ChevronLeft,
-  Bell, Menu, X, LogOut, CreditCard, AlertTriangle
+  Bell, Menu, X, LogOut, CreditCard, AlertTriangle,
+  Globe, Users2, Mail, Inbox, FileText, Activity, Send
 } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { entities, supabase } from '@/api/supabaseClient';
 import { useOpenAlertCount } from '../hooks/useCRM';
+import { useOutreachUnreadReplies } from '../hooks/useOutreach';
 
 const NAV_ITEMS = [
   { to: '/CRM', label: 'לידים', icon: Users, exact: true },
@@ -16,6 +18,16 @@ const NAV_ITEMS = [
   { to: '/CRM/subscriptions', label: 'מנויים', icon: CreditCard },
   { to: '/CRM/billing-alerts', label: 'התראות בילינג', icon: AlertTriangle, badgeKey: 'billingAlerts' },
   { to: '/CRM/settings', label: 'הגדרות', icon: Settings },
+];
+
+const OUTREACH_NAV_ITEMS = [
+  { to: '/CRM/outreach', label: 'סקירה', icon: Activity, exact: true },
+  { to: '/CRM/outreach/websites', label: 'אתרים', icon: Globe },
+  { to: '/CRM/outreach/contacts', label: 'אנשי קשר', icon: Users2 },
+  { to: '/CRM/outreach/campaigns', label: 'קמפיינים', icon: Send },
+  { to: '/CRM/outreach/inbox', label: 'תיבת דואר', icon: Inbox, badgeKey: 'outreachReplies' },
+  { to: '/CRM/outreach/templates', label: 'תבניות', icon: FileText },
+  { to: '/CRM/outreach/domain-health', label: 'בריאות דומיין', icon: Mail },
 ];
 
 export default function CRMLayout() {
@@ -119,6 +131,7 @@ export default function CRMLayout() {
 
   // Must be called before any conditional return (Rules of Hooks)
   const { data: openAlertCount } = useOpenAlertCount();
+  const { data: outreachReplyCount } = useOutreachUnreadReplies();
 
   if (!authChecked) {
     return (
@@ -136,34 +149,47 @@ export default function CRMLayout() {
     navigate('/login');
   };
 
+  const badgeCounts = {
+    billingAlerts: openAlertCount || 0,
+    outreachReplies: outreachReplyCount || 0,
+  };
+
+  const renderNavItems = (items) =>
+    items.map(item => {
+      const Icon = item.icon;
+      const isActive = item.exact
+        ? location.pathname === item.to
+        : location.pathname.startsWith(item.to);
+      const badge = item.badgeKey && badgeCounts[item.badgeKey] > 0 ? badgeCounts[item.badgeKey] : null;
+
+      return (
+        <NavLink
+          key={item.to}
+          to={item.to}
+          onClick={() => setMobileOpen(false)}
+          className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors text-sm font-medium ${
+            isActive
+              ? 'bg-[#1E3A5F] text-white'
+              : 'text-slate-600 hover:bg-slate-100'
+          }`}
+        >
+          <Icon size={18} />
+          {sidebarOpen && <span className="flex-1">{item.label}</span>}
+          {sidebarOpen && badge && (
+            <span className="bg-red-500 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">{badge}</span>
+          )}
+        </NavLink>
+      );
+    });
+
   const SidebarContent = () => (
     <nav className="flex flex-col gap-1 p-3">
-      {NAV_ITEMS.map(item => {
-        const Icon = item.icon;
-        const isActive = item.exact
-          ? location.pathname === item.to
-          : location.pathname.startsWith(item.to);
-        const badge = item.badgeKey === 'billingAlerts' && openAlertCount > 0 ? openAlertCount : null;
-
-        return (
-          <NavLink
-            key={item.to}
-            to={item.to}
-            onClick={() => setMobileOpen(false)}
-            className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors text-sm font-medium ${
-              isActive
-                ? 'bg-[#1E3A5F] text-white'
-                : 'text-slate-600 hover:bg-slate-100'
-            }`}
-          >
-            <Icon size={18} />
-            {sidebarOpen && <span className="flex-1">{item.label}</span>}
-            {sidebarOpen && badge && (
-              <span className="bg-red-500 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">{badge}</span>
-            )}
-          </NavLink>
-        );
-      })}
+      {renderNavItems(NAV_ITEMS)}
+      <div className="my-2 border-t border-slate-200" />
+      {sidebarOpen && (
+        <div className="px-3 py-1 text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Outreach</div>
+      )}
+      {renderNavItems(OUTREACH_NAV_ITEMS)}
     </nav>
   );
 
