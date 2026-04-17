@@ -609,6 +609,7 @@ function generateSPAFallbacks() {
     '/CRM/subscriptions',
     '/CRM/billing-alerts',
     '/CRM/settings',
+    '/calculators/income-tax',
     '/CRM/outreach',
     '/CRM/outreach/websites',
     '/CRM/outreach/contacts',
