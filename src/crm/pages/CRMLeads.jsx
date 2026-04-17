@@ -592,9 +592,13 @@ export default function CRMLeads() {
                           defaultValue={lead.next_followup_date || ''}
                           className="h-7 text-xs border border-slate-200 rounded px-1"
                           autoFocus
-                          onChange={e => handleSaveFollowup(lead.id, e.target.value)}
-                          onBlur={() => setEditingFollowup(null)}
-                          onKeyDown={e => { if (e.key === 'Escape') setEditingFollowup(null); }}
+                          onBlur={e => {
+                            handleSaveFollowup(lead.id, e.target.value || null);
+                          }}
+                          onKeyDown={e => {
+                            if (e.key === 'Enter') handleSaveFollowup(lead.id, e.target.value || null);
+                            if (e.key === 'Escape') setEditingFollowup(null);
+                          }}
                         />
                       </div>
                     ) : (

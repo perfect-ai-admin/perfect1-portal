@@ -39,43 +39,63 @@ export default function CRMLayout() {
   // of showing a frozen page.
   useEffect(() => {
     let cancelled = false;
+    let initialAuthDone = false;
 
     // Safety net: if nothing resolves within 5s, force redirect to login.
     const safetyTimer = setTimeout(() => {
-      if (!cancelled) {
+      if (!cancelled && !initialAuthDone) {
         // eslint-disable-next-line no-console
         console.warn('[CRMLayout] auth check timed out — redirecting to login');
         navigate('/login?returnTo=/CRM', { replace: true });
       }
     }, 5000);
 
-    const handleSession = (session) => {
-      if (cancelled) return;
-      clearTimeout(safetyTimer);
-      if (!session) {
-        navigate('/login?returnTo=/CRM', { replace: true });
-      } else {
-        setUser(session.user);
-        setAuthChecked(true);
-      }
-    };
-
+    // Initial auth check — runs once on mount via getSession().
+    // Only this path redirects to login when unauthenticated.
     supabase.auth
       .getSession()
-      .then(({ data: { session } }) => handleSession(session))
+      .then(({ data: { session } }) => {
+        if (cancelled) return;
+        initialAuthDone = true;
+        clearTimeout(safetyTimer);
+        if (!session) {
+          navigate('/login?returnTo=/CRM', { replace: true });
+        } else {
+          setUser(session.user);
+          setAuthChecked(true);
+        }
+      })
       .catch((err) => {
         // Corrupt token, network error, or project-mismatch — clear and bounce to login.
         // eslint-disable-next-line no-console
         console.error('[CRMLayout] getSession failed:', err);
         try { supabase.auth.signOut(); } catch {}
         if (!cancelled) {
+          initialAuthDone = true;
           clearTimeout(safetyTimer);
           navigate('/login?returnTo=/CRM', { replace: true });
         }
       });
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      handleSession(session);
+    // onAuthStateChange — only handles explicit SIGNED_OUT after initial auth.
+    // Does NOT redirect on null session from TOKEN_REFRESHED or INITIAL_SESSION
+    // events, which can momentarily fire with null before the token is ready.
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (cancelled) return;
+      if (event === 'SIGNED_OUT') {
+        navigate('/login?returnTo=/CRM', { replace: true });
+        return;
+      }
+      // Update user when token is refreshed or session changes
+      if (session?.user) {
+        setUser(session.user);
+        if (!initialAuthDone) {
+          // Race: auth state arrived before getSession resolved
+          initialAuthDone = true;
+          clearTimeout(safetyTimer);
+          setAuthChecked(true);
+        }
+      }
     });
 
     return () => {
@@ -92,6 +112,7 @@ export default function CRMLayout() {
       return all.filter(n => !n.is_read);
     },
     refetchInterval: 30000,
+    enabled: authChecked,
   });
 
   const unreadCount = notifications.length;

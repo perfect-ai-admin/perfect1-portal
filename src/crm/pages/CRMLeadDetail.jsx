@@ -88,7 +88,7 @@ export default function CRMLeadDetail() {
     );
   }
 
-  const { lead, agent, lost_reason, communications, tasks, status_history, payments = [], bot_events = [] } = data;
+  const { lead, agent, lost_reason, communications = [], tasks = [], status_history = [], payments = [], bot_events = [] } = data;
 
   const handleStageChange = (newStage) => {
     if (newStage === lead.pipeline_stage) return;

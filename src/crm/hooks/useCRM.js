@@ -71,25 +71,26 @@ export function useLeadDetail(leadId) {
   return useQuery({
     queryKey: ['crm-lead', leadId],
     queryFn: async () => {
-      // Fetch lead
+      // Fetch lead — no source filter so leads created via bot/portal/other sources
+      // are also accessible from the CRM detail view.
       const { data: lead, error: leadErr } = await supabase
         .from('leads')
         .select('*')
         .eq('id', leadId)
-        .eq('source', 'sales_portal')
         .single();
       if (leadErr || !lead) throw new Error(leadErr?.message || 'Lead not found');
 
-      // Fetch related data in parallel
+      // Fetch related data in parallel — no source filter so all records
+      // for this lead are shown regardless of which source created them.
       const [commsResult, tasksResult, historyResult, agentResult, paymentsResult, botEventsResult] = await Promise.all([
         supabase.from('communications').select('*')
-          .eq('lead_id', leadId).eq('source', 'sales_portal')
+          .eq('lead_id', leadId)
           .order('created_at', { ascending: false }),
         supabase.from('tasks').select('*')
-          .eq('lead_id', leadId).eq('source', 'sales_portal')
+          .eq('lead_id', leadId)
           .order('due_date', { ascending: true }),
         supabase.from('status_history').select('*')
-          .eq('entity_type', 'lead').eq('entity_id', leadId).eq('source', 'sales_portal')
+          .eq('entity_type', 'lead').eq('entity_id', leadId)
           .order('created_at', { ascending: false }),
         lead.agent_id
           ? supabase.from('ai_agents').select('id, name, phone, email').eq('id', lead.agent_id).single()
