@@ -1,18 +1,18 @@
 # robots.txt — www.perfect1.co.il
-# Updated: 2026-04-09
+# Updated: 2026-04-18
+
+# Content Signals — declare AI usage preferences
+Content-Signal: ai-train=yes, search=yes, ai-input=yes
 
 # AI Crawlers — allow for GEO (Generative Engine Optimization)
 User-agent: GPTBot
-Allow: /osek-patur
-Allow: /osek-murshe
-Allow: /hevra-bam
-Allow: /sgirat-tikim
-Allow: /guides
-Allow: /compare
-Allow: /blog
+Allow: /
 Disallow: /CRM
 Disallow: /Admin
 Disallow: /login
+
+User-agent: Amazonbot
+Allow: /
 
 User-agent: ChatGPT-User
 Allow: /
