@@ -5,6 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Switch } from '@/components/ui/switch';
 import { Building2, AlertTriangle, Phone, User, ArrowDown, Trophy, TrendingUp, Briefcase } from 'lucide-react';
 import { calcCompanyTax, COMPANY_TAX_CONFIG, TAX_YEAR } from './calcCompanyTax';
+import CalcLeadPopup from './CalcLeadPopup';
 import { supabase } from '@/api/supabaseClient';
 import { toast } from 'sonner';
 
@@ -91,6 +92,7 @@ export default function CompanyTaxCalculator() {
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
+      <CalcLeadPopup type="company-tax" />
       {/* Calculator Form */}
       <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
         <div className="bg-gradient-to-l from-portal-navy to-[#2a4f7a] p-5 text-white">

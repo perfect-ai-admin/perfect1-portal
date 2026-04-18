@@ -5,6 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Switch } from '@/components/ui/switch';
 import { Shield, AlertTriangle, Phone, User, TrendingUp, ChevronDown } from 'lucide-react';
 import { calcNationalInsurance, calcComparisonTable, NI_CONFIG, TAX_YEAR } from './calcNationalInsurance';
+import CalcLeadPopup from './CalcLeadPopup';
 import { supabase } from '@/api/supabaseClient';
 import { toast } from 'sonner';
 
@@ -80,6 +81,7 @@ export default function NationalInsuranceCalculator() {
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
+      <CalcLeadPopup type="national-insurance" />
       {/* Calculator Card */}
       <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
         <div className="bg-gradient-to-l from-portal-navy to-[#2a4f7a] p-5 text-white">

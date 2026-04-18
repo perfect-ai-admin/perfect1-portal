@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { calculateNetIncome } from './calcNetIncome';
 import { TAX_YEAR } from './taxConfig2026';
+import CalcLeadPopup from './CalcLeadPopup';
 
 const formatCurrency = (num) =>
   new Intl.NumberFormat('he-IL', { style: 'currency', currency: 'ILS', maximumFractionDigits: 0 }).format(num);
@@ -98,6 +99,7 @@ export default function NetIncomeCalculator() {
 
   return (
     <div className="max-w-2xl mx-auto">
+      <CalcLeadPopup type="net-income" />
       {/* Calculator Form */}
       <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
         <div className="bg-gradient-to-l from-portal-navy to-portal-navy-light px-6 py-5 text-center">

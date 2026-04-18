@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Switch } from '@/components/ui/switch';
 import { Calculator, AlertTriangle, Phone, User } from 'lucide-react';
 import { calcIncomeTax, DEFAULT_CREDIT_POINTS, TAX_BRACKETS, TAX_YEAR } from './calcIncomeTax';
+import CalcLeadPopup from './CalcLeadPopup';
 import { supabase } from '@/api/supabaseClient';
 import { toast } from 'sonner';
 
@@ -181,6 +182,7 @@ export default function IncomeTaxCalculator() {
 
   return (
     <div className="max-w-2xl mx-auto" dir="rtl">
+      <CalcLeadPopup type="income-tax" />
       {/* Calculator Form Card */}
       <div className="bg-white rounded-2xl shadow-[0_1px_2px_0_rgb(0_0_0_/0.04),0_4px_16px_-2px_rgb(0_0_0_/0.10)] border border-gray-100 overflow-hidden">
         <div className="bg-gradient-to-l from-portal-navy to-portal-navy-light px-6 py-5 text-center">
