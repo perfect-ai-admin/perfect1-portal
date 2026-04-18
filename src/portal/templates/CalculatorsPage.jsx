@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Calculator, Award, ChevronLeft, Scale, TrendingUp, DollarSign, BarChart3, HelpCircle, Shield } from 'lucide-react';
+import { Calculator, Award, ChevronLeft, Scale, TrendingUp, DollarSign, BarChart3, HelpCircle, Shield, Building2 } from 'lucide-react';
 import SEOHead from '@/components/seo/SEOHead';
 import PortalHeader from '../components/PortalHeader';
 import PortalFooter from '../components/PortalFooter';
@@ -45,6 +45,15 @@ const CALCULATORS = [
     icon: Shield,
     color: 'bg-emerald-50 border-emerald-200',
     iconColor: 'text-emerald-600',
+    live: true,
+  },
+  {
+    slug: 'company-tax',
+    title: 'מחשבון מיסוי חברה בע"מ',
+    description: 'מס חברות, דיבידנד, משכורת בעלים — כמה נשאר לך ומה הכי משתלם',
+    icon: Building2,
+    color: 'bg-indigo-50 border-indigo-200',
+    iconColor: 'text-indigo-600',
     live: true,
   },
   {

@@ -126,6 +126,7 @@ export const PORTAL_CATEGORIES = [
       { title: 'מחשבון נקודות זיכוי', href: '/calculators/credit-points', description: 'כמה נקודות זיכוי מגיעות לכם וכמה מס תחסכו' },
       { title: 'מחשבון מס הכנסה לעצמאי', href: '/calculators/income-tax', description: 'חישוב מס הכנסה לפי מדרגות מס, נקודות זיכוי והוצאות' },
       { title: 'מחשבון ביטוח לאומי לעצמאי', href: '/calculators/national-insurance', description: 'חישוב ביטוח לאומי ומס בריאות לפי ההכנסה — כולל השוואת תרחישים' },
+      { title: 'מחשבון מיסוי חברה בע"מ', href: '/calculators/company-tax', description: 'מס חברות, דיבידנד, משכורת בעלים — מה הכי משתלם' },
       { title: 'מחשבון תקרת עוסק פטור', href: '/calculators', description: 'בדיקת תקרת ההכנסות השנתית לעוסק פטור (בקרוב)' },
       { title: 'פטור או מורשה?', href: '/calculators', description: 'כלי החלטה בין עוסק פטור לעוסק מורשה (בקרוב)' },
     ]

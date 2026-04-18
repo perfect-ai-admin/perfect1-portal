@@ -612,6 +612,7 @@ function generateSPAFallbacks() {
     '/CRM/settings',
     '/calculators/income-tax',
     '/calculators/national-insurance',
+    '/calculators/company-tax',
     '/CRM/outreach',
     '/CRM/outreach/websites',
     '/CRM/outreach/contacts',
