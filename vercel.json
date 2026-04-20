@@ -6,6 +6,11 @@
       "has": [{ "type": "host", "value": "perfect1.co.il" }],
       "destination": "https://www.perfect1.co.il/$1",
       "permanent": true
+    },
+    {
+      "source": "/atzmaim-berega-final",
+      "destination": "/atzmaim-berega",
+      "permanent": true
     }
   ],
   "rewrites": [
