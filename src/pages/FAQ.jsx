@@ -1,6 +1,6 @@
 import React from 'react';
-import Header from '@/components/marketing/Header';
-import Footer from '@/components/marketing/Footer';
+import PortalHeader from '@/portal/components/PortalHeader';
+import PortalFooter from '@/portal/components/PortalFooter';
 import FinalCTA from '@/components/marketing/FinalCTA';
 import {
   Accordion,
@@ -95,7 +95,7 @@ const faqCategories = [
 export default function FAQ() {
   return (
     <div className="min-h-screen bg-white" dir="rtl">
-      <Header />
+      <PortalHeader />
       
       <main className="pt-20">
         {/* Hero */}
@@ -142,7 +142,7 @@ export default function FAQ() {
         <FinalCTA />
       </main>
       
-      <Footer />
+      <PortalFooter />
     </div>
   );
 }

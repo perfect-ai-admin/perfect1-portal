@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import Header from '@/components/marketing/Header';
-import Footer from '@/components/marketing/Footer';
+import PortalHeader from '@/portal/components/PortalHeader';
+import PortalFooter from '@/portal/components/PortalFooter';
 import FinalCTA from '@/components/marketing/FinalCTA';
 import { Button } from '@/components/ui/button';
 import { Check, ArrowLeft, Star, Palette, Presentation, Megaphone, ShieldCheck, CreditCard, Smartphone, Sticker, Layout } from 'lucide-react';
@@ -169,7 +169,7 @@ export default function Pricing() {
 
   return (
     <div className="min-h-screen bg-white" dir="rtl">
-      <Header />
+      <PortalHeader />
       
       <main className="pt-20">
         {/* Hero */}
@@ -387,7 +387,7 @@ export default function Pricing() {
         <FinalCTA />
       </main>
       
-      <Footer />
+      <PortalFooter />
     </div>
   );
 }

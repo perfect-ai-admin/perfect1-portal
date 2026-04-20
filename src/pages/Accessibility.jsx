@@ -1,7 +1,7 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
-import Header from '@/components/marketing/Header';
-import Footer from '@/components/marketing/Footer';
+import PortalHeader from '@/portal/components/PortalHeader';
+import PortalFooter from '@/portal/components/PortalFooter';
 
 export default function Accessibility() {
   return (
@@ -11,7 +11,7 @@ export default function Accessibility() {
         <meta name="description" content="הצהרת נגישות אתר פרפקט וואן — מחויבות לנגישות דיגיטלית לפי תקנות שוויון זכויות לאנשים עם מוגבלות." />
       </Helmet>
 
-      <Header />
+      <PortalHeader />
 
       <main className="pt-20">
         <section className="py-12 md:py-16 px-4 sm:px-6 bg-gray-50/50">
@@ -112,7 +112,7 @@ export default function Accessibility() {
         </section>
       </main>
 
-      <Footer />
+      <PortalFooter />
     </div>
   );
 }

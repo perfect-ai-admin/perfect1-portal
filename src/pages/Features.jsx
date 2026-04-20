@@ -1,6 +1,6 @@
 import React from 'react';
-import Header from '@/components/marketing/Header';
-import Footer from '@/components/marketing/Footer';
+import PortalHeader from '@/portal/components/PortalHeader';
+import PortalFooter from '@/portal/components/PortalFooter';
 import ToolsGrid from '@/components/marketing/ToolsGrid';
 import CampaignTemplates from '@/components/marketing/CampaignTemplates';
 import GoalsGrid from '@/components/marketing/GoalsGrid';
@@ -14,7 +14,7 @@ const SIGNUP_URL = "https://www.perfect1.co.il/login?from_url=https%3A%2F%2Fwww.
 export default function Features() {
   return (
     <div className="min-h-screen bg-white" dir="rtl">
-      <Header />
+      <PortalHeader />
       
       <main className="pt-20">
         {/* Hero */}
@@ -43,7 +43,7 @@ export default function Features() {
         <FinalCTA />
       </main>
       
-      <Footer />
+      <PortalFooter />
     </div>
   );
 }

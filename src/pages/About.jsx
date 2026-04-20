@@ -1,12 +1,12 @@
 import React from 'react';
-import Header from '@/components/marketing/Header';
-import Footer from '@/components/marketing/Footer';
+import PortalHeader from '@/portal/components/PortalHeader';
+import PortalFooter from '@/portal/components/PortalFooter';
 import { Phone, Mail, MessageCircle, Building2, Shield, Users, Target } from 'lucide-react';
 
 export default function About() {
   return (
     <div className="min-h-screen bg-white" dir="rtl">
-      <Header />
+      <PortalHeader />
 
       <main className="pt-20">
         {/* Hero */}
@@ -148,7 +148,7 @@ export default function About() {
         </section>
       </main>
 
-      <Footer />
+      <PortalFooter />
     </div>
   );
 }
