@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Outlet, NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { Button } from '@/components/ui/button';
 import {
   LayoutDashboard, Columns3, Users, ListTodo, Settings, ChevronRight, ChevronLeft,
@@ -195,6 +196,10 @@ export default function CRMLayout() {
 
   return (
     <div dir="rtl" className="flex h-screen bg-slate-50 overflow-hidden">
+      <Helmet>
+        <title>CRM — פרפקט וואן</title>
+        <meta name="robots" content="noindex, nofollow, noarchive, nosnippet" />
+      </Helmet>
       {/* Desktop Sidebar */}
       <aside
         className={`hidden md:flex flex-col border-l border-slate-200 bg-white transition-all duration-200 ${

@@ -106,9 +106,21 @@
 
     <!-- Google Ads + GTM — deferred until after first paint for better FCP -->
     <script>
+      // Skip analytics entirely on internal/admin routes so CRM/Admin sessions
+      // don't pollute GA/Ads/GTM traffic metrics.
+      window._isInternalRoute = (function(){
+        try {
+          var p = (window.location.pathname || '').toLowerCase();
+          var blocked = ['/crm','/admin','/login','/adminusers','/admindashboard','/agentcrm','/agentlogin','/agentsmanager','/leadsadmin','/closeosekpaturcrm','/checkout','/checkoutsuccess','/myproducts','/inviteuser','/landingpagemanager','/landingpagepreview'];
+          for (var i=0;i<blocked.length;i++){ if (p === blocked[i] || p.indexOf(blocked[i]+'/') === 0) return true; }
+          return false;
+        } catch(e) { return false; }
+      })();
+
       // Load GTM + Ads after first paint to not compete with critical resources
       function _loadAnalytics() {
         if (window._analyticsLoaded) return;
+        if (window._isInternalRoute) return;
         window._analyticsLoaded = true;
         // Google Ads gtag.js
         var g = document.createElement('script');
@@ -153,6 +165,7 @@
     <script>
       (function(){
         try {
+          if (window._isInternalRoute) return;
           if (localStorage.getItem('cookie_consent') === 'all') {
             document.querySelectorAll('script[data-cookie-consent]').forEach(function(el){
               var s = document.createElement('script');
