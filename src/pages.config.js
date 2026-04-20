@@ -27,19 +27,10 @@ const Features = lazyRetry(() => import('./pages/Features'));
 
 // --- Landing / public pages (lazy — medium/heavy) ---
 const AdminUsers = lazyRetry(() => import('./pages/AdminUsers'));
-const AiMentor = lazyRetry(() => import('./pages/AiMentor'));
-const AvatarAi = lazyRetry(() => import('./pages/AvatarAi'));
-const BrandedLandingPage = lazyRetry(() => import('./pages/BrandedLandingPage'));
-const BrandedQuote = lazyRetry(() => import('./pages/BrandedQuote'));
-const Branding = lazyRetry(() => import('./pages/Branding'));
-const BusinessPresentation = lazyRetry(() => import('./pages/BusinessPresentation'));
-const BusinessSticker = lazyRetry(() => import('./pages/BusinessSticker'));
 const DigitalBusinessCard = lazyRetry(() => import('./pages/DigitalBusinessCard'));
 const FAQ = lazyRetry(() => import('./pages/FAQ'));
 const Goal = lazyRetry(() => import('./pages/Goal'));
 const Pricing = lazyRetry(() => import('./pages/Pricing'));
-const SmartLogo = lazyRetry(() => import('./pages/SmartLogo'));
-const SocialDesigns = lazyRetry(() => import('./pages/SocialDesigns'));
 // Portal-only pages (About, Privacy, Terms, Blog, OsekPatur) — served via PortalRoutes in App.jsx
 
 // --- Application pages (lazy — not needed on portal domain) ---
@@ -74,13 +65,6 @@ const __Layout = lazyRetry(() => import('./Layout.jsx'));
 export const PAGES = {
     // App pages (perfect1.co.il only)
     "AdminUsers": AdminUsers,
-    "AiMentor": AiMentor,
-    "AvatarAi": AvatarAi,
-    "BrandedLandingPage": BrandedLandingPage,
-    "BrandedQuote": BrandedQuote,
-    "Branding": Branding,
-    "BusinessPresentation": BusinessPresentation,
-    "BusinessSticker": BusinessSticker,
     "DigitalBusinessCard": DigitalBusinessCard,
     "FAQ": FAQ,
     "Features": Features,
@@ -88,8 +72,6 @@ export const PAGES = {
     "Home": Home,
     "Pricing": Pricing,
     "S": S,
-    "SmartLogo": SmartLogo,
-    "SocialDesigns": SocialDesigns,
     // Application pages
     "login": Login,
     "AdminDashboard": AdminDashboard,
