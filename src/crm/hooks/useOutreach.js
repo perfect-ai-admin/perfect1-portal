@@ -388,6 +388,83 @@ export function useOutreachUnreadReplies() {
   });
 }
 
+// Returns threads grouped by website_id, sorted by latest_message_at desc
+export function useOutreachThreads() {
+  return useQuery({
+    queryKey: ['outreach-threads'],
+    queryFn: async () => {
+      const [messagesRes, repliesRes, websitesRes] = await Promise.all([
+        supabase
+          .from('outreach_messages')
+          .select('id, website_id, subject, body_text, sent_at, created_at, status')
+          .in('status', ['sent', 'delivered', 'opened', 'replied', 'approved'])
+          .order('created_at', { ascending: false })
+          .limit(1000),
+        supabase
+          .from('outreach_replies')
+          .select('id, website_id, subject, body, direction, received_at, intent, sentiment')
+          .order('received_at', { ascending: false })
+          .limit(1000),
+        supabase
+          .from('outreach_websites')
+          .select('id, domain, name')
+          .limit(1000),
+      ]);
+
+      const messages = messagesRes.data || [];
+      const replies = repliesRes.data || [];
+      const websites = websitesRes.data || [];
+
+      const websiteMap = Object.fromEntries(websites.map(w => [w.id, w]));
+
+      // Group by website_id
+      const groups = {};
+      messages.forEach(m => {
+        if (!m.website_id) return;
+        if (!groups[m.website_id]) groups[m.website_id] = { messages: [], replies: [] };
+        groups[m.website_id].messages.push(m);
+      });
+      replies.forEach(r => {
+        if (!r.website_id) return;
+        if (!groups[r.website_id]) groups[r.website_id] = { messages: [], replies: [] };
+        groups[r.website_id].replies.push(r);
+      });
+
+      return Object.entries(groups).map(([websiteId, { messages: msgs, replies: reps }]) => {
+        const allTimes = [
+          ...msgs.map(m => new Date(m.sent_at || m.created_at)),
+          ...reps.map(r => new Date(r.received_at)),
+        ].filter(Boolean);
+        const latestTime = allTimes.length > 0 ? new Date(Math.max(...allTimes)) : new Date(0);
+
+        const inboundReplies = reps.filter(r => r.direction !== 'outbound');
+        const lastInbound = inboundReplies.length > 0 ? inboundReplies[0] : null;
+        const unreadCount = inboundReplies.filter(r => r.sentiment === 'needs_review').length;
+
+        const lastMsg = msgs.length > 0 ? msgs[0] : null;
+        const lastActivity = reps.length > 0 && new Date(reps[0].received_at) > (lastMsg ? new Date(lastMsg.sent_at || lastMsg.created_at) : new Date(0))
+          ? reps[0]
+          : lastMsg;
+        const preview = lastActivity
+          ? (lastActivity.body || lastActivity.body_text || '').slice(0, 80)
+          : '';
+
+        return {
+          website_id: websiteId,
+          website: websiteMap[websiteId] || { id: websiteId, domain: websiteId },
+          latest_message_at: latestTime.toISOString(),
+          last_inbound: lastInbound,
+          last_intent: lastInbound?.intent || null,
+          last_sentiment: lastInbound?.sentiment || null,
+          unread_count: unreadCount,
+          preview,
+        };
+      }).sort((a, b) => new Date(b.latest_message_at) - new Date(a.latest_message_at));
+    },
+    refetchInterval: 15000,
+  });
+}
+
 // ============================================
 // Mutations
 // ============================================
@@ -611,7 +688,26 @@ export function useUpdateReply() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['outreach-replies'] });
       qc.invalidateQueries({ queryKey: ['outreach-unread-count'] });
+      qc.invalidateQueries({ queryKey: ['outreach-threads'] });
       qc.invalidateQueries({ queryKey: ['outreach-overview'] });
+    },
+  });
+}
+
+export function useMarkThreadRead() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (websiteId) => {
+      const { error } = await supabase
+        .from('outreach_replies')
+        .update({ sentiment: 'neutral' })
+        .eq('website_id', websiteId)
+        .eq('sentiment', 'needs_review');
+      if (error) throw new Error(error.message);
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['outreach-threads'] });
+      qc.invalidateQueries({ queryKey: ['outreach-unread-count'] });
     },
   });
 }
@@ -721,8 +817,10 @@ export function useSendReply() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async (payload) => invokeFunction('outreachReplyToLead', payload),
-    onSuccess: () => {
+    onSuccess: (_, variables) => {
       qc.invalidateQueries({ queryKey: ['outreach-replies'] });
+      qc.invalidateQueries({ queryKey: ['outreach-threads'] });
+      qc.invalidateQueries({ queryKey: ['outreach-thread'] });
       qc.invalidateQueries({ queryKey: ['outreach-overview'] });
     },
   });
