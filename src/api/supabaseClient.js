@@ -64,9 +64,9 @@ export async function invokeFunction(name, payload = {}) {
     }
   } catch { /* use anon key */ }
 
-  // Guard: warn if no auth session for CRM functions
-  if (authToken === supabaseAnonKey && name.startsWith('crm')) {
-    console.warn(`[invokeFunction] No auth session for protected function ${name} — may get 401`);
+  // Guard: warn if no auth session for protected functions
+  if (authToken === supabaseAnonKey && (name.startsWith('crm') || name.startsWith('outreach'))) {
+    console.warn(`[invokeFunction] No auth session for protected function ${name} — will get 401`);
   }
 
   let resp;

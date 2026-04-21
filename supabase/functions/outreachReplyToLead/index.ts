@@ -1,13 +1,24 @@
-import { supabaseAdmin, getUser, getCorsHeaders, jsonResponse, errorResponse } from '../_shared/supabaseAdmin.ts';
+import { supabaseAdmin, getCorsHeaders, jsonResponse, errorResponse } from '../_shared/supabaseAdmin.ts';
 
 const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY');
+const SUPABASE_ANON_KEY = Deno.env.get('SUPABASE_ANON_KEY')!;
+
+// Verify request has a valid non-anon JWT (admin dashboard calls only)
+async function verifyAdminRequest(req: Request): Promise<boolean> {
+  const authHeader = req.headers.get('Authorization') || '';
+  const token = authHeader.replace('Bearer ', '').trim();
+  // Reject bare anon key — must be a real user session token
+  if (!token || token === SUPABASE_ANON_KEY) return false;
+  const { data: { user }, error } = await supabaseAdmin.auth.getUser(token);
+  return !error && !!user;
+}
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: getCorsHeaders(req) });
 
   try {
-    const user = await getUser(req);
-    if (!user) return errorResponse('Unauthorized', 401, req);
+    const isAuthed = await verifyAdminRequest(req);
+    if (!isAuthed) return errorResponse('Unauthorized — valid user session required', 401, req);
 
     const { reply_id, subject, body_text } = await req.json();
     if (!reply_id || !subject || !body_text) {
