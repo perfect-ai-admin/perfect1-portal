@@ -207,6 +207,58 @@ export function useOutreachReplies(filters = {}) {
   });
 }
 
+// Thread: all messages + replies for a given website_id, sorted by time
+export function useOutreachThread(websiteId) {
+  return useQuery({
+    queryKey: ['outreach-thread', websiteId],
+    queryFn: async () => {
+      if (!websiteId) return [];
+
+      const [messagesRes, repliesRes] = await Promise.all([
+        supabase
+          .from('outreach_messages')
+          .select('id, subject, body_text, status, sent_at, created_at, sequence_step')
+          .eq('website_id', websiteId)
+          .in('status', ['sent', 'delivered', 'opened', 'replied', 'approved'])
+          .order('created_at', { ascending: true }),
+        supabase
+          .from('outreach_replies')
+          .select('id, subject, body, direction, received_at, sentiment, intent')
+          .eq('website_id', websiteId)
+          .order('received_at', { ascending: true }),
+      ]);
+
+      const messages = (messagesRes.data || []).map(m => ({
+        id: m.id,
+        type: 'outbound',
+        subject: m.subject,
+        body: m.body_text,
+        status: m.status,
+        timestamp: m.sent_at || m.created_at,
+        step: m.sequence_step,
+      }));
+
+      const replies = (repliesRes.data || []).map(r => ({
+        id: r.id,
+        type: r.direction === 'outbound' ? 'outbound' : 'inbound',
+        subject: r.subject,
+        body: r.body,
+        status: r.sentiment,
+        timestamp: r.received_at,
+        intent: r.intent,
+      }));
+
+      const all = [...messages, ...replies].sort(
+        (a, b) => new Date(a.timestamp) - new Date(b.timestamp)
+      );
+
+      return all;
+    },
+    enabled: !!websiteId,
+    refetchInterval: 15000,
+  });
+}
+
 export function useOutreachTasks(filters = {}) {
   return useQuery({
     queryKey: ['outreach-tasks', filters],

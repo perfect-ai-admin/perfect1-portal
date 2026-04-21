@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useOutreachReplies, useUpdateReply, useSuggestReply, useSendReply } from '../../hooks/useOutreach';
 import OutreachStatusBadge from '../../components/outreach/OutreachStatusBadge';
+import OutreachThreadTimeline from '../../components/outreach/OutreachThreadTimeline';
 import { REPLY_INTENTS, REPLY_SENTIMENTS } from '../../constants/outreach';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
@@ -157,21 +158,11 @@ export default function OutreachInbox() {
                   <p className="text-xs text-slate-400">{selected.outreach_contacts?.full_name} &lt;{selected.outreach_contacts?.email}&gt;</p>
                 </div>
 
-                <div className="flex-1 overflow-auto p-4">
-                  {selected.outreach_messages && (
-                    <div className="bg-blue-50 rounded-lg p-3 mb-4 mr-8">
-                      <p className="text-xs text-blue-500 mb-1">הודעה מקורית</p>
-                      <p className="text-sm font-medium text-blue-800">{selected.outreach_messages.subject}</p>
-                    </div>
-                  )}
-
-                  <div className="bg-slate-50 rounded-lg p-3 ml-8">
-                    <p className="text-xs text-slate-400 mb-1">תשובה נכנסת — {new Date(selected.received_at).toLocaleString('he-IL')}</p>
-                    <div className="text-sm text-slate-700 whitespace-pre-wrap">{selected.body}</div>
-                  </div>
+                <div className="flex-1 overflow-auto p-4 flex flex-col">
+                  <OutreachThreadTimeline websiteId={selected.website_id} />
 
                   {selected.ai_summary && (
-                    <div className="bg-purple-50 rounded-lg p-3 mt-4">
+                    <div className="bg-purple-50 rounded-lg p-3 mt-3 flex-shrink-0">
                       <p className="text-xs text-purple-500 mb-1">סיכום AI</p>
                       <p className="text-sm text-purple-800">{selected.ai_summary}</p>
                     </div>
