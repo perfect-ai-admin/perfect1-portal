@@ -665,6 +665,17 @@ export function useSuggestReply() {
   });
 }
 
+export function useSendReply() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (payload) => invokeFunction('outreachReplyToLead', payload),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['outreach-replies'] });
+      qc.invalidateQueries({ queryKey: ['outreach-overview'] });
+    },
+  });
+}
+
 export function useSuggestSubject() {
   return useMutation({
     mutationFn: async (payload) => invokeFunction('outreachAI', { action: 'suggest_subject', ...payload }),

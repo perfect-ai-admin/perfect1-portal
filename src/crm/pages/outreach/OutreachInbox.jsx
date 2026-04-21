@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { useOutreachReplies, useUpdateReply, useSuggestReply } from '../../hooks/useOutreach';
+import { useOutreachReplies, useUpdateReply, useSuggestReply, useSendReply } from '../../hooks/useOutreach';
 import OutreachStatusBadge from '../../components/outreach/OutreachStatusBadge';
 import { REPLY_INTENTS, REPLY_SENTIMENTS } from '../../constants/outreach';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
-import { Inbox, Sparkles, Copy, Check } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { Inbox, Sparkles, Copy, Send, PenLine } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function OutreachInbox() {
@@ -16,8 +17,33 @@ export default function OutreachInbox() {
   const [selectedId, setSelectedId] = useState(null);
   const [aiReply, setAiReply] = useState('');
   const [aiLoading, setAiLoading] = useState(false);
+  const [replyOpen, setReplyOpen] = useState(false);
+  const [replySubject, setReplySubject] = useState('');
+  const [replyBody, setReplyBody] = useState('');
+  const sendReply = useSendReply();
 
   const selected = replies.find(r => r.id === selectedId);
+
+  const openReplyDialog = () => {
+    setReplySubject(`Re: ${selected?.subject || ''}`);
+    setReplyBody('');
+    setReplyOpen(true);
+  };
+
+  const handleSend = async () => {
+    if (!replyBody.trim()) return;
+    try {
+      const result = await sendReply.mutateAsync({
+        reply_id: selected.id,
+        subject: replySubject,
+        body_text: replyBody,
+      });
+      toast.success(`נשלח (${result?.resend_message_id || 'ok'})`);
+      setReplyOpen(false);
+    } catch (err) {
+      toast.error(`שגיאה: ${err.message}`);
+    }
+  };
 
   const handleClassify = (replyId, field, value) => {
     updateReply.mutate({ id: replyId, [field]: value }, {
@@ -152,12 +178,15 @@ export default function OutreachInbox() {
                   )}
                 </div>
 
-                {/* AI Suggested Reply */}
+                {/* Actions */}
                 <div className="border-t p-4">
                   <div className="flex items-center gap-2 mb-2">
                     <Button size="sm" variant="outline" onClick={handleSuggest} disabled={aiLoading}>
                       <Sparkles size={14} className={`ml-1 ${aiLoading ? 'animate-pulse' : ''}`} />
                       {aiLoading ? 'מייצר...' : 'הצע תשובה'}
+                    </Button>
+                    <Button size="sm" variant="default" onClick={openReplyDialog}>
+                      <PenLine size={14} className="ml-1" /> כתוב תגובה
                     </Button>
                     {aiReply && (
                       <Button size="sm" variant="ghost" onClick={() => { navigator.clipboard.writeText(aiReply); toast.success('הועתק'); }}>
@@ -174,6 +203,56 @@ export default function OutreachInbox() {
           </div>
         </div>
       )}
+
+      {/* Reply Dialog */}
+      <Dialog open={replyOpen} onOpenChange={setReplyOpen}>
+        <DialogContent className="max-w-lg" dir="rtl">
+          <DialogHeader>
+            <DialogTitle>שלח תגובה</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-3 py-2">
+            <div>
+              <label className="text-xs text-slate-500 mb-1 block">נושא</label>
+              <input
+                className="w-full border border-slate-200 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                value={replySubject}
+                onChange={e => setReplySubject(e.target.value)}
+              />
+            </div>
+            <div>
+              <label className="text-xs text-slate-500 mb-1 block">גוף ההודעה</label>
+              <textarea
+                dir="rtl"
+                rows={8}
+                className="w-full border border-slate-200 rounded-md px-3 py-2 text-sm resize-y focus:outline-none focus:ring-2 focus:ring-blue-400"
+                placeholder="כתוב כאן את תגובתך..."
+                value={replyBody}
+                onChange={e => setReplyBody(e.target.value)}
+              />
+            </div>
+            {aiReply && (
+              <Button
+                size="sm"
+                variant="ghost"
+                className="text-xs text-green-700"
+                onClick={() => setReplyBody(aiReply)}
+              >
+                <Sparkles size={12} className="ml-1" /> מלא עם הצעת AI
+              </Button>
+            )}
+          </div>
+          <DialogFooter className="gap-2">
+            <Button variant="ghost" onClick={() => setReplyOpen(false)}>ביטול</Button>
+            <Button
+              disabled={!replyBody.trim() || sendReply.isPending}
+              onClick={handleSend}
+            >
+              <Send size={14} className="ml-1" />
+              {sendReply.isPending ? 'שולח...' : 'שלח'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
