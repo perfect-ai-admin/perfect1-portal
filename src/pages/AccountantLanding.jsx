@@ -1085,9 +1085,6 @@ export default function AccountantLanding() {
         {/* ===== FLOATING WHATSAPP (DESKTOP) ===== */}
         <FloatingWhatsApp />
 
-        {/* ===== EXIT INTENT ===== */}
-        <ExitIntentModal />
-
         {/* ===== FOOTER ===== */}
         <footer className="bg-portal-navy text-white/60 py-6">
           <div className="max-w-6xl mx-auto px-4 text-center text-sm space-y-3">
