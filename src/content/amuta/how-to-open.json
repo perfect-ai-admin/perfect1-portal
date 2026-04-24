@@ -22,16 +22,46 @@
   },
   "readTime": 12,
   "toc": [
-    { "id": "what-is-amuta", "title": "מה זו עמותה?" },
-    { "id": "who-can-open", "title": "מי יכול לפתוח עמותה?" },
-    { "id": "prerequisites", "title": "תנאים מקדימים לפתיחה" },
-    { "id": "registration-steps", "title": "שלבי הרישום ברשם העמותות" },
-    { "id": "required-documents", "title": "מסמכים נדרשים" },
-    { "id": "takanon", "title": "תקנון העמותה" },
-    { "id": "after-registration", "title": "מה עושים אחרי הרישום?" },
-    { "id": "timeline", "title": "לוחות זמנים" },
-    { "id": "tips", "title": "טיפים חשובים למייסדים" },
-    { "id": "faq", "title": "שאלות נפוצות" }
+    {
+      "id": "what-is-amuta",
+      "title": "מה זו עמותה?"
+    },
+    {
+      "id": "who-can-open",
+      "title": "מי יכול לפתוח עמותה?"
+    },
+    {
+      "id": "prerequisites",
+      "title": "תנאים מקדימים לפתיחה"
+    },
+    {
+      "id": "registration-steps",
+      "title": "שלבי הרישום ברשם העמותות"
+    },
+    {
+      "id": "required-documents",
+      "title": "מסמכים נדרשים"
+    },
+    {
+      "id": "takanon",
+      "title": "תקנון העמותה"
+    },
+    {
+      "id": "after-registration",
+      "title": "מה עושים אחרי הרישום?"
+    },
+    {
+      "id": "timeline",
+      "title": "לוחות זמנים"
+    },
+    {
+      "id": "tips",
+      "title": "טיפים חשובים למייסדים"
+    },
+    {
+      "id": "faq",
+      "title": "שאלות נפוצות"
+    }
   ],
   "sections": [
     {
@@ -260,23 +290,23 @@
   ],
   "relatedArticles": [
     {
-      "slug": "cost",
       "category": "amuta",
+      "slug": "cost",
       "title": "כמה עולה לפתוח עמותה? עלויות מלאות 2026"
     },
     {
-      "slug": "documents",
       "category": "amuta",
+      "slug": "documents",
       "title": "מסמכים לפתיחת עמותה — רשימה מלאה"
     },
     {
-      "slug": "proper-management",
       "category": "amuta",
+      "slug": "proper-management",
       "title": "ניהול תקין עמותה — אישור, דרישות ותהליך"
     },
     {
-      "slug": "section-46",
       "category": "amuta",
+      "slug": "section-46",
       "title": "סעיף 46 לעמותה — מה זה ואיך מקבלים אישור"
     }
   ]

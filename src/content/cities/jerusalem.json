@@ -23,14 +23,38 @@
   },
   "readTime": 12,
   "toc": [
-    { "id": "why-local", "title": "למה רו״ח מקומי בירושלים?" },
-    { "id": "market", "title": "שוק העסקים הייחודי בירושלים" },
-    { "id": "prices", "title": "מחירים ממוצעים בירושלים 2026" },
-    { "id": "how-to-choose", "title": "איך בוחרים רואה חשבון?" },
-    { "id": "sectors", "title": "רואה חשבון לפי ענף בירושלים" },
-    { "id": "when-you-need", "title": "מתי חובה לקחת רואה חשבון?" },
-    { "id": "tips", "title": "טיפים לחיסכון" },
-    { "id": "faq", "title": "שאלות נפוצות" }
+    {
+      "id": "why-local",
+      "title": "למה רו״ח מקומי בירושלים?"
+    },
+    {
+      "id": "market",
+      "title": "שוק העסקים הייחודי בירושלים"
+    },
+    {
+      "id": "prices",
+      "title": "מחירים ממוצעים בירושלים 2026"
+    },
+    {
+      "id": "how-to-choose",
+      "title": "איך בוחרים רואה חשבון?"
+    },
+    {
+      "id": "sectors",
+      "title": "רואה חשבון לפי ענף בירושלים"
+    },
+    {
+      "id": "when-you-need",
+      "title": "מתי חובה לקחת רואה חשבון?"
+    },
+    {
+      "id": "tips",
+      "title": "טיפים לחיסכון"
+    },
+    {
+      "id": "faq",
+      "title": "שאלות נפוצות"
+    }
   ],
   "sections": [
     {
@@ -198,9 +222,25 @@
     }
   ],
   "relatedArticles": [
-    { "slug": "tel-aviv", "category": "cities", "title": "רואה חשבון בתל אביב" },
-    { "slug": "haifa", "category": "cities", "title": "רואה חשבון בחיפה" },
-    { "slug": "bookkeeping-service", "category": "services", "title": "שירות הנהלת חשבונות לעצמאים" },
-    { "slug": "open-osek-patur-service", "category": "services", "title": "שירות פתיחת עוסק פטור" }
+    {
+      "category": "cities",
+      "slug": "tel-aviv",
+      "title": "רואה חשבון בתל אביב"
+    },
+    {
+      "category": "cities",
+      "slug": "haifa",
+      "title": "רואה חשבון בחיפה"
+    },
+    {
+      "category": "services",
+      "slug": "bookkeeping-service",
+      "title": "שירות הנהלת חשבונות לעצמאים"
+    },
+    {
+      "category": "services",
+      "slug": "open-osek-patur-service",
+      "title": "שירות פתיחת עוסק פטור"
+    }
   ]
 }

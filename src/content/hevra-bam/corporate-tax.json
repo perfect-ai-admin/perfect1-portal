@@ -34,19 +34,58 @@
     "percent": "מס חברות"
   },
   "toc": [
-    { "id": "what-is-corporate-tax", "title": "מה זה מס חברות?" },
-    { "id": "rate-2026", "title": "שיעור מס חברות 2026 — 23%" },
-    { "id": "tax-history-table", "title": "טבלת מס חברות ודיבידנד לפי שנים" },
-    { "id": "total-tax-burden", "title": "נטל המס הכולל — חברה מול עצמאי" },
-    { "id": "who-pays", "title": "מי חייב במס חברות?" },
-    { "id": "calculation-example", "title": "חישוב מס חברות — דוגמה מספרית" },
-    { "id": "dividend-tax", "title": "מס דיבידנד 2026 — עוד 25%–33%" },
-    { "id": "salary-vs-dividend", "title": "משכורת בעלים מול דיבידנד — מה עדיף?" },
-    { "id": "vs-osek-murshe", "title": "מס חברות מול עוסק מורשה — נקודת האיזון" },
-    { "id": "hitech-benefits", "title": "מס חברות להייטק — חוק עידוד השקעות הון" },
-    { "id": "small-companies", "title": "חברות מעטות — הטבות ומגבלות" },
-    { "id": "penalties", "title": "קנסות ואכיפה" },
-    { "id": "faq", "title": "שאלות נפוצות" }
+    {
+      "id": "what-is-corporate-tax",
+      "title": "מה זה מס חברות?"
+    },
+    {
+      "id": "rate-2026",
+      "title": "שיעור מס חברות 2026 — 23%"
+    },
+    {
+      "id": "tax-history-table",
+      "title": "טבלת מס חברות ודיבידנד לפי שנים"
+    },
+    {
+      "id": "total-tax-burden",
+      "title": "נטל המס הכולל — חברה מול עצמאי"
+    },
+    {
+      "id": "who-pays",
+      "title": "מי חייב במס חברות?"
+    },
+    {
+      "id": "calculation-example",
+      "title": "חישוב מס חברות — דוגמה מספרית"
+    },
+    {
+      "id": "dividend-tax",
+      "title": "מס דיבידנד 2026 — עוד 25%–33%"
+    },
+    {
+      "id": "salary-vs-dividend",
+      "title": "משכורת בעלים מול דיבידנד — מה עדיף?"
+    },
+    {
+      "id": "vs-osek-murshe",
+      "title": "מס חברות מול עוסק מורשה — נקודת האיזון"
+    },
+    {
+      "id": "hitech-benefits",
+      "title": "מס חברות להייטק — חוק עידוד השקעות הון"
+    },
+    {
+      "id": "small-companies",
+      "title": "חברות מעטות — הטבות ומגבלות"
+    },
+    {
+      "id": "penalties",
+      "title": "קנסות ואכיפה"
+    },
+    {
+      "id": "faq",
+      "title": "שאלות נפוצות"
+    }
   ],
   "sections": [
     {
@@ -314,24 +353,24 @@
   ],
   "relatedArticles": [
     {
-      "slug": "hevra-bam/how-to-open",
-      "title": "פתיחת חברה בע\"מ — מדריך שלב אחרי שלב",
-      "description": "איך פותחים חברה בישראל, מה העלויות, ומה הצעדים הנדרשים."
+      "category": "osek-patur",
+      "slug": "how-to-open",
+      "title": "איך פותחים עוסק פטור — מדריך מלא"
     },
     {
-      "slug": "hevra-bam/cost",
-      "title": "עלות הקמת חברה בע\"מ — כמה זה עולה?",
-      "description": "כל העלויות הצפויות: רישום, רואה חשבון, ניהול שוטף ועוד."
+      "category": "osek-murshe",
+      "slug": "how-to-open",
+      "title": "פתיחת עוסק מורשה — מדריך מלא"
     },
     {
-      "slug": "hevra-bam/shareholders",
-      "title": "בעלי מניות בחברה — מבנה בעלות והסכמים",
-      "description": "כיצד לחלק מניות, הסכם מייסדים, וזכויות בעלי מניות."
+      "category": "hevra-bam",
+      "slug": "how-to-open",
+      "title": "פתיחת חברה בע\"מ — מדריך"
     },
     {
-      "slug": "compare/osek-patur-vs-murshe",
-      "title": "עוסק פטור או מורשה — ההשוואה המלאה",
-      "description": "מה ההבדלים בין עוסק פטור לעוסק מורשה ומה עדיף לכם."
+      "category": "osek-patur",
+      "slug": "cost",
+      "title": "כמה עולה עוסק פטור"
     }
   ],
   "schema": {

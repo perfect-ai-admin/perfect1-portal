@@ -242,19 +242,24 @@
   ],
   "relatedArticles": [
     {
-      "slug": "income-tax",
       "category": "osek-murshe",
+      "slug": "income-tax",
       "title": "מס הכנסה עוסק מורשה — מדריך מלא 2026"
     },
     {
-      "slug": "cost",
       "category": "osek-murshe",
+      "slug": "cost",
       "title": "כמה עולה עוסק מורשה? מדריך עלויות מלא"
     },
     {
-      "slug": "bituach-leumi",
       "category": "osek-patur",
+      "slug": "bituach-leumi",
       "title": "ביטוח לאומי עוסק פטור — כל מה שצריך לדעת"
+    },
+    {
+      "category": "osek-patur",
+      "slug": "how-to-open",
+      "title": "איך פותחים עוסק פטור — מדריך מלא"
     }
   ]
 }

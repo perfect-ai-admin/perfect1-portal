@@ -3,7 +3,13 @@
   "category": "osek-patur",
   "metaTitle": "רואה חשבון לעוסק פטור — מחיר ומדריך 2026 | פרפקט וואן",
   "metaDescription": "האם עוסק פטור חייב רואה חשבון? כמה זה עולה? מה כולל השירות? מדריך מקיף לבחירת רו\"ח לעוסק פטור עם טווח מחירים מעודכן ל-2026.",
-  "keywords": ["רואה חשבון לעוסק פטור", "רואה חשבון עוסק פטור מחיר", "האם צריך רואה חשבון עוסק פטור", "עלות רואה חשבון עוסק פטור", "רו\"ח לעוסק פטור"],
+  "keywords": [
+    "רואה חשבון לעוסק פטור",
+    "רואה חשבון עוסק פטור מחיר",
+    "האם צריך רואה חשבון עוסק פטור",
+    "עלות רואה חשבון עוסק פטור",
+    "רו\"ח לעוסק פטור"
+  ],
   "heroTitle": "רואה חשבון לעוסק פטור — האם צריך ומה העלות?",
   "heroSubtitle": "כל היתרונות, העלויות, ומתי באמת חייבים רו\"ח. מדריך מקיף שיעזור לכם להחליט.",
   "publishDate": "2026-02-01",
@@ -14,13 +20,34 @@
   },
   "readTime": 9,
   "toc": [
-    { "id": "do-you-need", "title": "האם חייבים רואה חשבון?" },
-    { "id": "when-recommended", "title": "מתי מומלץ לקחת רו\"ח" },
-    { "id": "services-included", "title": "מה כולל השירות" },
-    { "id": "monthly-cost", "title": "כמה עולה רו\"ח לעוסק פטור" },
-    { "id": "how-to-choose", "title": "איך בוחרים רואה חשבון" },
-    { "id": "diy-vs-accountant", "title": "לבד מול רו\"ח — השוואה" },
-    { "id": "faq", "title": "שאלות נפוצות" }
+    {
+      "id": "do-you-need",
+      "title": "האם חייבים רואה חשבון?"
+    },
+    {
+      "id": "when-recommended",
+      "title": "מתי מומלץ לקחת רו\"ח"
+    },
+    {
+      "id": "services-included",
+      "title": "מה כולל השירות"
+    },
+    {
+      "id": "monthly-cost",
+      "title": "כמה עולה רו\"ח לעוסק פטור"
+    },
+    {
+      "id": "how-to-choose",
+      "title": "איך בוחרים רואה חשבון"
+    },
+    {
+      "id": "diy-vs-accountant",
+      "title": "לבד מול רו\"ח — השוואה"
+    },
+    {
+      "id": "faq",
+      "title": "שאלות נפוצות"
+    }
   ],
   "sections": [
     {
@@ -208,9 +235,25 @@
     }
   ],
   "relatedArticles": [
-    { "slug": "cost", "category": "osek-patur", "title": "כמה עולה לפתוח עוסק פטור?" },
-    { "slug": "tax-reporting", "category": "osek-patur", "title": "דיווח שנתי לעוסק פטור — מדריך מלא" },
-    { "slug": "how-to-open", "category": "osek-patur", "title": "איך פותחים עוסק פטור — מדריך מלא 2026" },
-    { "slug": "osek-patur-vs-murshe", "category": "comparisons", "title": "עוסק פטור או מורשה — מה מתאים לך?" }
+    {
+      "category": "osek-patur",
+      "slug": "cost",
+      "title": "כמה עולה לפתוח עוסק פטור?"
+    },
+    {
+      "category": "osek-patur",
+      "slug": "tax-reporting",
+      "title": "דיווח שנתי לעוסק פטור — מדריך מלא"
+    },
+    {
+      "category": "osek-patur",
+      "slug": "how-to-open",
+      "title": "איך פותחים עוסק פטור — מדריך מלא 2026"
+    },
+    {
+      "category": "comparisons",
+      "slug": "osek-patur-vs-murshe",
+      "title": "עוסק פטור או מורשה — מה מתאים לך?"
+    }
   ]
 }

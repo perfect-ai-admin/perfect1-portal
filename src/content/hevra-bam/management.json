@@ -283,23 +283,23 @@
   ],
   "relatedArticles": [
     {
-      "slug": "how-to-open",
       "category": "hevra-bam",
+      "slug": "how-to-open",
       "title": "איך פותחים חברה בע\"מ — מדריך מלא"
     },
     {
-      "slug": "reports",
       "category": "hevra-bam",
+      "slug": "reports",
       "title": "דוחות והנהלת חשבונות חברה בע\"מ"
     },
     {
-      "slug": "close-company",
       "category": "sgirat-tikim",
+      "slug": "close-company",
       "title": "סגירת חברה בע\"מ — מדריך מלא"
     },
     {
-      "slug": "taxation",
       "category": "guides",
+      "slug": "taxation",
       "title": "מדריך מיסוי וחשבונאות לעסקים"
     }
   ]

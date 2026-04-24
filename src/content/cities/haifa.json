@@ -23,13 +23,34 @@
   },
   "readTime": 11,
   "toc": [
-    { "id": "why-local", "title": "למה רו״ח מקומי בחיפה?" },
-    { "id": "market", "title": "שוק העסקים בחיפה והקריות" },
-    { "id": "prices", "title": "מחירים ממוצעים בחיפה 2026" },
-    { "id": "how-to-choose", "title": "איך בוחרים רואה חשבון?" },
-    { "id": "industries", "title": "ענפים עיקריים בחיפה" },
-    { "id": "tips", "title": "טיפים לחיסכון" },
-    { "id": "faq", "title": "שאלות נפוצות" }
+    {
+      "id": "why-local",
+      "title": "למה רו״ח מקומי בחיפה?"
+    },
+    {
+      "id": "market",
+      "title": "שוק העסקים בחיפה והקריות"
+    },
+    {
+      "id": "prices",
+      "title": "מחירים ממוצעים בחיפה 2026"
+    },
+    {
+      "id": "how-to-choose",
+      "title": "איך בוחרים רואה חשבון?"
+    },
+    {
+      "id": "industries",
+      "title": "ענפים עיקריים בחיפה"
+    },
+    {
+      "id": "tips",
+      "title": "טיפים לחיסכון"
+    },
+    {
+      "id": "faq",
+      "title": "שאלות נפוצות"
+    }
   ],
   "sections": [
     {
@@ -190,9 +211,25 @@
     }
   ],
   "relatedArticles": [
-    { "slug": "tel-aviv", "category": "cities", "title": "רואה חשבון בתל אביב" },
-    { "slug": "jerusalem", "category": "cities", "title": "רואה חשבון בירושלים" },
-    { "slug": "bookkeeping-service", "category": "services", "title": "שירות הנהלת חשבונות לעצמאים" },
-    { "slug": "open-company-service", "category": "services", "title": "שירות הקמת חברה בע״מ" }
+    {
+      "category": "cities",
+      "slug": "tel-aviv",
+      "title": "רואה חשבון בתל אביב"
+    },
+    {
+      "category": "cities",
+      "slug": "jerusalem",
+      "title": "רואה חשבון בירושלים"
+    },
+    {
+      "category": "services",
+      "slug": "bookkeeping-service",
+      "title": "שירות הנהלת חשבונות לעצמאים"
+    },
+    {
+      "category": "services",
+      "slug": "open-company-service",
+      "title": "שירות הקמת חברה בע״מ"
+    }
   ]
 }

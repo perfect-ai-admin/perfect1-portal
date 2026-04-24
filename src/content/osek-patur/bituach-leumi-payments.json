@@ -190,23 +190,23 @@
   ],
   "relatedArticles": [
     {
-      "slug": "bituach-leumi",
       "category": "osek-patur",
+      "slug": "bituach-leumi",
       "title": "ביטוח לאומי לעוסק פטור"
     },
     {
-      "slug": "rights",
       "category": "osek-patur",
+      "slug": "rights",
       "title": "זכויות עוסק פטור"
     },
     {
-      "slug": "taxes",
       "category": "osek-patur",
+      "slug": "taxes",
       "title": "מיסוי עוסק פטור"
     },
     {
-      "slug": "income-ceiling",
       "category": "osek-patur",
+      "slug": "income-ceiling",
       "title": "תקרת הכנסה עוסק פטור"
     }
   ],

@@ -230,23 +230,23 @@
   ],
   "relatedArticles": [
     {
-      "slug": "authorities",
       "category": "sgirat-tikim",
+      "slug": "authorities",
       "title": "סגירת תיקים מול רשויות — מדריך שלב אחר שלב"
     },
     {
-      "slug": "consequences",
       "category": "sgirat-tikim",
+      "slug": "consequences",
       "title": "חובות והשלכות סגירת עסק"
     },
     {
-      "slug": "how-to-open",
       "category": "osek-patur",
+      "slug": "how-to-open",
       "title": "איך פותחים עוסק פטור — מדריך מלא"
     },
     {
-      "slug": "how-to-open",
       "category": "osek-murshe",
+      "slug": "how-to-open",
       "title": "פתיחת עוסק מורשה — מדריך מלא"
     }
   ],

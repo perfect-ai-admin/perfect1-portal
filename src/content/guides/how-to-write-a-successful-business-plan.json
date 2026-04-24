@@ -178,19 +178,19 @@
       "title": "מדריך לפתיחת עסק בישראל"
     },
     {
-      "category": "miktzoa",
-      "slug": "business-management",
-      "title": "ניהול עסק בישראל - מה חשוב לדעת?"
-    },
-    {
-      "category": "misui",
-      "slug": "tax-planning",
-      "title": "תכנון מיסוי לעסקים קטנים"
-    },
-    {
       "category": "osek-murshe",
       "slug": "advantages-of-osek-murshe",
       "title": "היתרונות של עוסק מורשה"
+    },
+    {
+      "category": "osek-patur",
+      "slug": "how-to-open",
+      "title": "איך פותחים עוסק פטור — מדריך מלא"
+    },
+    {
+      "category": "osek-murshe",
+      "slug": "how-to-open",
+      "title": "פתיחת עוסק מורשה — מדריך מלא"
     }
   ]
 }

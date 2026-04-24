@@ -21,13 +21,34 @@
   },
   "readTime": 9,
   "toc": [
-    { "id": "what-is", "title": "מה זה ניהול תקין?" },
-    { "id": "why-important", "title": "למה ניהול תקין חיוני?" },
-    { "id": "requirements", "title": "דרישות לאישור ניהול תקין" },
-    { "id": "how-to-apply", "title": "איך מגישים בקשה?" },
-    { "id": "how-to-check", "title": "איך בודקים אישור ניהול תקין?" },
-    { "id": "losing-approval", "title": "מה קורה אם מאבדים ניהול תקין?" },
-    { "id": "faq", "title": "שאלות נפוצות" }
+    {
+      "id": "what-is",
+      "title": "מה זה ניהול תקין?"
+    },
+    {
+      "id": "why-important",
+      "title": "למה ניהול תקין חיוני?"
+    },
+    {
+      "id": "requirements",
+      "title": "דרישות לאישור ניהול תקין"
+    },
+    {
+      "id": "how-to-apply",
+      "title": "איך מגישים בקשה?"
+    },
+    {
+      "id": "how-to-check",
+      "title": "איך בודקים אישור ניהול תקין?"
+    },
+    {
+      "id": "losing-approval",
+      "title": "מה קורה אם מאבדים ניהול תקין?"
+    },
+    {
+      "id": "faq",
+      "title": "שאלות נפוצות"
+    }
   ],
   "sections": [
     {
@@ -184,23 +205,23 @@
   ],
   "relatedArticles": [
     {
-      "slug": "section-46",
       "category": "amuta",
+      "slug": "section-46",
       "title": "סעיף 46 לעמותה — מה זה ואיך מקבלים אישור"
     },
     {
-      "slug": "financial-reports",
       "category": "amuta",
+      "slug": "financial-reports",
       "title": "דוח כספי עמותה — חובות, מבנה וטיפים"
     },
     {
-      "slug": "accountant",
       "category": "amuta",
+      "slug": "accountant",
       "title": "רואה חשבון לעמותה — חובות, עלויות וטיפים"
     },
     {
-      "slug": "how-to-open",
       "category": "amuta",
+      "slug": "how-to-open",
       "title": "איך פותחים עמותה בישראל — מדריך מלא 2026"
     }
   ]

@@ -232,23 +232,23 @@
   ],
   "relatedArticles": [
     {
-      "slug": "how-to-open",
       "category": "hevra-bam",
+      "slug": "how-to-open",
       "title": "איך פותחים חברה בע\"מ — מדריך מלא"
     },
     {
-      "slug": "management",
       "category": "hevra-bam",
+      "slug": "management",
       "title": "ניהול חברה בע\"מ — חובות, ישיבות ואגרות"
     },
     {
-      "slug": "transition",
       "category": "hevra-bam",
+      "slug": "transition",
       "title": "מעבר מעצמאי לחברה בע\"מ"
     },
     {
-      "slug": "osek-patur-vs-murshe",
       "category": "comparisons",
+      "slug": "osek-patur-vs-murshe",
       "title": "עוסק פטור או מורשה — מה מתאים לך?"
     }
   ]

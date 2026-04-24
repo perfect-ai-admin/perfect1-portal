@@ -23,17 +23,50 @@
   },
   "readTime": 20,
   "toc": [
-    { "id": "what-are-brackets", "title": "מה זה מדרגות מס הכנסה?" },
-    { "id": "brackets-2026", "title": "מדרגות מס 2026 — הטבלה המלאה" },
-    { "id": "calculation-example", "title": "חישוב מס — דוגמה מספרית מלאה" },
-    { "id": "credit-points", "title": "נקודות זיכוי לעצמאים" },
-    { "id": "advance-payments", "title": "מקדמות מס הכנסה" },
-    { "id": "withholding-tax", "title": "ניכוי מס במקור" },
-    { "id": "tax-reduction-tips", "title": "טיפים להפחתת מס" },
-    { "id": "pension-fund", "title": "פנסיה וקרן השתלמות — חיסכון במס" },
-    { "id": "recognized-expenses", "title": "הוצאות מוכרות שמפחיתות מס" },
-    { "id": "annual-report", "title": "דוח שנתי — איך מסדרים הכל" },
-    { "id": "faq", "title": "שאלות נפוצות" }
+    {
+      "id": "what-are-brackets",
+      "title": "מה זה מדרגות מס הכנסה?"
+    },
+    {
+      "id": "brackets-2026",
+      "title": "מדרגות מס 2026 — הטבלה המלאה"
+    },
+    {
+      "id": "calculation-example",
+      "title": "חישוב מס — דוגמה מספרית מלאה"
+    },
+    {
+      "id": "credit-points",
+      "title": "נקודות זיכוי לעצמאים"
+    },
+    {
+      "id": "advance-payments",
+      "title": "מקדמות מס הכנסה"
+    },
+    {
+      "id": "withholding-tax",
+      "title": "ניכוי מס במקור"
+    },
+    {
+      "id": "tax-reduction-tips",
+      "title": "טיפים להפחתת מס"
+    },
+    {
+      "id": "pension-fund",
+      "title": "פנסיה וקרן השתלמות — חיסכון במס"
+    },
+    {
+      "id": "recognized-expenses",
+      "title": "הוצאות מוכרות שמפחיתות מס"
+    },
+    {
+      "id": "annual-report",
+      "title": "דוח שנתי — איך מסדרים הכל"
+    },
+    {
+      "id": "faq",
+      "title": "שאלות נפוצות"
+    }
   ],
   "sections": [
     {
@@ -291,23 +324,23 @@
   ],
   "relatedArticles": [
     {
-      "slug": "income-tax",
       "category": "osek-murshe",
+      "slug": "income-tax",
       "title": "מס הכנסה לעוסק מורשה — מדריך מלא"
     },
     {
-      "slug": "tax-deductions",
       "category": "osek-murshe",
+      "slug": "tax-deductions",
       "title": "הוצאות מוכרות לעוסק מורשה"
     },
     {
-      "slug": "advance-payments",
       "category": "misui",
+      "slug": "advance-payments",
       "title": "מקדמות מס הכנסה לעצמאים — מדריך מלא"
     },
     {
-      "slug": "opening-business",
       "category": "guides",
+      "slug": "opening-business",
       "title": "מדריך לפתיחת עסק בישראל"
     }
   ],

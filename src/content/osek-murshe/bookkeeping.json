@@ -23,18 +23,54 @@
   },
   "readTime": 20,
   "toc": [
-    { "id": "what-is-bookkeeping", "title": "מה זה הנהלת חשבונות לעוסק מורשה?" },
-    { "id": "legal-obligations", "title": "חובות ניהול ספרים לפי חוק" },
-    { "id": "bookkeeping-types", "title": "חד-צדדית או כפולה — מה ההבדל?" },
-    { "id": "what-to-record", "title": "מה רושמים בספרים?" },
-    { "id": "vat-reports", "title": "דוחות מע\"מ דו-חודשיים" },
-    { "id": "annual-report", "title": "דוח שנתי למס הכנסה — טופס 1301" },
-    { "id": "accountant-cost", "title": "עלות רואה חשבון לעוסק מורשה" },
-    { "id": "who-to-hire", "title": "רואה חשבון, יועץ מס, או מנהל חשבונות?" },
-    { "id": "software", "title": "תוכנות הנהלת חשבונות מומלצות" },
-    { "id": "digital-invoice-2026", "title": "חשבונית ישראל דיגיטלית 2026" },
-    { "id": "common-mistakes", "title": "טעויות נפוצות שמובילות לקנסות" },
-    { "id": "faq", "title": "שאלות נפוצות" }
+    {
+      "id": "what-is-bookkeeping",
+      "title": "מה זה הנהלת חשבונות לעוסק מורשה?"
+    },
+    {
+      "id": "legal-obligations",
+      "title": "חובות ניהול ספרים לפי חוק"
+    },
+    {
+      "id": "bookkeeping-types",
+      "title": "חד-צדדית או כפולה — מה ההבדל?"
+    },
+    {
+      "id": "what-to-record",
+      "title": "מה רושמים בספרים?"
+    },
+    {
+      "id": "vat-reports",
+      "title": "דוחות מע\"מ דו-חודשיים"
+    },
+    {
+      "id": "annual-report",
+      "title": "דוח שנתי למס הכנסה — טופס 1301"
+    },
+    {
+      "id": "accountant-cost",
+      "title": "עלות רואה חשבון לעוסק מורשה"
+    },
+    {
+      "id": "who-to-hire",
+      "title": "רואה חשבון, יועץ מס, או מנהל חשבונות?"
+    },
+    {
+      "id": "software",
+      "title": "תוכנות הנהלת חשבונות מומלצות"
+    },
+    {
+      "id": "digital-invoice-2026",
+      "title": "חשבונית ישראל דיגיטלית 2026"
+    },
+    {
+      "id": "common-mistakes",
+      "title": "טעויות נפוצות שמובילות לקנסות"
+    },
+    {
+      "id": "faq",
+      "title": "שאלות נפוצות"
+    }
   ],
   "sections": [
     {
@@ -323,28 +359,24 @@
   ],
   "relatedArticles": [
     {
+      "category": "osek-murshe",
       "slug": "how-to-open",
-      "category": "osek-murshe",
-      "title": "איך לפתוח עוסק מורשה — מדריך מלא 2026",
-      "description": "7 שלבי הרישום, מסמכים נדרשים, ולוחות זמנים"
+      "title": "איך לפתוח עוסק מורשה — מדריך מלא 2026"
     },
     {
+      "category": "osek-murshe",
       "slug": "reports",
-      "category": "osek-murshe",
-      "title": "דוחות ותשלומים לעוסק מורשה",
-      "description": "מתי ואיך מגישים דוח מע\"מ ודוח שנתי"
+      "title": "דוחות ותשלומים לעוסק מורשה"
     },
     {
+      "category": "osek-murshe",
       "slug": "cost",
-      "category": "osek-murshe",
-      "title": "עלות עוסק מורשה — כמה זה עולה?",
-      "description": "רואה חשבון, ביטוח לאומי, מע\"מ וכל שאר העלויות"
+      "title": "עלות עוסק מורשה — כמה זה עולה?"
     },
     {
-      "slug": "vat-guide",
       "category": "osek-murshe",
-      "title": "מע\"מ לעוסק מורשה — מדריך מלא",
-      "description": "איך עובד מע\"מ, איך מקזזים ואיך מגישים דוח"
+      "slug": "vat-guide",
+      "title": "מע\"מ לעוסק מורשה — מדריך מלא"
     }
   ],
   "cta": {

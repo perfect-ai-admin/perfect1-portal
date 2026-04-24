@@ -3,7 +3,13 @@
   "category": "osek-patur",
   "metaTitle": "תקרת הכנסות עוסק פטור 2026 | פרפקט וואן",
   "metaDescription": "מה תקרת ההכנסות לעוסק פטור בשנת 2026? מה קורה כשחורגים? איך מתכוננים למעבר לעוסק מורשה? מדריך מקיף עם סכומים מעודכנים.",
-  "keywords": ["תקרת הכנסות עוסק פטור", "תקרת עוסק פטור 2026", "מעבר מעוסק פטור לעוסק מורשה", "חריגה מתקרת עוסק פטור", "כמה מותר להרוויח עוסק פטור"],
+  "keywords": [
+    "תקרת הכנסות עוסק פטור",
+    "תקרת עוסק פטור 2026",
+    "מעבר מעוסק פטור לעוסק מורשה",
+    "חריגה מתקרת עוסק פטור",
+    "כמה מותר להרוויח עוסק פטור"
+  ],
   "heroTitle": "תקרת הכנסות עוסק פטור 2026 — כל מה שצריך לדעת",
   "heroSubtitle": "מה התקרה העדכנית, מה קורה כשחורגים, ואיך להתכונן למעבר לעוסק מורשה. מדריך מקיף ומעודכן.",
   "publishDate": "2026-01-25",
@@ -14,13 +20,34 @@
   },
   "readTime": 8,
   "toc": [
-    { "id": "current-ceiling", "title": "מה התקרה הנוכחית?" },
-    { "id": "how-calculated", "title": "איך מחשבים את התקרה" },
-    { "id": "exceeding", "title": "מה קורה כשחורגים" },
-    { "id": "warning-signs", "title": "סימני אזהרה" },
-    { "id": "transition", "title": "מעבר לעוסק מורשה" },
-    { "id": "planning", "title": "איך להתכונן מראש" },
-    { "id": "faq", "title": "שאלות נפוצות" }
+    {
+      "id": "current-ceiling",
+      "title": "מה התקרה הנוכחית?"
+    },
+    {
+      "id": "how-calculated",
+      "title": "איך מחשבים את התקרה"
+    },
+    {
+      "id": "exceeding",
+      "title": "מה קורה כשחורגים"
+    },
+    {
+      "id": "warning-signs",
+      "title": "סימני אזהרה"
+    },
+    {
+      "id": "transition",
+      "title": "מעבר לעוסק מורשה"
+    },
+    {
+      "id": "planning",
+      "title": "איך להתכונן מראש"
+    },
+    {
+      "id": "faq",
+      "title": "שאלות נפוצות"
+    }
   ],
   "sections": [
     {
@@ -211,9 +238,25 @@
     }
   ],
   "relatedArticles": [
-    { "slug": "how-to-open", "category": "osek-patur", "title": "איך פותחים עוסק פטור — מדריך מלא 2026" },
-    { "slug": "tax-reporting", "category": "osek-patur", "title": "דיווח שנתי לעוסק פטור — מדריך מלא" },
-    { "slug": "cost", "category": "osek-patur", "title": "כמה עולה לפתוח עוסק פטור?" },
-    { "slug": "osek-patur-vs-murshe", "category": "comparisons", "title": "עוסק פטור או מורשה — מה מתאים לך?" }
+    {
+      "category": "osek-patur",
+      "slug": "how-to-open",
+      "title": "איך פותחים עוסק פטור — מדריך מלא 2026"
+    },
+    {
+      "category": "osek-patur",
+      "slug": "tax-reporting",
+      "title": "דיווח שנתי לעוסק פטור — מדריך מלא"
+    },
+    {
+      "category": "osek-patur",
+      "slug": "cost",
+      "title": "כמה עולה לפתוח עוסק פטור?"
+    },
+    {
+      "category": "comparisons",
+      "slug": "osek-patur-vs-murshe",
+      "title": "עוסק פטור או מורשה — מה מתאים לך?"
+    }
   ]
 }

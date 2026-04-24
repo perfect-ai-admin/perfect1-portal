@@ -23,15 +23,42 @@
   },
   "readTime": 12,
   "toc": [
-    { "id": "why-local", "title": "למה לבחור רו״ח מקומי בתל אביב?" },
-    { "id": "prices", "title": "מחירים ממוצעים של רואה חשבון בתל אביב" },
-    { "id": "how-to-choose", "title": "איך בוחרים רואה חשבון בתל אביב?" },
-    { "id": "services", "title": "אילו שירותים מציע רואה חשבון?" },
-    { "id": "when-you-need", "title": "מתי חובה לקחת רואה חשבון?" },
-    { "id": "tips", "title": "טיפים לחיסכון בעלויות" },
-    { "id": "cta-mid", "title": "" },
-    { "id": "mistakes", "title": "טעויות נפוצות בבחירת רואה חשבון" },
-    { "id": "faq", "title": "שאלות נפוצות" }
+    {
+      "id": "why-local",
+      "title": "למה לבחור רו״ח מקומי בתל אביב?"
+    },
+    {
+      "id": "prices",
+      "title": "מחירים ממוצעים של רואה חשבון בתל אביב"
+    },
+    {
+      "id": "how-to-choose",
+      "title": "איך בוחרים רואה חשבון בתל אביב?"
+    },
+    {
+      "id": "services",
+      "title": "אילו שירותים מציע רואה חשבון?"
+    },
+    {
+      "id": "when-you-need",
+      "title": "מתי חובה לקחת רואה חשבון?"
+    },
+    {
+      "id": "tips",
+      "title": "טיפים לחיסכון בעלויות"
+    },
+    {
+      "id": "cta-mid",
+      "title": ""
+    },
+    {
+      "id": "mistakes",
+      "title": "טעויות נפוצות בבחירת רואה חשבון"
+    },
+    {
+      "id": "faq",
+      "title": "שאלות נפוצות"
+    }
   ],
   "sections": [
     {
@@ -244,9 +271,25 @@
     }
   ],
   "relatedArticles": [
-    { "slug": "jerusalem", "category": "cities", "title": "רואה חשבון בירושלים" },
-    { "slug": "haifa", "category": "cities", "title": "רואה חשבון בחיפה" },
-    { "slug": "bookkeeping-service", "category": "services", "title": "שירות הנהלת חשבונות לעצמאים" },
-    { "slug": "open-osek-patur-service", "category": "services", "title": "שירות פתיחת עוסק פטור" }
+    {
+      "category": "cities",
+      "slug": "jerusalem",
+      "title": "רואה חשבון בירושלים"
+    },
+    {
+      "category": "cities",
+      "slug": "haifa",
+      "title": "רואה חשבון בחיפה"
+    },
+    {
+      "category": "services",
+      "slug": "bookkeeping-service",
+      "title": "שירות הנהלת חשבונות לעצמאים"
+    },
+    {
+      "category": "services",
+      "slug": "open-osek-patur-service",
+      "title": "שירות פתיחת עוסק פטור"
+    }
   ]
 }

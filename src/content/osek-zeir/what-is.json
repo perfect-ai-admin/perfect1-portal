@@ -20,14 +20,38 @@
   },
   "readTime": 10,
   "toc": [
-    { "id": "definition", "title": "מה זה עוסק זעיר?" },
-    { "id": "legal-basis", "title": "הבסיס החוקי" },
-    { "id": "eligibility", "title": "מי יכול להיות עוסק זעיר?" },
-    { "id": "advantages", "title": "יתרונות עוסק זעיר" },
-    { "id": "disadvantages", "title": "חסרונות ומגבלות" },
-    { "id": "who-is-it-for", "title": "למי מתאים עוסק זעיר?" },
-    { "id": "comparison-hint", "title": "עוסק זעיר לעומת עוסק פטור" },
-    { "id": "faq-section", "title": "שאלות נפוצות" }
+    {
+      "id": "definition",
+      "title": "מה זה עוסק זעיר?"
+    },
+    {
+      "id": "legal-basis",
+      "title": "הבסיס החוקי"
+    },
+    {
+      "id": "eligibility",
+      "title": "מי יכול להיות עוסק זעיר?"
+    },
+    {
+      "id": "advantages",
+      "title": "יתרונות עוסק זעיר"
+    },
+    {
+      "id": "disadvantages",
+      "title": "חסרונות ומגבלות"
+    },
+    {
+      "id": "who-is-it-for",
+      "title": "למי מתאים עוסק זעיר?"
+    },
+    {
+      "id": "comparison-hint",
+      "title": "עוסק זעיר לעומת עוסק פטור"
+    },
+    {
+      "id": "faq-section",
+      "title": "שאלות נפוצות"
+    }
   ],
   "sections": [
     {
@@ -250,23 +274,23 @@
   ],
   "relatedArticles": [
     {
-      "slug": "how-to-open",
       "category": "osek-zeir",
+      "slug": "how-to-open",
       "title": "איך פותחים עוסק זעיר — מדריך שלב אחר שלב"
     },
     {
-      "slug": "zeir-vs-patur",
       "category": "osek-zeir",
+      "slug": "zeir-vs-patur",
       "title": "עוסק זעיר לעומת עוסק פטור — מה עדיף?"
     },
     {
-      "slug": "taxes",
       "category": "osek-zeir",
+      "slug": "taxes",
       "title": "מיסים ודיווחים לעוסק זעיר — המדריך המלא"
     },
     {
-      "slug": "management",
       "category": "osek-zeir",
+      "slug": "management",
       "title": "ניהול עוסק זעיר — ספרים, חשבוניות ודוחות"
     }
   ]

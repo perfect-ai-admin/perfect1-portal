@@ -271,23 +271,23 @@
   ],
   "relatedArticles": [
     {
-      "slug": "how-to-open",
       "category": "osek-patur",
+      "slug": "how-to-open",
       "title": "איך פותחים עוסק פטור — מדריך מלא 2026"
     },
     {
-      "slug": "taxes",
       "category": "osek-patur",
+      "slug": "taxes",
       "title": "מיסים ודיווחים לעוסק פטור — כל מה שצריך לדעת"
     },
     {
-      "slug": "osek-patur-vs-murshe",
       "category": "comparisons",
+      "slug": "osek-patur-vs-murshe",
       "title": "עוסק פטור או מורשה — מה מתאים לך?"
     },
     {
-      "slug": "freelancers",
       "category": "guides",
+      "slug": "freelancers",
       "title": "מדריך לפרילנסרים ועצמאים"
     }
   ],

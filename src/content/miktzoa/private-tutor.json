@@ -23,16 +23,46 @@
   },
   "readTime": 12,
   "toc": [
-    { "id": "intro", "title": "האם מורה פרטי חייב להירשם?" },
-    { "id": "patur-vs-murshe", "title": "עוסק פטור — מדוע מתאים למרבית המורים?" },
-    { "id": "registration-steps", "title": "שלבי הרישום" },
-    { "id": "invoices", "title": "קבלות ואיך מנפיקים" },
-    { "id": "deductions", "title": "הוצאות מוכרות למורה פרטי" },
-    { "id": "home-room", "title": "חדר עבודה בבית — מה מוכר?" },
-    { "id": "bituach-leumi", "title": "ביטוח לאומי ומס הכנסה" },
-    { "id": "tax-return", "title": "דוח שנתי — מה מגישים?" },
-    { "id": "tips", "title": "טיפים לניהול נכון" },
-    { "id": "faq", "title": "שאלות נפוצות" }
+    {
+      "id": "intro",
+      "title": "האם מורה פרטי חייב להירשם?"
+    },
+    {
+      "id": "patur-vs-murshe",
+      "title": "עוסק פטור — מדוע מתאים למרבית המורים?"
+    },
+    {
+      "id": "registration-steps",
+      "title": "שלבי הרישום"
+    },
+    {
+      "id": "invoices",
+      "title": "קבלות ואיך מנפיקים"
+    },
+    {
+      "id": "deductions",
+      "title": "הוצאות מוכרות למורה פרטי"
+    },
+    {
+      "id": "home-room",
+      "title": "חדר עבודה בבית — מה מוכר?"
+    },
+    {
+      "id": "bituach-leumi",
+      "title": "ביטוח לאומי ומס הכנסה"
+    },
+    {
+      "id": "tax-return",
+      "title": "דוח שנתי — מה מגישים?"
+    },
+    {
+      "id": "tips",
+      "title": "טיפים לניהול נכון"
+    },
+    {
+      "id": "faq",
+      "title": "שאלות נפוצות"
+    }
   ],
   "sections": [
     {
@@ -181,23 +211,23 @@
   ],
   "relatedArticles": [
     {
-      "slug": "how-to-open",
       "category": "osek-patur",
+      "slug": "how-to-open",
       "title": "איך פותחים עוסק פטור — מדריך שלב אחר שלב"
     },
     {
-      "slug": "taxes",
       "category": "osek-patur",
+      "slug": "taxes",
       "title": "מיסים לעוסק פטור — כמה משלמים ואיך מדווחים"
     },
     {
-      "slug": "fitness-trainer",
       "category": "miktzoa",
+      "slug": "fitness-trainer",
       "title": "עוסק פטור למאמן כושר — מדריך מלא 2026"
     },
     {
-      "slug": "graphic-designer",
       "category": "miktzoa",
+      "slug": "graphic-designer",
       "title": "עוסק פטור למעצב גרפי — מדריך מלא 2026"
     }
   ]

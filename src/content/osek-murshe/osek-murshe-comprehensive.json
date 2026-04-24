@@ -108,5 +108,27 @@
       "question": "איך מתנהל ניהול ספרים בעוסק מורשה?",
       "answer": "ניהול ספרים בעוסק מורשה כולל רישום מדויק של כל ההכנסות וההוצאות, לשם דיווח תקופתי לרשויות המס."
     }
+  ],
+  "relatedArticles": [
+    {
+      "category": "osek-patur",
+      "slug": "how-to-open",
+      "title": "איך פותחים עוסק פטור — מדריך מלא"
+    },
+    {
+      "category": "osek-murshe",
+      "slug": "how-to-open",
+      "title": "פתיחת עוסק מורשה — מדריך מלא"
+    },
+    {
+      "category": "hevra-bam",
+      "slug": "how-to-open",
+      "title": "פתיחת חברה בע\"מ — מדריך"
+    },
+    {
+      "category": "osek-patur",
+      "slug": "cost",
+      "title": "כמה עולה עוסק פטור"
+    }
   ]
 }

@@ -247,23 +247,23 @@
   ],
   "relatedArticles": [
     {
-      "slug": "how-to-open",
       "category": "hevra-bam",
+      "slug": "how-to-open",
       "title": "איך מקימים חברה בע\"מ — מדריך מלא"
     },
     {
-      "slug": "management",
       "category": "hevra-bam",
+      "slug": "management",
       "title": "ניהול חברה בע\"מ — חובות, דיווחים ואגרות"
     },
     {
-      "slug": "cost",
       "category": "osek-murshe",
+      "slug": "cost",
       "title": "עלות פתיחת עוסק מורשה — השוואה"
     },
     {
-      "slug": "which-business-type",
       "category": "guides",
+      "slug": "which-business-type",
       "title": "איזה סוג עסק מתאים לך?"
     }
   ]

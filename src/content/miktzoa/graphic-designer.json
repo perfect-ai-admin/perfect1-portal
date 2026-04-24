@@ -23,16 +23,46 @@
   },
   "readTime": 13,
   "toc": [
-    { "id": "intro", "title": "פרילנס עיצוב — למה צריך עסק רשמי?" },
-    { "id": "patur-or-murshe", "title": "עוסק פטור או מורשה?" },
-    { "id": "registration-steps", "title": "שלבי הרישום" },
-    { "id": "deductions", "title": "הוצאות מוכרות למעצב גרפי" },
-    { "id": "invoices", "title": "חשבוניות ותשלומים" },
-    { "id": "pricing", "title": "תמחור שירותי עיצוב" },
-    { "id": "foreign-clients", "title": "עבודה עם לקוחות בחו\"ל" },
-    { "id": "home-office", "title": "עבודה מהבית — מה מוכר?" },
-    { "id": "tips", "title": "טיפים למעצב עצמאי" },
-    { "id": "faq", "title": "שאלות נפוצות" }
+    {
+      "id": "intro",
+      "title": "פרילנס עיצוב — למה צריך עסק רשמי?"
+    },
+    {
+      "id": "patur-or-murshe",
+      "title": "עוסק פטור או מורשה?"
+    },
+    {
+      "id": "registration-steps",
+      "title": "שלבי הרישום"
+    },
+    {
+      "id": "deductions",
+      "title": "הוצאות מוכרות למעצב גרפי"
+    },
+    {
+      "id": "invoices",
+      "title": "חשבוניות ותשלומים"
+    },
+    {
+      "id": "pricing",
+      "title": "תמחור שירותי עיצוב"
+    },
+    {
+      "id": "foreign-clients",
+      "title": "עבודה עם לקוחות בחו\"ל"
+    },
+    {
+      "id": "home-office",
+      "title": "עבודה מהבית — מה מוכר?"
+    },
+    {
+      "id": "tips",
+      "title": "טיפים למעצב עצמאי"
+    },
+    {
+      "id": "faq",
+      "title": "שאלות נפוצות"
+    }
   ],
   "sections": [
     {
@@ -189,23 +219,23 @@
   ],
   "relatedArticles": [
     {
-      "slug": "how-to-open",
       "category": "osek-patur",
+      "slug": "how-to-open",
       "title": "איך פותחים עוסק פטור — מדריך שלב אחר שלב"
     },
     {
-      "slug": "fitness-trainer",
       "category": "miktzoa",
+      "slug": "fitness-trainer",
       "title": "עוסק פטור למאמן כושר — מדריך מלא 2026"
     },
     {
-      "slug": "private-tutor",
       "category": "miktzoa",
+      "slug": "private-tutor",
       "title": "עוסק פטור למורה פרטי — מדריך מלא 2026"
     },
     {
-      "slug": "how-to-open",
       "category": "osek-murshe",
+      "slug": "how-to-open",
       "title": "איך לפתוח עוסק מורשה — מדריך מלא 2026"
     }
   ]

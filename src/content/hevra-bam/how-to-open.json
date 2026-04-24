@@ -21,7 +21,11 @@
     "subtitle": "שאלון קצר → תשלום → תעודת התאגדות תוך 7 ימים",
     "buttonText": "התחילו עכשיו — 450₪",
     "buttonLink": "/open-hevra-bam-online",
-    "badges": ["רו\"ח + עו\"ד", "תשלום מאובטח", "7 ימי עסקים"]
+    "badges": [
+      "רו\"ח + עו\"ד",
+      "תשלום מאובטח",
+      "7 ימי עסקים"
+    ]
   },
   "leadForm": {
     "title": "רוצים שנפתח לכם חברה? השאירו פרטים"
@@ -91,10 +95,26 @@
       "id": "stats",
       "type": "stats-bar",
       "stats": [
-        { "icon": "building", "value": "1,200+", "label": "חברות נפתחו בסיוענו" },
-        { "icon": "clock", "value": "7 ימים", "label": "זמן ממוצע לתעודת התאגדות" },
-        { "icon": "users", "value": "98%", "label": "לקוחות מרוצים" },
-        { "icon": "trending", "value": "2026", "label": "מחירים ונתונים עדכניים" }
+        {
+          "icon": "building",
+          "value": "1,200+",
+          "label": "חברות נפתחו בסיוענו"
+        },
+        {
+          "icon": "clock",
+          "value": "7 ימים",
+          "label": "זמן ממוצע לתעודת התאגדות"
+        },
+        {
+          "icon": "users",
+          "value": "98%",
+          "label": "לקוחות מרוצים"
+        },
+        {
+          "icon": "trending",
+          "value": "2026",
+          "label": "מחירים ונתונים עדכניים"
+        }
       ]
     },
     {
@@ -364,23 +384,23 @@
   ],
   "relatedArticles": [
     {
-      "slug": "cost",
       "category": "hevra-bam",
+      "slug": "cost",
       "title": "כמה עולה להקים ולנהל חברה בע\"מ ב-2026"
     },
     {
-      "slug": "shareholders",
       "category": "hevra-bam",
+      "slug": "shareholders",
       "title": "בעלי מניות ושכר בחברה בע\"מ"
     },
     {
-      "slug": "opening-business",
       "category": "guides",
+      "slug": "opening-business",
       "title": "מדריך לפתיחת עסק בישראל"
     },
     {
-      "slug": "osek-patur-vs-murshe",
       "category": "comparisons",
+      "slug": "osek-patur-vs-murshe",
       "title": "עוסק פטור או מורשה — מה מתאים לך?"
     }
   ]

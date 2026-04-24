@@ -172,19 +172,24 @@
   ],
   "relatedArticles": [
     {
+      "category": "osek-patur",
       "slug": "how-to-open",
-      "category": "guides",
       "title": "פתיחת עוסק פטור"
     },
     {
+      "category": "osek-patur",
       "slug": "taxes",
-      "category": "guides",
       "title": "מיסוי עוסק פטור"
     },
     {
+      "category": "osek-patur",
       "slug": "bituach-leumi",
-      "category": "guides",
       "title": "ביטוח לאומי לעוסק פטור"
+    },
+    {
+      "category": "osek-murshe",
+      "slug": "how-to-open",
+      "title": "פתיחת עוסק מורשה — מדריך מלא"
     }
   ],
   "faq": [

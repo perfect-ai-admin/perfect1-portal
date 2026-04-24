@@ -324,23 +324,23 @@
   ],
   "relatedArticles": [
     {
-      "slug": "management",
       "category": "osek-murshe",
+      "slug": "management",
       "title": "ניהול שוטף עוסק מורשה — מדריך מלא"
     },
     {
-      "slug": "reports",
       "category": "osek-murshe",
+      "slug": "reports",
       "title": "דוחות וחשבוניות עוסק מורשה"
     },
     {
-      "slug": "taxation",
       "category": "guides",
+      "slug": "taxation",
       "title": "מדריך מיסוי וחשבונאות לעסקים"
     },
     {
-      "slug": "taxes",
       "category": "osek-patur",
+      "slug": "taxes",
       "title": "מיסים ודיווחים לעוסק פטור — השוואה"
     }
   ],

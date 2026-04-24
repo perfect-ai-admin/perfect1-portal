@@ -21,13 +21,34 @@
   },
   "readTime": 8,
   "toc": [
-    { "id": "what-is", "title": "מה זו עמותה ללא מטרות רווח?" },
-    { "id": "vs-business", "title": "הבדל מעסק רגיל" },
-    { "id": "legal-structure", "title": "מבנה משפטי" },
-    { "id": "tax-benefits", "title": "הטבות מס" },
-    { "id": "funding", "title": "מקורות מימון" },
-    { "id": "examples", "title": "דוגמאות לעמותות" },
-    { "id": "faq", "title": "שאלות נפוצות" }
+    {
+      "id": "what-is",
+      "title": "מה זו עמותה ללא מטרות רווח?"
+    },
+    {
+      "id": "vs-business",
+      "title": "הבדל מעסק רגיל"
+    },
+    {
+      "id": "legal-structure",
+      "title": "מבנה משפטי"
+    },
+    {
+      "id": "tax-benefits",
+      "title": "הטבות מס"
+    },
+    {
+      "id": "funding",
+      "title": "מקורות מימון"
+    },
+    {
+      "id": "examples",
+      "title": "דוגמאות לעמותות"
+    },
+    {
+      "id": "faq",
+      "title": "שאלות נפוצות"
+    }
   ],
   "sections": [
     {
@@ -168,23 +189,23 @@
   ],
   "relatedArticles": [
     {
-      "slug": "how-to-open",
       "category": "amuta",
+      "slug": "how-to-open",
       "title": "איך פותחים עמותה בישראל — מדריך מלא 2026"
     },
     {
-      "slug": "section-46",
       "category": "amuta",
+      "slug": "section-46",
       "title": "סעיף 46 לעמותה — מה זה ואיך מקבלים אישור"
     },
     {
-      "slug": "cost",
       "category": "amuta",
+      "slug": "cost",
       "title": "כמה עולה לפתוח עמותה? עלויות מלאות 2026"
     },
     {
-      "slug": "proper-management",
       "category": "amuta",
+      "slug": "proper-management",
       "title": "ניהול תקין עמותה — אישור, דרישות ותהליך"
     }
   ]

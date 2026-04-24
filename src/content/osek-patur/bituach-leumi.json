@@ -21,16 +21,46 @@
   },
   "readTime": 9,
   "toc": [
-    { "id": "intro", "title": "ביטוח לאומי לעוסק פטור — מה חשוב לדעת" },
-    { "id": "how-much", "title": "כמה עוסק פטור משלם ביטוח לאומי" },
-    { "id": "health-insurance", "title": "דמי ביטוח בריאות" },
-    { "id": "callout-minimum", "title": "תשלום מינימלי — עוסק פטור ומורשה" },
-    { "id": "rights", "title": "זכויות עוסק פטור בביטוח לאומי" },
-    { "id": "employee-and-patur", "title": "עוסק פטור שהוא גם שכיר" },
-    { "id": "yearly-settlement", "title": "ההתחשבנות השנתית" },
-    { "id": "how-to-pay", "title": "איך לשלם ומתי" },
-    { "id": "tips", "title": "טיפים לחיסכון בדמי ביטוח" },
-    { "id": "faq", "title": "שאלות נפוצות" }
+    {
+      "id": "intro",
+      "title": "ביטוח לאומי לעוסק פטור — מה חשוב לדעת"
+    },
+    {
+      "id": "how-much",
+      "title": "כמה עוסק פטור משלם ביטוח לאומי"
+    },
+    {
+      "id": "health-insurance",
+      "title": "דמי ביטוח בריאות"
+    },
+    {
+      "id": "callout-minimum",
+      "title": "תשלום מינימלי — עוסק פטור ומורשה"
+    },
+    {
+      "id": "rights",
+      "title": "זכויות עוסק פטור בביטוח לאומי"
+    },
+    {
+      "id": "employee-and-patur",
+      "title": "עוסק פטור שהוא גם שכיר"
+    },
+    {
+      "id": "yearly-settlement",
+      "title": "ההתחשבנות השנתית"
+    },
+    {
+      "id": "how-to-pay",
+      "title": "איך לשלם ומתי"
+    },
+    {
+      "id": "tips",
+      "title": "טיפים לחיסכון בדמי ביטוח"
+    },
+    {
+      "id": "faq",
+      "title": "שאלות נפוצות"
+    }
   ],
   "sections": [
     {
@@ -216,8 +246,25 @@
     }
   ],
   "relatedArticles": [
-    { "slug": "cost", "category": "osek-patur", "title": "כמה עולה עוסק פטור? פירוט עלויות 2026" },
-    { "slug": "taxes", "category": "osek-patur", "title": "מיסוי עוסק פטור — מס הכנסה, ניכויים ודיווחים" },
-    { "slug": "bituach-leumi", "category": "osek-murshe", "title": "ביטוח לאומי עוסק מורשה — שיעורים וזכויות" }
+    {
+      "category": "osek-patur",
+      "slug": "cost",
+      "title": "כמה עולה עוסק פטור? פירוט עלויות 2026"
+    },
+    {
+      "category": "osek-patur",
+      "slug": "taxes",
+      "title": "מיסוי עוסק פטור — מס הכנסה, ניכויים ודיווחים"
+    },
+    {
+      "category": "osek-murshe",
+      "slug": "bituach-leumi",
+      "title": "ביטוח לאומי עוסק מורשה — שיעורים וזכויות"
+    },
+    {
+      "category": "osek-patur",
+      "slug": "how-to-open",
+      "title": "איך פותחים עוסק פטור — מדריך מלא"
+    }
   ]
 }

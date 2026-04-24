@@ -283,23 +283,23 @@
   ],
   "relatedArticles": [
     {
-      "slug": "management",
       "category": "hevra-bam",
+      "slug": "management",
       "title": "ניהול חברה בע\"מ — חובות, ישיבות ואגרות"
     },
     {
-      "slug": "cost",
       "category": "hevra-bam",
+      "slug": "cost",
       "title": "כמה עולה להקים חברה בע\"מ?"
     },
     {
-      "slug": "shareholders",
       "category": "hevra-bam",
+      "slug": "shareholders",
       "title": "בעלי מניות ושכר בחברה בע\"מ"
     },
     {
-      "slug": "vat-guide",
       "category": "osek-murshe",
+      "slug": "vat-guide",
       "title": "מדריך מע\"מ לעוסק מורשה"
     }
   ]

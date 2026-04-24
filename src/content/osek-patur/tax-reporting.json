@@ -3,7 +3,14 @@
   "category": "osek-patur",
   "metaTitle": "דיווח שנתי לעוסק פטור — מדריך מלא 2026 | פרפקט וואן",
   "metaDescription": "מדריך מקיף לדיווח שנתי לעוסק פטור: מה מגישים, מתי, לוחות זמנים, קנסות על איחור, וטיפים להגשה נכונה. מעודכן ל-2026.",
-  "keywords": ["דיווח שנתי עוסק פטור", "דוח שנתי עוסק פטור", "מס הכנסה עוסק פטור", "טופס 1301", "הגשת דוח שנתי", "מועדי הגשה דוח שנתי"],
+  "keywords": [
+    "דיווח שנתי עוסק פטור",
+    "דוח שנתי עוסק פטור",
+    "מס הכנסה עוסק פטור",
+    "טופס 1301",
+    "הגשת דוח שנתי",
+    "מועדי הגשה דוח שנתי"
+  ],
   "heroTitle": "דיווח שנתי לעוסק פטור — כל מה שצריך לדעת",
   "heroSubtitle": "מה מגישים, מתי, ואיך לא לשלם קנסות. כל מה שצריך לדעת על הדיווח השנתי למס הכנסה כעוסק פטור.",
   "publishDate": "2026-02-10",
@@ -14,14 +21,38 @@
   },
   "readTime": 10,
   "toc": [
-    { "id": "overview", "title": "סקירה כללית — מה חייבים לדווח" },
-    { "id": "annual-report", "title": "הדוח השנתי למס הכנסה" },
-    { "id": "vat-declaration", "title": "הצהרת מע\"מ שנתית" },
-    { "id": "national-insurance-report", "title": "דיווח לביטוח לאומי" },
-    { "id": "deadlines", "title": "מועדי הגשה" },
-    { "id": "penalties", "title": "קנסות על איחור" },
-    { "id": "tips", "title": "טיפים להגשה נכונה" },
-    { "id": "faq", "title": "שאלות נפוצות" }
+    {
+      "id": "overview",
+      "title": "סקירה כללית — מה חייבים לדווח"
+    },
+    {
+      "id": "annual-report",
+      "title": "הדוח השנתי למס הכנסה"
+    },
+    {
+      "id": "vat-declaration",
+      "title": "הצהרת מע\"מ שנתית"
+    },
+    {
+      "id": "national-insurance-report",
+      "title": "דיווח לביטוח לאומי"
+    },
+    {
+      "id": "deadlines",
+      "title": "מועדי הגשה"
+    },
+    {
+      "id": "penalties",
+      "title": "קנסות על איחור"
+    },
+    {
+      "id": "tips",
+      "title": "טיפים להגשה נכונה"
+    },
+    {
+      "id": "faq",
+      "title": "שאלות נפוצות"
+    }
   ],
   "sections": [
     {
@@ -215,9 +246,25 @@
     }
   ],
   "relatedArticles": [
-    { "slug": "accountant", "category": "osek-patur", "title": "רואה חשבון לעוסק פטור — האם צריך ומה העלות?" },
-    { "slug": "cost", "category": "osek-patur", "title": "כמה עולה לפתוח עוסק פטור?" },
-    { "slug": "income-ceiling", "category": "osek-patur", "title": "תקרת הכנסות עוסק פטור 2026" },
-    { "slug": "osek-patur-vs-murshe", "category": "comparisons", "title": "עוסק פטור או מורשה — מה מתאים לך?" }
+    {
+      "category": "osek-patur",
+      "slug": "accountant",
+      "title": "רואה חשבון לעוסק פטור — האם צריך ומה העלות?"
+    },
+    {
+      "category": "osek-patur",
+      "slug": "cost",
+      "title": "כמה עולה לפתוח עוסק פטור?"
+    },
+    {
+      "category": "osek-patur",
+      "slug": "income-ceiling",
+      "title": "תקרת הכנסות עוסק פטור 2026"
+    },
+    {
+      "category": "comparisons",
+      "slug": "osek-patur-vs-murshe",
+      "title": "עוסק פטור או מורשה — מה מתאים לך?"
+    }
   ]
 }

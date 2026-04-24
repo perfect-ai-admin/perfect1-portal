@@ -20,13 +20,34 @@
   },
   "readTime": 8,
   "toc": [
-    { "id": "why-amuta", "title": "למה להקים עמותה לבית כנסת?" },
-    { "id": "goals", "title": "הגדרת מטרות העמותה" },
-    { "id": "registration", "title": "תהליך הרישום" },
-    { "id": "tax-benefits", "title": "הטבות מס לבית כנסת" },
-    { "id": "section-46", "title": "סעיף 46 לבית כנסת" },
-    { "id": "management", "title": "ניהול שוטף של עמותת בית הכנסת" },
-    { "id": "faq", "title": "שאלות נפוצות" }
+    {
+      "id": "why-amuta",
+      "title": "למה להקים עמותה לבית כנסת?"
+    },
+    {
+      "id": "goals",
+      "title": "הגדרת מטרות העמותה"
+    },
+    {
+      "id": "registration",
+      "title": "תהליך הרישום"
+    },
+    {
+      "id": "tax-benefits",
+      "title": "הטבות מס לבית כנסת"
+    },
+    {
+      "id": "section-46",
+      "title": "סעיף 46 לבית כנסת"
+    },
+    {
+      "id": "management",
+      "title": "ניהול שוטף של עמותת בית הכנסת"
+    },
+    {
+      "id": "faq",
+      "title": "שאלות נפוצות"
+    }
   ],
   "sections": [
     {
@@ -185,23 +206,23 @@
   ],
   "relatedArticles": [
     {
-      "slug": "how-to-open",
       "category": "amuta",
+      "slug": "how-to-open",
       "title": "איך פותחים עמותה בישראל — מדריך מלא 2026"
     },
     {
-      "slug": "section-46",
       "category": "amuta",
+      "slug": "section-46",
       "title": "סעיף 46 לעמותה — מה זה ואיך מקבלים אישור"
     },
     {
-      "slug": "proper-management",
       "category": "amuta",
+      "slug": "proper-management",
       "title": "ניהול תקין עמותה — אישור, דרישות ותהליך"
     },
     {
-      "slug": "cost",
       "category": "amuta",
+      "slug": "cost",
       "title": "כמה עולה לפתוח עמותה? עלויות מלאות 2026"
     }
   ]

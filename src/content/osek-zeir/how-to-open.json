@@ -22,16 +22,46 @@
   },
   "readTime": 12,
   "toc": [
-    { "id": "what-is-zeir", "title": "מה זה עוסק זעיר ומי יכול לפתוח?" },
-    { "id": "prerequisites", "title": "תנאים מוקדמים לפני הרישום" },
-    { "id": "documents", "title": "מסמכים נדרשים לפתיחת עוסק זעיר" },
-    { "id": "steps", "title": "שלבי רישום עוסק זעיר — צעד אחר צעד" },
-    { "id": "online-registration", "title": "רישום עוסק זעיר אונליין" },
-    { "id": "costs", "title": "עלויות פתיחת עוסק זעיר" },
-    { "id": "timeline", "title": "לוח זמנים לפתיחת עסק" },
-    { "id": "after-opening", "title": "מה עושים אחרי הרישום?" },
-    { "id": "mistakes", "title": "טעויות נפוצות בפתיחת עוסק זעיר" },
-    { "id": "faq", "title": "שאלות נפוצות" }
+    {
+      "id": "what-is-zeir",
+      "title": "מה זה עוסק זעיר ומי יכול לפתוח?"
+    },
+    {
+      "id": "prerequisites",
+      "title": "תנאים מוקדמים לפני הרישום"
+    },
+    {
+      "id": "documents",
+      "title": "מסמכים נדרשים לפתיחת עוסק זעיר"
+    },
+    {
+      "id": "steps",
+      "title": "שלבי רישום עוסק זעיר — צעד אחר צעד"
+    },
+    {
+      "id": "online-registration",
+      "title": "רישום עוסק זעיר אונליין"
+    },
+    {
+      "id": "costs",
+      "title": "עלויות פתיחת עוסק זעיר"
+    },
+    {
+      "id": "timeline",
+      "title": "לוח זמנים לפתיחת עסק"
+    },
+    {
+      "id": "after-opening",
+      "title": "מה עושים אחרי הרישום?"
+    },
+    {
+      "id": "mistakes",
+      "title": "טעויות נפוצות בפתיחת עוסק זעיר"
+    },
+    {
+      "id": "faq",
+      "title": "שאלות נפוצות"
+    }
   ],
   "sections": [
     {
@@ -265,9 +295,25 @@
     }
   ],
   "relatedArticles": [
-    { "slug": "what-is", "category": "osek-zeir", "title": "מה זה עוסק זעיר?" },
-    { "slug": "taxes", "category": "osek-zeir", "title": "מיסוי עוסק זעיר" },
-    { "slug": "management", "category": "osek-zeir", "title": "ניהול עוסק זעיר" },
-    { "slug": "zeir-vs-patur", "category": "osek-zeir", "title": "עוסק זעיר מול עוסק פטור — ההשוואה המלאה" }
+    {
+      "category": "osek-zeir",
+      "slug": "what-is",
+      "title": "מה זה עוסק זעיר?"
+    },
+    {
+      "category": "osek-zeir",
+      "slug": "taxes",
+      "title": "מיסוי עוסק זעיר"
+    },
+    {
+      "category": "osek-zeir",
+      "slug": "management",
+      "title": "ניהול עוסק זעיר"
+    },
+    {
+      "category": "osek-zeir",
+      "slug": "zeir-vs-patur",
+      "title": "עוסק זעיר מול עוסק פטור — ההשוואה המלאה"
+    }
   ]
 }

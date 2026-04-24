@@ -23,16 +23,46 @@
   },
   "readTime": 14,
   "toc": [
-    { "id": "intro", "title": "למה חשוב להתאגד כעסק?" },
-    { "id": "patur-or-murshe", "title": "עוסק פטור או מורשה — מה עדיף?" },
-    { "id": "registration-steps", "title": "שלבי הרישום" },
-    { "id": "insurance", "title": "ביטוח אחריות מקצועית" },
-    { "id": "deductions", "title": "הוצאות מוכרות למאמן כושר" },
-    { "id": "invoices", "title": "חשבוניות וקבלות" },
-    { "id": "bituach-leumi", "title": "ביטוח לאומי ומס הכנסה" },
-    { "id": "marketing", "title": "שיווק וגיוס לקוחות" },
-    { "id": "tips", "title": "טיפים להצלחה" },
-    { "id": "faq", "title": "שאלות נפוצות" }
+    {
+      "id": "intro",
+      "title": "למה חשוב להתאגד כעסק?"
+    },
+    {
+      "id": "patur-or-murshe",
+      "title": "עוסק פטור או מורשה — מה עדיף?"
+    },
+    {
+      "id": "registration-steps",
+      "title": "שלבי הרישום"
+    },
+    {
+      "id": "insurance",
+      "title": "ביטוח אחריות מקצועית"
+    },
+    {
+      "id": "deductions",
+      "title": "הוצאות מוכרות למאמן כושר"
+    },
+    {
+      "id": "invoices",
+      "title": "חשבוניות וקבלות"
+    },
+    {
+      "id": "bituach-leumi",
+      "title": "ביטוח לאומי ומס הכנסה"
+    },
+    {
+      "id": "marketing",
+      "title": "שיווק וגיוס לקוחות"
+    },
+    {
+      "id": "tips",
+      "title": "טיפים להצלחה"
+    },
+    {
+      "id": "faq",
+      "title": "שאלות נפוצות"
+    }
   ],
   "sections": [
     {
@@ -210,23 +240,23 @@
   ],
   "relatedArticles": [
     {
-      "slug": "how-to-open",
       "category": "osek-patur",
+      "slug": "how-to-open",
       "title": "איך פותחים עוסק פטור — מדריך שלב אחר שלב"
     },
     {
-      "slug": "graphic-designer",
       "category": "miktzoa",
+      "slug": "graphic-designer",
       "title": "עוסק פטור למעצב גרפי — מדריך מלא 2026"
     },
     {
-      "slug": "private-tutor",
       "category": "miktzoa",
+      "slug": "private-tutor",
       "title": "עוסק פטור למורה פרטי — מדריך מלא 2026"
     },
     {
-      "slug": "taxes",
       "category": "osek-patur",
+      "slug": "taxes",
       "title": "מיסים לעוסק פטור — כמה משלמים ואיך מדווחים"
     }
   ]

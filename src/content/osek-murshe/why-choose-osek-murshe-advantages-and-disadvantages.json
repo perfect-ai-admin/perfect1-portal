@@ -198,18 +198,18 @@
     },
     {
       "category": "osek-patur",
-      "slug": "advantages",
-      "title": "יתרונות עוסק פטור"
+      "slug": "how-to-open",
+      "title": "איך פותחים עוסק פטור — מדריך מלא"
     },
     {
       "category": "hevra-bam",
-      "slug": "benefits",
-      "title": "היתרונות של חברה בע\"מ"
+      "slug": "how-to-open",
+      "title": "פתיחת חברה בע\"מ — מדריך"
     },
     {
-      "category": "miktzoa",
-      "slug": "small-business-guide",
-      "title": "מדריך לעסקים קטנים"
+      "category": "osek-patur",
+      "slug": "cost",
+      "title": "כמה עולה עוסק פטור"
     }
   ]
 }

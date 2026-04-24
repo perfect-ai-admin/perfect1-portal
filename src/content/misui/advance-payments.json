@@ -23,15 +23,42 @@
   },
   "readTime": 15,
   "toc": [
-    { "id": "what-are-advance-payments", "title": "מה זה מקדמות מס הכנסה?" },
-    { "id": "how-rate-is-set", "title": "איך נקבע שיעור המקדמות?" },
-    { "id": "advance-payments-vs-bituach", "title": "מקדמות מס vs מקדמות ביטוח לאומי" },
-    { "id": "when-and-how-to-pay", "title": "מתי ואיך משלמים?" },
-    { "id": "how-to-reduce", "title": "איך מבקשים הפחתת מקדמות" },
-    { "id": "first-year", "title": "מקדמות לעצמאי חדש" },
-    { "id": "penalties", "title": "מה קורה אם לא משלמים?" },
-    { "id": "year-end-settlement", "title": "סילוק סופי בסוף השנה" },
-    { "id": "faq", "title": "שאלות נפוצות" }
+    {
+      "id": "what-are-advance-payments",
+      "title": "מה זה מקדמות מס הכנסה?"
+    },
+    {
+      "id": "how-rate-is-set",
+      "title": "איך נקבע שיעור המקדמות?"
+    },
+    {
+      "id": "advance-payments-vs-bituach",
+      "title": "מקדמות מס vs מקדמות ביטוח לאומי"
+    },
+    {
+      "id": "when-and-how-to-pay",
+      "title": "מתי ואיך משלמים?"
+    },
+    {
+      "id": "how-to-reduce",
+      "title": "איך מבקשים הפחתת מקדמות"
+    },
+    {
+      "id": "first-year",
+      "title": "מקדמות לעצמאי חדש"
+    },
+    {
+      "id": "penalties",
+      "title": "מה קורה אם לא משלמים?"
+    },
+    {
+      "id": "year-end-settlement",
+      "title": "סילוק סופי בסוף השנה"
+    },
+    {
+      "id": "faq",
+      "title": "שאלות נפוצות"
+    }
   ],
   "sections": [
     {
@@ -205,23 +232,23 @@
   ],
   "relatedArticles": [
     {
-      "slug": "tax-brackets",
       "category": "misui",
+      "slug": "tax-brackets",
       "title": "מדרגות מס הכנסה לעצמאים 2026"
     },
     {
-      "slug": "income-tax",
       "category": "osek-murshe",
+      "slug": "income-tax",
       "title": "מס הכנסה לעוסק מורשה — מדריך מלא"
     },
     {
-      "slug": "how-to-open",
       "category": "osek-murshe",
+      "slug": "how-to-open",
       "title": "איך לפתוח עוסק מורשה — מדריך שלב אחר שלב"
     },
     {
-      "slug": "tax-deductions",
       "category": "osek-murshe",
+      "slug": "tax-deductions",
       "title": "הוצאות מוכרות לעוסק מורשה"
     }
   ],

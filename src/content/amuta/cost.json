@@ -21,14 +21,38 @@
   },
   "readTime": 8,
   "toc": [
-    { "id": "answer", "title": "תשובה מהירה — עלות פתיחת עמותה" },
-    { "id": "registration-fee", "title": "אגרת רישום ברשם העמותות" },
-    { "id": "annual-fee", "title": "אגרה שנתית" },
-    { "id": "lawyer-cost", "title": "עלות עורך דין" },
-    { "id": "accountant-cost", "title": "עלות רואה חשבון" },
-    { "id": "ongoing-costs", "title": "עלויות שוטפות נוספות" },
-    { "id": "cost-saving", "title": "איך לחסוך בעלויות" },
-    { "id": "faq", "title": "שאלות נפוצות" }
+    {
+      "id": "answer",
+      "title": "תשובה מהירה — עלות פתיחת עמותה"
+    },
+    {
+      "id": "registration-fee",
+      "title": "אגרת רישום ברשם העמותות"
+    },
+    {
+      "id": "annual-fee",
+      "title": "אגרה שנתית"
+    },
+    {
+      "id": "lawyer-cost",
+      "title": "עלות עורך דין"
+    },
+    {
+      "id": "accountant-cost",
+      "title": "עלות רואה חשבון"
+    },
+    {
+      "id": "ongoing-costs",
+      "title": "עלויות שוטפות נוספות"
+    },
+    {
+      "id": "cost-saving",
+      "title": "איך לחסוך בעלויות"
+    },
+    {
+      "id": "faq",
+      "title": "שאלות נפוצות"
+    }
   ],
   "sections": [
     {
@@ -187,23 +211,23 @@
   ],
   "relatedArticles": [
     {
-      "slug": "how-to-open",
       "category": "amuta",
+      "slug": "how-to-open",
       "title": "איך פותחים עמותה בישראל — מדריך מלא 2026"
     },
     {
-      "slug": "accountant",
       "category": "amuta",
+      "slug": "accountant",
       "title": "רואה חשבון לעמותה — חובות, עלויות וטיפים"
     },
     {
-      "slug": "proper-management",
       "category": "amuta",
+      "slug": "proper-management",
       "title": "ניהול תקין עמותה — אישור, דרישות ותהליך"
     },
     {
-      "slug": "how-to-open",
       "category": "hevra-bam",
+      "slug": "how-to-open",
       "title": "פתיחת חברה בע\"מ — מדריך מלא 2026"
     }
   ]

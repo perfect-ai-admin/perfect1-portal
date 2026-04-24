@@ -248,23 +248,23 @@
   ],
   "relatedArticles": [
     {
-      "slug": "opening-business",
       "category": "guides",
+      "slug": "opening-business",
       "title": "מדריך פתיחת עסק בישראל — שלב אחר שלב"
     },
     {
-      "slug": "comparisons",
       "category": "guides",
+      "slug": "comparisons",
       "title": "השוואת סוגי עסקים — פטור, מורשה או חברה"
     },
     {
-      "slug": "taxation",
       "category": "guides",
+      "slug": "taxation",
       "title": "מדריך מיסוי לעסקים בישראל"
     },
     {
-      "slug": "how-to-open",
       "category": "osek-patur",
+      "slug": "how-to-open",
       "title": "איך פותחים עוסק פטור — מדריך מלא"
     }
   ]

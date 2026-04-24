@@ -22,15 +22,42 @@
   },
   "readTime": 9,
   "toc": [
-    { "id": "what-is-osek-zeir-management", "title": "מה כולל ניהול עוסק זעיר?" },
-    { "id": "receipts", "title": "הוצאת קבלות — חובות וכללים" },
-    { "id": "bookkeeping", "title": "ניהול ספרים — מה החוק אומר?" },
-    { "id": "bank-account", "title": "חשבון בנק נפרד — האם חובה?" },
-    { "id": "digital-tools", "title": "כלים דיגיטליים מומלצים" },
-    { "id": "expense-tracking", "title": "מעקב הוצאות ורשומות" },
-    { "id": "year-end", "title": "הכנה לסוף שנה" },
-    { "id": "tips", "title": "טיפים מעשיים לעוסקים זעירים מתחילים" },
-    { "id": "faq", "title": "שאלות נפוצות" }
+    {
+      "id": "what-is-osek-zeir-management",
+      "title": "מה כולל ניהול עוסק זעיר?"
+    },
+    {
+      "id": "receipts",
+      "title": "הוצאת קבלות — חובות וכללים"
+    },
+    {
+      "id": "bookkeeping",
+      "title": "ניהול ספרים — מה החוק אומר?"
+    },
+    {
+      "id": "bank-account",
+      "title": "חשבון בנק נפרד — האם חובה?"
+    },
+    {
+      "id": "digital-tools",
+      "title": "כלים דיגיטליים מומלצים"
+    },
+    {
+      "id": "expense-tracking",
+      "title": "מעקב הוצאות ורשומות"
+    },
+    {
+      "id": "year-end",
+      "title": "הכנה לסוף שנה"
+    },
+    {
+      "id": "tips",
+      "title": "טיפים מעשיים לעוסקים זעירים מתחילים"
+    },
+    {
+      "id": "faq",
+      "title": "שאלות נפוצות"
+    }
   ],
   "sections": [
     {
@@ -290,19 +317,24 @@
   ],
   "relatedArticles": [
     {
-      "slug": "taxes",
       "category": "osek-zeir",
+      "slug": "taxes",
       "title": "מיסוי עוסק זעיר"
     },
     {
-      "slug": "what-is",
       "category": "osek-zeir",
+      "slug": "what-is",
       "title": "מה זה עוסק זעיר?"
     },
     {
-      "slug": "how-to-open",
       "category": "osek-zeir",
+      "slug": "how-to-open",
       "title": "פתיחת עוסק זעיר"
+    },
+    {
+      "category": "osek-patur",
+      "slug": "how-to-open",
+      "title": "איך פותחים עוסק פטור — מדריך מלא"
     }
   ]
 }

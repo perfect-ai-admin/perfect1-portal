@@ -276,23 +276,23 @@
   ],
   "relatedArticles": [
     {
-      "slug": "freelancers",
       "category": "guides",
+      "slug": "freelancers",
       "title": "מדריך לפרילנסרים בישראל"
     },
     {
-      "slug": "taxation",
       "category": "guides",
+      "slug": "taxation",
       "title": "מדריך מיסוי לעסקים בישראל"
     },
     {
-      "slug": "management",
       "category": "osek-patur",
+      "slug": "management",
       "title": "ניהול עוסק פטור — כלים שימושיים"
     },
     {
-      "slug": "management",
       "category": "osek-murshe",
+      "slug": "management",
       "title": "ניהול עוסק מורשה — כלים שימושיים"
     }
   ]

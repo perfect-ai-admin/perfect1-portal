@@ -21,13 +21,34 @@
   },
   "readTime": 10,
   "toc": [
-    { "id": "what-is", "title": "מה זה סעיף 46?" },
-    { "id": "tax-benefits", "title": "הטבות מס לתורמים" },
-    { "id": "requirements", "title": "דרישות לקבלת אישור" },
-    { "id": "how-to-apply", "title": "איך מגישים בקשה?" },
-    { "id": "how-to-check", "title": "איך בודקים אם לעמותה יש סעיף 46?" },
-    { "id": "renewal", "title": "חידוש האישור" },
-    { "id": "faq", "title": "שאלות נפוצות" }
+    {
+      "id": "what-is",
+      "title": "מה זה סעיף 46?"
+    },
+    {
+      "id": "tax-benefits",
+      "title": "הטבות מס לתורמים"
+    },
+    {
+      "id": "requirements",
+      "title": "דרישות לקבלת אישור"
+    },
+    {
+      "id": "how-to-apply",
+      "title": "איך מגישים בקשה?"
+    },
+    {
+      "id": "how-to-check",
+      "title": "איך בודקים אם לעמותה יש סעיף 46?"
+    },
+    {
+      "id": "renewal",
+      "title": "חידוש האישור"
+    },
+    {
+      "id": "faq",
+      "title": "שאלות נפוצות"
+    }
   ],
   "sections": [
     {
@@ -180,23 +201,23 @@
   ],
   "relatedArticles": [
     {
-      "slug": "proper-management",
       "category": "amuta",
+      "slug": "proper-management",
       "title": "ניהול תקין עמותה — אישור, דרישות ותהליך"
     },
     {
-      "slug": "how-to-open",
       "category": "amuta",
+      "slug": "how-to-open",
       "title": "איך פותחים עמותה בישראל — מדריך מלא 2026"
     },
     {
-      "slug": "accountant",
       "category": "amuta",
+      "slug": "accountant",
       "title": "רואה חשבון לעמותה — חובות, עלויות וטיפים"
     },
     {
-      "slug": "financial-reports",
       "category": "amuta",
+      "slug": "financial-reports",
       "title": "דוח כספי עמותה — חובות, מבנה וטיפים"
     }
   ]

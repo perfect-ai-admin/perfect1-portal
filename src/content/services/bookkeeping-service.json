@@ -24,13 +24,34 @@
   },
   "readTime": 11,
   "toc": [
-    { "id": "what-included", "title": "מה כולל שירות הנהלת חשבונות?" },
-    { "id": "prices", "title": "מחירים וחבילות 2026" },
-    { "id": "why-accountant", "title": "למה צריך רואה חשבון?" },
-    { "id": "packages", "title": "השוואת חבילות — מה מתאים לכם?" },
-    { "id": "digital", "title": "הנהלת חשבונות דיגיטלית" },
-    { "id": "tips", "title": "איך לחסוך בעלויות" },
-    { "id": "faq", "title": "שאלות נפוצות" }
+    {
+      "id": "what-included",
+      "title": "מה כולל שירות הנהלת חשבונות?"
+    },
+    {
+      "id": "prices",
+      "title": "מחירים וחבילות 2026"
+    },
+    {
+      "id": "why-accountant",
+      "title": "למה צריך רואה חשבון?"
+    },
+    {
+      "id": "packages",
+      "title": "השוואת חבילות — מה מתאים לכם?"
+    },
+    {
+      "id": "digital",
+      "title": "הנהלת חשבונות דיגיטלית"
+    },
+    {
+      "id": "tips",
+      "title": "איך לחסוך בעלויות"
+    },
+    {
+      "id": "faq",
+      "title": "שאלות נפוצות"
+    }
   ],
   "sections": [
     {
@@ -212,9 +233,25 @@
     }
   ],
   "relatedArticles": [
-    { "slug": "open-osek-patur-service", "category": "services", "title": "שירות פתיחת עוסק פטור בחינם" },
-    { "slug": "open-company-service", "category": "services", "title": "שירות הקמת חברה בע״מ" },
-    { "slug": "tel-aviv", "category": "cities", "title": "רואה חשבון בתל אביב" },
-    { "slug": "how-to-open", "category": "osek-patur", "title": "איך פותחים עוסק פטור" }
+    {
+      "category": "services",
+      "slug": "open-osek-patur-service",
+      "title": "שירות פתיחת עוסק פטור בחינם"
+    },
+    {
+      "category": "services",
+      "slug": "open-company-service",
+      "title": "שירות הקמת חברה בע״מ"
+    },
+    {
+      "category": "cities",
+      "slug": "tel-aviv",
+      "title": "רואה חשבון בתל אביב"
+    },
+    {
+      "category": "osek-patur",
+      "slug": "how-to-open",
+      "title": "איך פותחים עוסק פטור"
+    }
   ]
 }

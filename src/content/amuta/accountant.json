@@ -21,13 +21,34 @@
   },
   "readTime": 9,
   "toc": [
-    { "id": "why-needed", "title": "למה עמותה צריכה רואה חשבון?" },
-    { "id": "legal-requirements", "title": "חובות חוקיות לדיווח כספי" },
-    { "id": "what-does", "title": "מה רואה חשבון עושה לעמותה?" },
-    { "id": "costs", "title": "כמה עולה רואה חשבון לעמותה?" },
-    { "id": "how-to-choose", "title": "איך בוחרים רואה חשבון?" },
-    { "id": "cta", "title": "צריכים רואה חשבון לעמותה?" },
-    { "id": "faq", "title": "שאלות נפוצות" }
+    {
+      "id": "why-needed",
+      "title": "למה עמותה צריכה רואה חשבון?"
+    },
+    {
+      "id": "legal-requirements",
+      "title": "חובות חוקיות לדיווח כספי"
+    },
+    {
+      "id": "what-does",
+      "title": "מה רואה חשבון עושה לעמותה?"
+    },
+    {
+      "id": "costs",
+      "title": "כמה עולה רואה חשבון לעמותה?"
+    },
+    {
+      "id": "how-to-choose",
+      "title": "איך בוחרים רואה חשבון?"
+    },
+    {
+      "id": "cta",
+      "title": "צריכים רואה חשבון לעמותה?"
+    },
+    {
+      "id": "faq",
+      "title": "שאלות נפוצות"
+    }
   ],
   "sections": [
     {
@@ -179,23 +200,23 @@
   ],
   "relatedArticles": [
     {
-      "slug": "financial-reports",
       "category": "amuta",
+      "slug": "financial-reports",
       "title": "דוח כספי עמותה — חובות, מבנה וטיפים"
     },
     {
-      "slug": "proper-management",
       "category": "amuta",
+      "slug": "proper-management",
       "title": "ניהול תקין עמותה — אישור, דרישות ותהליך"
     },
     {
-      "slug": "cost",
       "category": "amuta",
+      "slug": "cost",
       "title": "כמה עולה לפתוח עמותה? עלויות מלאות 2026"
     },
     {
-      "slug": "section-46",
       "category": "amuta",
+      "slug": "section-46",
       "title": "סעיף 46 לעמותה — מה זה ואיך מקבלים אישור"
     }
   ]

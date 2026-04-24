@@ -127,23 +127,23 @@
   ],
   "relatedArticles": [
     {
+      "category": "osek-patur",
       "slug": "how-to-open",
-      "category": "guides",
       "title": "איך לפתוח עסק בישראל"
     },
     {
+      "category": "osek-patur",
       "slug": "cost",
-      "category": "guides",
       "title": "עלויות פתיחת עסק"
     },
     {
+      "category": "osek-patur",
       "slug": "taxes",
-      "category": "guides",
       "title": "מדריך למיסים בישראל"
     },
     {
+      "category": "osek-patur",
       "slug": "accountant",
-      "category": "guides",
       "title": "איך לבחור רואה חשבון"
     }
   ],

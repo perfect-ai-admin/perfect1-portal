@@ -24,13 +24,34 @@
   },
   "readTime": 13,
   "toc": [
-    { "id": "what-included", "title": "מה כולל שירות הקמת חברה?" },
-    { "id": "process", "title": "תהליך פתיחת חברה בע״מ — שלב אחר שלב" },
-    { "id": "prices", "title": "מחירים ועלויות 2026" },
-    { "id": "why-company", "title": "מתי כדאי לפתוח חברה?" },
-    { "id": "vs-osek", "title": "חברה בע״מ מול עוסק מורשה" },
-    { "id": "after-opening", "title": "מה עושים אחרי הקמת החברה?" },
-    { "id": "faq", "title": "שאלות נפוצות" }
+    {
+      "id": "what-included",
+      "title": "מה כולל שירות הקמת חברה?"
+    },
+    {
+      "id": "process",
+      "title": "תהליך פתיחת חברה בע״מ — שלב אחר שלב"
+    },
+    {
+      "id": "prices",
+      "title": "מחירים ועלויות 2026"
+    },
+    {
+      "id": "why-company",
+      "title": "מתי כדאי לפתוח חברה?"
+    },
+    {
+      "id": "vs-osek",
+      "title": "חברה בע״מ מול עוסק מורשה"
+    },
+    {
+      "id": "after-opening",
+      "title": "מה עושים אחרי הקמת החברה?"
+    },
+    {
+      "id": "faq",
+      "title": "שאלות נפוצות"
+    }
   ],
   "sections": [
     {
@@ -207,9 +228,25 @@
     }
   ],
   "relatedArticles": [
-    { "slug": "bookkeeping-service", "category": "services", "title": "שירות הנהלת חשבונות לעצמאים" },
-    { "slug": "open-osek-patur-service", "category": "services", "title": "שירות פתיחת עוסק פטור בחינם" },
-    { "slug": "tel-aviv", "category": "cities", "title": "רואה חשבון בתל אביב" },
-    { "slug": "jerusalem", "category": "cities", "title": "רואה חשבון בירושלים" }
+    {
+      "category": "services",
+      "slug": "bookkeeping-service",
+      "title": "שירות הנהלת חשבונות לעצמאים"
+    },
+    {
+      "category": "services",
+      "slug": "open-osek-patur-service",
+      "title": "שירות פתיחת עוסק פטור בחינם"
+    },
+    {
+      "category": "cities",
+      "slug": "tel-aviv",
+      "title": "רואה חשבון בתל אביב"
+    },
+    {
+      "category": "cities",
+      "slug": "jerusalem",
+      "title": "רואה חשבון בירושלים"
+    }
   ]
 }

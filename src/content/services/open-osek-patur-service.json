@@ -24,13 +24,34 @@
   },
   "readTime": 10,
   "toc": [
-    { "id": "what-included", "title": "מה כולל שירות פתיחת עוסק פטור?" },
-    { "id": "why-accountant", "title": "למה לפתוח עם רואה חשבון?" },
-    { "id": "process", "title": "תהליך פתיחת עוסק פטור — שלב אחר שלב" },
-    { "id": "timeline", "title": "כמה זמן לוקח?" },
-    { "id": "mistakes", "title": "טעויות נפוצות בפתיחה עצמאית" },
-    { "id": "after-opening", "title": "מה עושים אחרי הפתיחה?" },
-    { "id": "faq", "title": "שאלות נפוצות" }
+    {
+      "id": "what-included",
+      "title": "מה כולל שירות פתיחת עוסק פטור?"
+    },
+    {
+      "id": "why-accountant",
+      "title": "למה לפתוח עם רואה חשבון?"
+    },
+    {
+      "id": "process",
+      "title": "תהליך פתיחת עוסק פטור — שלב אחר שלב"
+    },
+    {
+      "id": "timeline",
+      "title": "כמה זמן לוקח?"
+    },
+    {
+      "id": "mistakes",
+      "title": "טעויות נפוצות בפתיחה עצמאית"
+    },
+    {
+      "id": "after-opening",
+      "title": "מה עושים אחרי הפתיחה?"
+    },
+    {
+      "id": "faq",
+      "title": "שאלות נפוצות"
+    }
   ],
   "sections": [
     {
@@ -198,9 +219,25 @@
     }
   ],
   "relatedArticles": [
-    { "slug": "how-to-open", "category": "osek-patur", "title": "איך פותחים עוסק פטור — מדריך שלב אחר שלב" },
-    { "slug": "bookkeeping-service", "category": "services", "title": "שירות הנהלת חשבונות לעצמאים" },
-    { "slug": "open-company-service", "category": "services", "title": "שירות הקמת חברה בע״מ" },
-    { "slug": "tel-aviv", "category": "cities", "title": "רואה חשבון בתל אביב" }
+    {
+      "category": "osek-patur",
+      "slug": "how-to-open",
+      "title": "איך פותחים עוסק פטור — מדריך שלב אחר שלב"
+    },
+    {
+      "category": "services",
+      "slug": "bookkeeping-service",
+      "title": "שירות הנהלת חשבונות לעצמאים"
+    },
+    {
+      "category": "services",
+      "slug": "open-company-service",
+      "title": "שירות הקמת חברה בע״מ"
+    },
+    {
+      "category": "cities",
+      "slug": "tel-aviv",
+      "title": "רואה חשבון בתל אביב"
+    }
   ]
 }

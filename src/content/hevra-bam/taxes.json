@@ -227,24 +227,24 @@
   ],
   "relatedArticles": [
     {
-      "slug": "how-to-open",
       "category": "hevra-bam",
+      "slug": "how-to-open",
       "title": "פתיחת חברה בע\"מ — מדריך מלא"
     },
     {
-      "slug": "corporate-tax",
       "category": "hevra-bam",
+      "slug": "corporate-tax",
       "title": "מס חברות — כל מה שצריך לדעת"
     },
     {
-      "slug": "tax-brackets",
       "category": "misui",
+      "slug": "tax-brackets",
       "title": "מדרגות מס הכנסה בישראל 2026"
     },
     {
-      "slug": "net-income",
-      "category": "calculators",
-      "title": "מחשבון שכר נטו — כמה תשארו עם חברה מול עצמאי"
+      "category": "osek-patur",
+      "slug": "how-to-open",
+      "title": "איך פותחים עוסק פטור — מדריך מלא"
     }
   ]
 }

@@ -146,15 +146,23 @@
   "relatedArticles": [
     {
       "category": "comparisons",
-      "slug": "osek-patur-vs-murshe"
+      "slug": "osek-patur-vs-murshe",
+      "title": ""
     },
     {
       "category": "osek-patur",
-      "slug": "income-ceiling"
+      "slug": "income-ceiling",
+      "title": ""
     },
     {
       "category": "osek-murshe",
-      "slug": "how-to-open"
+      "slug": "how-to-open",
+      "title": ""
+    },
+    {
+      "category": "osek-patur",
+      "slug": "how-to-open",
+      "title": "איך פותחים עוסק פטור — מדריך מלא"
     }
   ],
   "toc": [

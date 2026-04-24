@@ -270,23 +270,23 @@
   ],
   "relatedArticles": [
     {
-      "slug": "cost",
       "category": "osek-murshe",
+      "slug": "cost",
       "title": "כמה עולה עוסק מורשה?"
     },
     {
-      "slug": "income-tax",
       "category": "osek-murshe",
+      "slug": "income-tax",
       "title": "מס הכנסה עוסק מורשה"
     },
     {
-      "slug": "vat-guide",
       "category": "osek-murshe",
+      "slug": "vat-guide",
       "title": "מדריך מע\"מ לעוסק מורשה"
     },
     {
-      "slug": "how-to-open",
       "category": "osek-murshe",
+      "slug": "how-to-open",
       "title": "איך פותחים עוסק מורשה — מדריך מלא"
     }
   ],

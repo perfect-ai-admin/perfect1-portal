@@ -193,19 +193,19 @@
       "title": "כיצד לפתוח עוסק מורשה"
     },
     {
-      "category": "misui",
-      "slug": "tax-reliefs",
-      "title": "הקלות מס לעוסקים מורשים"
+      "category": "osek-patur",
+      "slug": "how-to-open",
+      "title": "איך פותחים עוסק פטור — מדריך מלא"
     },
     {
-      "category": "miktzoa",
-      "slug": "business-loans",
-      "title": "הלוואות לעסקים בישראל"
+      "category": "hevra-bam",
+      "slug": "how-to-open",
+      "title": "פתיחת חברה בע\"מ — מדריך"
     },
     {
       "category": "osek-patur",
-      "slug": "osek-patur-vs-osek-murshe",
-      "title": "הבדלים בין עוסק פטור לעוסק מורשה"
+      "slug": "cost",
+      "title": "כמה עולה עוסק פטור"
     }
   ]
 }

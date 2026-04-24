@@ -91,5 +91,27 @@
       "question": "האם עוסק מורשה צריך להוציא חשבוניות?",
       "answer": "כן, עוסק מורשה מחויב להנפיק חשבוניות מס עבור כל עסקה שהוא מבצע."
     }
+  ],
+  "relatedArticles": [
+    {
+      "category": "osek-patur",
+      "slug": "how-to-open",
+      "title": "איך פותחים עוסק פטור — מדריך מלא"
+    },
+    {
+      "category": "osek-murshe",
+      "slug": "how-to-open",
+      "title": "פתיחת עוסק מורשה — מדריך מלא"
+    },
+    {
+      "category": "hevra-bam",
+      "slug": "how-to-open",
+      "title": "פתיחת חברה בע\"מ — מדריך"
+    },
+    {
+      "category": "osek-patur",
+      "slug": "cost",
+      "title": "כמה עולה עוסק פטור"
+    }
   ]
 }

@@ -461,23 +461,23 @@
   ],
   "relatedArticles": [
     {
-      "slug": "opening-business",
       "category": "guides",
+      "slug": "opening-business",
       "title": "מדריך פתיחת עסק בישראל 2026 — שלב אחר שלב"
     },
     {
-      "slug": "cost",
       "category": "osek-murshe",
+      "slug": "cost",
       "title": "כמה עולה עוסק מורשה? כל העלויות ב-2026"
     },
     {
-      "slug": "bookkeeping",
       "category": "osek-murshe",
+      "slug": "bookkeeping",
       "title": "הנהלת חשבונות עוסק מורשה — מדריך מלא"
     },
     {
-      "slug": "tax-brackets",
       "category": "misui",
+      "slug": "tax-brackets",
       "title": "מדרגות מס הכנסה בישראל 2026"
     }
   ]

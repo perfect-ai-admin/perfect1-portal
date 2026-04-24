@@ -497,23 +497,23 @@
   ],
   "relatedArticles": [
     {
-      "slug": "how-to-open",
       "category": "osek-patur",
+      "slug": "how-to-open",
       "title": "איך פותחים עוסק פטור — מדריך מלא 2026"
     },
     {
-      "slug": "how-to-open",
       "category": "osek-murshe",
+      "slug": "how-to-open",
       "title": "איך לפתוח עוסק מורשה — מדריך מלא 2026"
     },
     {
-      "slug": "taxation",
       "category": "guides",
+      "slug": "taxation",
       "title": "מדריך מיסוי לעסקים בישראל"
     },
     {
-      "slug": "open-osek-patur-service",
       "category": "services",
+      "slug": "open-osek-patur-service",
       "title": "שירות פתיחת עוסק פטור — מהיר ומקצועי"
     }
   ]

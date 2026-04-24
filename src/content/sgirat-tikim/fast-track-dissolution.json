@@ -24,15 +24,42 @@
   },
   "readTime": 10,
   "toc": [
-    { "id": "what-is", "title": "מה זה פירוק מרצון בהליך מזורז?" },
-    { "id": "conditions", "title": "תנאים להליך מזורז" },
-    { "id": "process-steps", "title": "שלבי התהליך" },
-    { "id": "forms", "title": "טפסים ומסמכים נדרשים" },
-    { "id": "online-process", "title": "הגשה מקוונת — רשם החברות" },
-    { "id": "costs", "title": "עלויות ואגרות" },
-    { "id": "timeline", "title": "לוחות זמנים" },
-    { "id": "vs-regular", "title": "הליך מזורז מול פירוק רגיל" },
-    { "id": "faq", "title": "שאלות נפוצות" }
+    {
+      "id": "what-is",
+      "title": "מה זה פירוק מרצון בהליך מזורז?"
+    },
+    {
+      "id": "conditions",
+      "title": "תנאים להליך מזורז"
+    },
+    {
+      "id": "process-steps",
+      "title": "שלבי התהליך"
+    },
+    {
+      "id": "forms",
+      "title": "טפסים ומסמכים נדרשים"
+    },
+    {
+      "id": "online-process",
+      "title": "הגשה מקוונת — רשם החברות"
+    },
+    {
+      "id": "costs",
+      "title": "עלויות ואגרות"
+    },
+    {
+      "id": "timeline",
+      "title": "לוחות זמנים"
+    },
+    {
+      "id": "vs-regular",
+      "title": "הליך מזורז מול פירוק רגיל"
+    },
+    {
+      "id": "faq",
+      "title": "שאלות נפוצות"
+    }
   ],
   "sections": [
     {
@@ -265,23 +292,23 @@
   ],
   "relatedArticles": [
     {
-      "slug": "close-company",
       "category": "sgirat-tikim",
+      "slug": "close-company",
       "title": "פירוק חברה מרצון — מדריך מלא"
     },
     {
-      "slug": "close-osek-murshe",
       "category": "sgirat-tikim",
+      "slug": "close-osek-murshe",
       "title": "סגירת עוסק מורשה — מדריך מלא"
     },
     {
-      "slug": "consequences",
       "category": "sgirat-tikim",
+      "slug": "consequences",
       "title": "חובות והשלכות סגירת עסק"
     },
     {
-      "slug": "taxes",
       "category": "hevra-bam",
+      "slug": "taxes",
       "title": "מיסוי חברה בע\"מ — מדריך מלא"
     }
   ]

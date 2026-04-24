@@ -245,23 +245,23 @@
   ],
   "relatedArticles": [
     {
-      "slug": "close-osek-patur",
       "category": "sgirat-tikim",
+      "slug": "close-osek-patur",
       "title": "סגירת עוסק פטור — מדריך מלא"
     },
     {
-      "slug": "consequences",
       "category": "sgirat-tikim",
+      "slug": "consequences",
       "title": "חובות והשלכות סגירת עסק"
     },
     {
-      "slug": "how-to-open",
       "category": "osek-murshe",
+      "slug": "how-to-open",
       "title": "פתיחת עוסק מורשה — מדריך מלא"
     },
     {
-      "slug": "taxes",
       "category": "osek-murshe",
+      "slug": "taxes",
       "title": "מע\"מ ומסים לעוסק מורשה"
     }
   ]

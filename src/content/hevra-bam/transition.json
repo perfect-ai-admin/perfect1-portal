@@ -301,23 +301,23 @@
   ],
   "relatedArticles": [
     {
-      "slug": "how-to-open",
       "category": "hevra-bam",
+      "slug": "how-to-open",
       "title": "איך פותחים חברה בע\"מ — מדריך מלא"
     },
     {
-      "slug": "cost",
       "category": "hevra-bam",
+      "slug": "cost",
       "title": "כמה עולה להקים חברה בע\"מ?"
     },
     {
-      "slug": "shareholders",
       "category": "hevra-bam",
+      "slug": "shareholders",
       "title": "בעלי מניות ושכר בחברה בע\"מ"
     },
     {
-      "slug": "osek-patur-vs-murshe",
       "category": "comparisons",
+      "slug": "osek-patur-vs-murshe",
       "title": "עוסק פטור או מורשה — מה מתאים לך?"
     }
   ]

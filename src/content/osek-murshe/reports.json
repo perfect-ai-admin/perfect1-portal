@@ -291,23 +291,23 @@
   ],
   "relatedArticles": [
     {
-      "slug": "taxes",
       "category": "osek-murshe",
+      "slug": "taxes",
       "title": "מע\"מ ומסים עוסק מורשה"
     },
     {
-      "slug": "management",
       "category": "osek-murshe",
+      "slug": "management",
       "title": "ניהול שוטף עוסק מורשה"
     },
     {
-      "slug": "how-to-open",
       "category": "osek-murshe",
+      "slug": "how-to-open",
       "title": "איך פותחים עוסק מורשה?"
     },
     {
-      "slug": "tax-reporting",
       "category": "osek-patur",
+      "slug": "tax-reporting",
       "title": "דיווח מס לעוסק פטור"
     }
   ],

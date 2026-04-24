@@ -162,15 +162,23 @@
   "relatedArticles": [
     {
       "category": "osek-murshe",
-      "slug": "vat-guide"
+      "slug": "vat-guide",
+      "title": ""
     },
     {
       "category": "osek-murshe",
-      "slug": "cost"
+      "slug": "cost",
+      "title": ""
     },
     {
       "category": "osek-patur",
-      "slug": "management"
+      "slug": "management",
+      "title": ""
+    },
+    {
+      "category": "osek-patur",
+      "slug": "how-to-open",
+      "title": "איך פותחים עוסק פטור — מדריך מלא"
     }
   ],
   "toc": [

@@ -22,15 +22,42 @@
   },
   "readTime": 10,
   "toc": [
-    { "id": "tax-overview", "title": "מיסוי עוסק זעיר — סקירה כללית" },
-    { "id": "income-tax", "title": "מס הכנסה — מדרגות ונקודות זיכוי" },
-    { "id": "bituach-leumi", "title": "ביטוח לאומי ודמי בריאות" },
-    { "id": "vat-exempt", "title": "פטור ממע\"מ — מה זה אומר בפועל" },
-    { "id": "advance-payments", "title": "מקדמות מס הכנסה" },
-    { "id": "deductions", "title": "הוצאות מוכרות שחוסכות מס" },
-    { "id": "annual-report", "title": "הדוח השנתי — שלב אחר שלב" },
-    { "id": "tax-calendar", "title": "לוח שנה — מועדי דיווח ותשלום" },
-    { "id": "faq", "title": "שאלות נפוצות" }
+    {
+      "id": "tax-overview",
+      "title": "מיסוי עוסק זעיר — סקירה כללית"
+    },
+    {
+      "id": "income-tax",
+      "title": "מס הכנסה — מדרגות ונקודות זיכוי"
+    },
+    {
+      "id": "bituach-leumi",
+      "title": "ביטוח לאומי ודמי בריאות"
+    },
+    {
+      "id": "vat-exempt",
+      "title": "פטור ממע\"מ — מה זה אומר בפועל"
+    },
+    {
+      "id": "advance-payments",
+      "title": "מקדמות מס הכנסה"
+    },
+    {
+      "id": "deductions",
+      "title": "הוצאות מוכרות שחוסכות מס"
+    },
+    {
+      "id": "annual-report",
+      "title": "הדוח השנתי — שלב אחר שלב"
+    },
+    {
+      "id": "tax-calendar",
+      "title": "לוח שנה — מועדי דיווח ותשלום"
+    },
+    {
+      "id": "faq",
+      "title": "שאלות נפוצות"
+    }
   ],
   "sections": [
     {
@@ -258,19 +285,24 @@
   ],
   "relatedArticles": [
     {
-      "slug": "what-is",
       "category": "osek-zeir",
+      "slug": "what-is",
       "title": "מה זה עוסק זעיר?"
     },
     {
-      "slug": "management",
       "category": "osek-zeir",
+      "slug": "management",
       "title": "ניהול עוסק זעיר"
     },
     {
-      "slug": "how-to-open",
       "category": "osek-zeir",
+      "slug": "how-to-open",
       "title": "פתיחת עוסק זעיר"
+    },
+    {
+      "category": "osek-patur",
+      "slug": "how-to-open",
+      "title": "איך פותחים עוסק פטור — מדריך מלא"
     }
   ]
 }

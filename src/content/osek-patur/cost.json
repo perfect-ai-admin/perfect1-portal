@@ -3,7 +3,13 @@
   "category": "osek-patur",
   "metaTitle": "כמה עולה עוסק פטור? פירוט עלויות 2026 | פרפקט וואן",
   "metaDescription": "פירוט עלויות מלא לעוסק פטור 2026: רישום, רואה חשבון, ביטוח לאומי, מקדמות מס ועוד. גלו כמה באמת עולה להיות עוסק פטור.",
-  "keywords": ["עלות עוסק פטור", "כמה עולה עוסק פטור", "עלויות עוסק פטור", "ביטוח לאומי עוסק פטור", "רואה חשבון עוסק פטור עלות"],
+  "keywords": [
+    "עלות עוסק פטור",
+    "כמה עולה עוסק פטור",
+    "עלויות עוסק פטור",
+    "ביטוח לאומי עוסק פטור",
+    "רואה חשבון עוסק פטור עלות"
+  ],
   "heroTitle": "עלויות עוסק פטור — פירוט מלא ומעודכן",
   "heroSubtitle": "פירוט עלויות מלא ומעודכן ל-2026: רישום, רואה חשבון, ביטוח לאומי ומקדמות מס. בלי הפתעות.",
   "publishDate": "2026-01-20",
@@ -14,13 +20,34 @@
   },
   "readTime": 8,
   "toc": [
-    { "id": "registration-cost", "title": "עלות הרישום" },
-    { "id": "ongoing-costs", "title": "עלויות שוטפות חודשיות" },
-    { "id": "national-insurance-cost", "title": "ביטוח לאומי" },
-    { "id": "accountant-cost", "title": "רואה חשבון" },
-    { "id": "income-tax-advances", "title": "מקדמות מס הכנסה" },
-    { "id": "comparison-table", "title": "טבלת השוואת עלויות" },
-    { "id": "how-to-save", "title": "איך לחסוך בעלויות" }
+    {
+      "id": "registration-cost",
+      "title": "עלות הרישום"
+    },
+    {
+      "id": "ongoing-costs",
+      "title": "עלויות שוטפות חודשיות"
+    },
+    {
+      "id": "national-insurance-cost",
+      "title": "ביטוח לאומי"
+    },
+    {
+      "id": "accountant-cost",
+      "title": "רואה חשבון"
+    },
+    {
+      "id": "income-tax-advances",
+      "title": "מקדמות מס הכנסה"
+    },
+    {
+      "id": "comparison-table",
+      "title": "טבלת השוואת עלויות"
+    },
+    {
+      "id": "how-to-save",
+      "title": "איך לחסוך בעלויות"
+    }
   ],
   "sections": [
     {
@@ -176,9 +203,25 @@
     }
   ],
   "relatedArticles": [
-    { "slug": "how-to-open", "category": "osek-patur", "title": "איך פותחים עוסק פטור — מדריך מלא 2026" },
-    { "slug": "accountant", "category": "osek-patur", "title": "רואה חשבון לעוסק פטור — האם צריך ומה העלות?" },
-    { "slug": "income-ceiling", "category": "osek-patur", "title": "תקרת הכנסות עוסק פטור 2026" },
-    { "slug": "osek-patur-vs-murshe", "category": "comparisons", "title": "עוסק פטור או מורשה — מה מתאים לך?" }
+    {
+      "category": "osek-patur",
+      "slug": "how-to-open",
+      "title": "איך פותחים עוסק פטור — מדריך מלא 2026"
+    },
+    {
+      "category": "osek-patur",
+      "slug": "accountant",
+      "title": "רואה חשבון לעוסק פטור — האם צריך ומה העלות?"
+    },
+    {
+      "category": "osek-patur",
+      "slug": "income-ceiling",
+      "title": "תקרת הכנסות עוסק פטור 2026"
+    },
+    {
+      "category": "comparisons",
+      "slug": "osek-patur-vs-murshe",
+      "title": "עוסק פטור או מורשה — מה מתאים לך?"
+    }
   ]
 }

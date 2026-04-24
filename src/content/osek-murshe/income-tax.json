@@ -22,15 +22,42 @@
   },
   "readTime": 11,
   "toc": [
-    { "id": "intro", "title": "מס הכנסה לעוסק מורשה — הבסיס" },
-    { "id": "tax-brackets", "title": "מדרגות מס הכנסה 2026" },
-    { "id": "advance-payments", "title": "מקדמות מס הכנסה" },
-    { "id": "credit-points", "title": "נקודות זיכוי במס הכנסה" },
-    { "id": "tax-planning-tips-callout", "title": "טיפים לתכנון מס" },
-    { "id": "annual-report", "title": "הגשת הדוח השנתי" },
-    { "id": "recognized-expenses", "title": "הוצאות מוכרות שמפחיתות מס" },
-    { "id": "tax-reduction-tips", "title": "8 טיפים להפחתת מס" },
-    { "id": "faq", "title": "שאלות נפוצות" }
+    {
+      "id": "intro",
+      "title": "מס הכנסה לעוסק מורשה — הבסיס"
+    },
+    {
+      "id": "tax-brackets",
+      "title": "מדרגות מס הכנסה 2026"
+    },
+    {
+      "id": "advance-payments",
+      "title": "מקדמות מס הכנסה"
+    },
+    {
+      "id": "credit-points",
+      "title": "נקודות זיכוי במס הכנסה"
+    },
+    {
+      "id": "tax-planning-tips-callout",
+      "title": "טיפים לתכנון מס"
+    },
+    {
+      "id": "annual-report",
+      "title": "הגשת הדוח השנתי"
+    },
+    {
+      "id": "recognized-expenses",
+      "title": "הוצאות מוכרות שמפחיתות מס"
+    },
+    {
+      "id": "tax-reduction-tips",
+      "title": "8 טיפים להפחתת מס"
+    },
+    {
+      "id": "faq",
+      "title": "שאלות נפוצות"
+    }
   ],
   "sections": [
     {
@@ -239,23 +266,23 @@
   ],
   "relatedArticles": [
     {
-      "slug": "tax-deductions",
       "category": "osek-murshe",
+      "slug": "tax-deductions",
       "title": "הוצאות מוכרות עוסק מורשה"
     },
     {
-      "slug": "bituach-leumi",
       "category": "osek-murshe",
+      "slug": "bituach-leumi",
       "title": "ביטוח לאומי עוסק מורשה"
     },
     {
-      "slug": "cost",
       "category": "osek-murshe",
+      "slug": "cost",
       "title": "כמה עולה עוסק מורשה?"
     },
     {
-      "slug": "vat-guide",
       "category": "osek-murshe",
+      "slug": "vat-guide",
       "title": "מדריך מע\"מ לעוסק מורשה"
     }
   ]

@@ -311,24 +311,24 @@
   ],
   "relatedArticles": [
     {
-      "slug": "opening-business",
       "category": "guides",
+      "slug": "opening-business",
       "title": "מדריך פתיחת עסק בישראל — שלב אחר שלב"
     },
     {
-      "slug": "income-tax",
       "category": "osek-murshe",
+      "slug": "income-tax",
       "title": "מס הכנסה עוסק מורשה — מדרגות, מקדמות ודוח שנתי"
     },
     {
-      "slug": "tax-brackets",
       "category": "misui",
+      "slug": "tax-brackets",
       "title": "מדרגות מס הכנסה בישראל 2026"
     },
     {
-      "slug": "net-income",
-      "category": "calculators",
-      "title": "מחשבון שכר נטו לעצמאים"
+      "category": "osek-patur",
+      "slug": "how-to-open",
+      "title": "איך פותחים עוסק פטור — מדריך מלא"
     }
   ]
 }

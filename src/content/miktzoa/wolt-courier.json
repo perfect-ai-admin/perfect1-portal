@@ -24,18 +24,54 @@
   },
   "readTime": 16,
   "toc": [
-    { "id": "status", "title": "מה המעמד של שליח וולט?" },
-    { "id": "patur-vs-murshe", "title": "למה עוסק פטור ולא מורשה?" },
-    { "id": "registration-steps", "title": "איך פותחים עוסק פטור — שלב אחר שלב" },
-    { "id": "earnings", "title": "כמה מרוויח שליח וולט?" },
-    { "id": "deductions", "title": "הוצאות מוכרות לשליח וולט" },
-    { "id": "tax-calc", "title": "כמה מס משלם שליח וולט?" },
-    { "id": "bituach-leumi", "title": "ביטוח לאומי לשליח וולט" },
-    { "id": "invoices", "title": "חשבוניות וקבלות" },
-    { "id": "tips", "title": "טיפים להגדלת הרווח" },
-    { "id": "when-murshe", "title": "מתי לעבור לעוסק מורשה?" },
-    { "id": "mistakes", "title": "טעויות נפוצות" },
-    { "id": "faq", "title": "שאלות נפוצות" }
+    {
+      "id": "status",
+      "title": "מה המעמד של שליח וולט?"
+    },
+    {
+      "id": "patur-vs-murshe",
+      "title": "למה עוסק פטור ולא מורשה?"
+    },
+    {
+      "id": "registration-steps",
+      "title": "איך פותחים עוסק פטור — שלב אחר שלב"
+    },
+    {
+      "id": "earnings",
+      "title": "כמה מרוויח שליח וולט?"
+    },
+    {
+      "id": "deductions",
+      "title": "הוצאות מוכרות לשליח וולט"
+    },
+    {
+      "id": "tax-calc",
+      "title": "כמה מס משלם שליח וולט?"
+    },
+    {
+      "id": "bituach-leumi",
+      "title": "ביטוח לאומי לשליח וולט"
+    },
+    {
+      "id": "invoices",
+      "title": "חשבוניות וקבלות"
+    },
+    {
+      "id": "tips",
+      "title": "טיפים להגדלת הרווח"
+    },
+    {
+      "id": "when-murshe",
+      "title": "מתי לעבור לעוסק מורשה?"
+    },
+    {
+      "id": "mistakes",
+      "title": "טעויות נפוצות"
+    },
+    {
+      "id": "faq",
+      "title": "שאלות נפוצות"
+    }
   ],
   "sections": [
     {
@@ -317,23 +353,23 @@
   ],
   "relatedArticles": [
     {
-      "slug": "how-to-open",
       "category": "osek-patur",
+      "slug": "how-to-open",
       "title": "איך פותחים עוסק פטור — מדריך שלב אחר שלב"
     },
     {
-      "slug": "cost",
       "category": "osek-patur",
+      "slug": "cost",
       "title": "כמה עולה עוסק פטור — עלויות מלאות 2026"
     },
     {
-      "slug": "tax-brackets",
       "category": "misui",
+      "slug": "tax-brackets",
       "title": "מדרגות מס הכנסה לעצמאים 2026 — מדריך מלא"
     },
     {
-      "slug": "fitness-trainer",
       "category": "miktzoa",
+      "slug": "fitness-trainer",
       "title": "עוסק פטור למאמן כושר — מדריך מלא 2026"
     }
   ]

@@ -197,23 +197,23 @@
   "relatedArticles": [
     {
       "category": "osek-patur",
-      "slug": "how-to-open-osek-patur",
-      "title": "איך לפתוח עוסק פטור בישראל?"
+      "slug": "how-to-open",
+      "title": "איך פותחים עוסק פטור — מדריך מלא"
     },
     {
-      "category": "misui",
-      "slug": "tax-obligations-for-osek-murshe",
-      "title": "חובות מס לעוסקים מורשים בישראל"
+      "category": "osek-murshe",
+      "slug": "how-to-open",
+      "title": "פתיחת עוסק מורשה — מדריך מלא"
     },
     {
-      "category": "maam",
-      "slug": "vat-for-osek-murshe",
-      "title": "מעמ עוסק מורשה: מה חשוב לדעת?"
+      "category": "hevra-bam",
+      "slug": "how-to-open",
+      "title": "פתיחת חברה בע\"מ — מדריך"
     },
     {
-      "category": "guides",
-      "slug": "business-registration-guide",
-      "title": "מדריך לרישום עסקים בישראל"
+      "category": "osek-patur",
+      "slug": "cost",
+      "title": "כמה עולה עוסק פטור"
     }
   ]
 }

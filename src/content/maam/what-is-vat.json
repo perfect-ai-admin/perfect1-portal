@@ -392,28 +392,24 @@
   ],
   "relatedArticles": [
     {
+      "category": "osek-murshe",
       "slug": "vat-guide",
-      "category": "osek-murshe",
-      "title": "מדריך מע\"מ לעוסק מורשה",
-      "description": "כל פרטי הדיווח, הטפסים והמועדים לעוסק מורשה"
+      "title": "מדריך מע\"מ לעוסק מורשה"
     },
     {
-      "slug": "how-to-open",
       "category": "osek-murshe",
-      "title": "פתיחת עוסק מורשה",
-      "description": "מדריך שלב אחר שלב לפתיחת עוסק מורשה בישראל"
+      "slug": "how-to-open",
+      "title": "פתיחת עוסק מורשה"
     },
     {
-      "slug": "how-to-open",
       "category": "osek-patur",
-      "title": "פתיחת עוסק פטור",
-      "description": "המדריך המלא לפתיחת עוסק פטור 2026"
+      "slug": "how-to-open",
+      "title": "פתיחת עוסק פטור"
     },
     {
-      "slug": "tax-brackets",
       "category": "misui",
-      "title": "מדרגות מס הכנסה לעצמאים",
-      "description": "מדרגות מס הכנסה ושיעורי מס לעצמאים 2026"
+      "slug": "tax-brackets",
+      "title": "מדרגות מס הכנסה לעצמאים"
     }
   ]
 }
