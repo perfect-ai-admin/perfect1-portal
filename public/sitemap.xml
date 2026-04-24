@@ -181,7 +181,7 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://www.perfect1.co.il/osek-murshe/hamadrikh-hamaleh-leryishui-osek-murshe-beyisrael</loc>
+    <loc>https://www.perfect1.co.il/osek-murshe/complete-guide</loc>
     <lastmod>2026-04-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -229,7 +229,7 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://www.perfect1.co.il/osek-murshe/requirments-for-opening-osek-murshe</loc>
+    <loc>https://www.perfect1.co.il/osek-murshe/requirements</loc>
     <lastmod>2026-04-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -247,7 +247,7 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://www.perfect1.co.il/osek-murshe/taxes-for-osek-murshe-all-you-need-to-know</loc>
+    <loc>https://www.perfect1.co.il/osek-murshe/full-tax-guide</loc>
     <lastmod>2026-04-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -265,10 +265,16 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://www.perfect1.co.il/osek-murshe/why-choose-osek-murshe-advantages-and-disadvantages</loc>
+    <loc>https://www.perfect1.co.il/osek-murshe/why-choose</loc>
     <lastmod>2026-04-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.perfect1.co.il/authors/perfect1-team</loc>
+    <lastmod>2026-04-20</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
   </url>
   <url>
     <loc>https://www.perfect1.co.il/hevra-bam</loc>

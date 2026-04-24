@@ -72,6 +72,7 @@ const CreditPointsCalcPage = lazyWithRetry(() => import('./portal/templates/Cred
 const IncomeTaxCalcPage = lazyWithRetry(() => import('./portal/templates/IncomeTaxCalcPage'));
 const NationalInsuranceCalcPage = lazyWithRetry(() => import('./portal/templates/NationalInsuranceCalcPage'));
 const CompanyTaxCalcPage = lazyWithRetry(() => import('./portal/templates/CompanyTaxCalcPage'));
+const AuthorPage = lazyWithRetry(() => import('./portal/templates/AuthorPage'));
 const OsekPaturLanding = lazyWithRetry(() => import('./pages/OsekPaturLanding'));
 const AtzmaimBerega = lazyWithRetry(() => import('./pages/AtzmaimBerega'));
 const OsekPaturLandingB = lazyWithRetry(() => import('./pages/OsekPaturLandingB'));
@@ -262,6 +263,7 @@ const PortalRoutes = () => (
     <Route path="/calculators/income-tax" element={<PortalWrapper><IncomeTaxCalcPage /></PortalWrapper>} />
     <Route path="/calculators/national-insurance" element={<PortalWrapper><NationalInsuranceCalcPage /></PortalWrapper>} />
     <Route path="/calculators/company-tax" element={<PortalWrapper><CompanyTaxCalcPage /></PortalWrapper>} />
+    <Route path="/authors/:slug" element={<PortalWrapper><AuthorPage /></PortalWrapper>} />
 
     {/* Shared public pages */}
     <Route path="/About" element={<SafePage><About /></SafePage>} />
@@ -397,6 +399,7 @@ const DevRoutes = () => (
     <Route path="/calculators/income-tax" element={<PortalWrapper><IncomeTaxCalcPage /></PortalWrapper>} />
     <Route path="/calculators/national-insurance" element={<PortalWrapper><NationalInsuranceCalcPage /></PortalWrapper>} />
     <Route path="/calculators/company-tax" element={<PortalWrapper><CompanyTaxCalcPage /></PortalWrapper>} />
+    <Route path="/authors/:slug" element={<PortalWrapper><AuthorPage /></PortalWrapper>} />
 
     {/* CRM Routes */}
     <Route path="/CRM" element={<SafePage><CRMLayout /></SafePage>}>

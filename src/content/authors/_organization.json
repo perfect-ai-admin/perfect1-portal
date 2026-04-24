@@ -1,0 +1,39 @@
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "@id": "https://www.perfect1.co.il/#organization",
+  "name": "פרפקט וואן",
+  "alternateName": "Perfect One",
+  "url": "https://www.perfect1.co.il",
+  "logo": "https://www.perfect1.co.il/logo.png",
+  "description": "פורטל עסקי ישראלי המתמחה בליווי עצמאים ועסקים קטנים — פתיחת עוסק פטור, עוסק מורשה, חברה בעמ, מיסוי, וסגירת תיקים.",
+  "foundingDate": "2024",
+  "areaServed": {
+    "@type": "Country",
+    "name": "Israel"
+  },
+  "knowsAbout": [
+    "עוסק פטור",
+    "עוסק מורשה",
+    "חברה בעמ",
+    "מס הכנסה",
+    "מעמ",
+    "ביטוח לאומי",
+    "הנהלת חשבונות",
+    "פתיחת עסק",
+    "סגירת עסק"
+  ],
+  "knowsLanguage": ["he-IL", "en-US"],
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "contactType": "customer support",
+    "telephone": "+972-50-227-7087",
+    "availableLanguage": ["Hebrew", "English"],
+    "areaServed": "IL"
+  },
+  "sameAs": [
+    "https://www.facebook.com/perfect1coil",
+    "https://www.linkedin.com/company/perfect1",
+    "https://wa.me/972502277087"
+  ]
+}

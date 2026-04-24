@@ -100,9 +100,13 @@ function generateMetaTags(route) {
     <meta property="og:locale" content="he_IL" />
     <meta property="og:site_name" content="${BRAND}" />
     <meta property="og:image" content="${BASE_URL}/og-image.png" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="${escapeHtml(title)}" />
     <meta name="twitter:description" content="${escapeHtml(description)}" />
+    <meta name="twitter:image" content="${BASE_URL}/og-image.png" />
   `;
 }
 
@@ -140,15 +144,38 @@ function generateSchema(route) {
     }))
   });
 
-  // Article schema — E-E-A-T optimized with full author + publisher + image
-  if (type === 'article' && data.sections) {
-    const author = {
-      '@type': 'Person',
-      name: data.author?.name || 'צוות פרפקט וואן',
-    };
-    if (data.author?.role) author.jobTitle = data.author.role;
-    if (data.author?.url) author.url = data.author.url;
+  // Organization schema — injected on every page (E-E-A-T global anchor)
+  schemas.push({
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    '@id': `${BASE_URL}/#organization`,
+    name: BRAND,
+    alternateName: 'Perfect One',
+    url: BASE_URL,
+    logo: {
+      '@type': 'ImageObject',
+      url: `${BASE_URL}/logo.png`,
+      width: 600,
+      height: 60
+    },
+    foundingDate: '2024',
+    areaServed: { '@type': 'Country', name: 'Israel' },
+    contactPoint: {
+      '@type': 'ContactPoint',
+      telephone: '+972-50-227-7087',
+      contactType: 'customer support',
+      availableLanguage: ['Hebrew', 'English'],
+      areaServed: 'IL'
+    },
+    sameAs: [
+      'https://www.facebook.com/perfect1coil',
+      'https://www.linkedin.com/company/perfect1',
+      'https://wa.me/972502277087'
+    ]
+  });
 
+  // Article schema — E-E-A-T optimized with Organization-as-Author
+  if (type === 'article' && data.sections) {
     schemas.push({
       '@context': 'https://schema.org',
       '@type': 'Article',
@@ -158,16 +185,21 @@ function generateSchema(route) {
       dateModified: data.updatedDate || data.publishDate || '',
       image: `${BASE_URL}/og-image.png`,
       inLanguage: 'he-IL',
-      author,
+      author: {
+        '@type': 'Organization',
+        '@id': `${BASE_URL}/#organization`,
+        name: 'צוות פרפקט וואן',
+        url: `${BASE_URL}/authors/perfect1-team`
+      },
       publisher: {
         '@type': 'Organization',
+        '@id': `${BASE_URL}/#organization`,
         name: BRAND,
-        url: BASE_URL,
         logo: {
           '@type': 'ImageObject',
-          url: `${BASE_URL}/og-image.png`,
-          width: 1200,
-          height: 630
+          url: `${BASE_URL}/logo.png`,
+          width: 600,
+          height: 60
         }
       },
       mainEntityOfPage: { '@type': 'WebPage', '@id': url },
@@ -208,6 +240,11 @@ function generateContent(route) {
 
   const sections = data.sections || [];
   let html = '';
+
+  // Hero image — LCP element in initial HTML (before hydration)
+  const heroImg = data.heroImage || '/og-image.png';
+  const heroAlt = escapeHtml(data.heroTitle || data.title || BRAND);
+  html += `<img src="${heroImg}" alt="${heroAlt}" loading="eager" fetchpriority="high" width="1200" height="630" style="width:100%;height:auto;display:block;margin-bottom:1.5rem" />\n`;
 
   if (data.heroTitle) {
     html += `<h1>${escapeHtml(data.heroTitle)}</h1>\n`;
@@ -509,9 +546,13 @@ function generatePublicPages() {
     <meta property="og:locale" content="he_IL" />
     <meta property="og:site_name" content="${BRAND}" />
     <meta property="og:image" content="${BASE_URL}/og-image.png" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="${escapeHtml(seo.title)}" />
     <meta name="twitter:description" content="${escapeHtml(seo.description)}" />
+    <meta name="twitter:image" content="${BASE_URL}/og-image.png" />
     `;
 
     html = html.replace('<head>', `<head>\n    <meta name="prerender-status" content="200">\n    ${metaTags}`);
@@ -532,6 +573,7 @@ function generatePublicPages() {
 function generateSPAFallbacks() {
   const spaRoutes = [
     // Landing pages
+    '/authors/perfect1-team',
     '/open-osek-patur',
     '/atzmaim-berega',
     // Calculators (React pages, not JSON content)

@@ -11,6 +11,26 @@
       "source": "/atzmaim-berega-final",
       "destination": "/atzmaim-berega",
       "permanent": true
+    },
+    {
+      "source": "/osek-murshe/hamadrikh-hamaleh-leryishui-osek-murshe-beyisrael",
+      "destination": "/osek-murshe/complete-guide",
+      "permanent": true
+    },
+    {
+      "source": "/osek-murshe/why-choose-osek-murshe-advantages-and-disadvantages",
+      "destination": "/osek-murshe/why-choose",
+      "permanent": true
+    },
+    {
+      "source": "/osek-murshe/taxes-for-osek-murshe-all-you-need-to-know",
+      "destination": "/osek-murshe/full-tax-guide",
+      "permanent": true
+    },
+    {
+      "source": "/osek-murshe/requirments-for-opening-osek-murshe",
+      "destination": "/osek-murshe/requirements",
+      "permanent": true
     }
   ],
   "rewrites": [

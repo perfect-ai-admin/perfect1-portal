@@ -11,16 +11,19 @@ const generateArticleSchema = (data) => {
     dateModified: data.updatedDate || data.publishDate,
     author: {
       '@type': 'Organization',
-      name: 'פרפקט וואן',
-      url: 'https://www.perfect1.co.il',
+      '@id': 'https://www.perfect1.co.il/#organization',
+      name: 'צוות פרפקט וואן',
+      url: 'https://www.perfect1.co.il/authors/perfect1-team',
     },
     publisher: {
       '@type': 'Organization',
+      '@id': 'https://www.perfect1.co.il/#organization',
       name: 'פרפקט וואן',
-      url: 'https://www.perfect1.co.il',
       logo: {
         '@type': 'ImageObject',
-        url: 'https://www.perfect1.co.il/og-image.png',
+        url: 'https://www.perfect1.co.il/logo.png',
+        width: 600,
+        height: 60,
       },
     },
     image: {
@@ -119,13 +122,17 @@ const generateBreadcrumbSchema = (breadcrumbs) => ({
 const generateOrganizationSchema = () => ({
   '@context': 'https://schema.org',
   '@type': 'Organization',
+  '@id': 'https://www.perfect1.co.il/#organization',
   name: 'פרפקט וואן',
-  alternateName: 'Perfect1',
+  alternateName: 'Perfect One',
   url: 'https://www.perfect1.co.il',
-  description: 'פורטל מידע עסקי מוביל בישראל — מדריכים מקצועיים לפתיחה, ניהול ומיסוי עסקים. ליווי אישי עם רואי חשבון.',
+  description: 'פורטל עסקי ישראלי המתמחה בליווי עצמאים ועסקים קטנים — פתיחת עוסק פטור, עוסק מורשה, חברה בעמ, מיסוי, וסגירת תיקים.',
+  foundingDate: '2024',
   logo: {
     '@type': 'ImageObject',
-    url: 'https://www.perfect1.co.il/og-image.png',
+    url: 'https://www.perfect1.co.il/logo.png',
+    width: 600,
+    height: 60,
   },
   areaServed: {
     '@type': 'Country',
@@ -150,6 +157,8 @@ const generateOrganizationSchema = () => ({
     availableLanguage: ['Hebrew', 'English'],
   },
   sameAs: [
+    'https://www.facebook.com/perfect1coil',
+    'https://www.linkedin.com/company/perfect1',
     'https://wa.me/972502277087',
   ],
 });
