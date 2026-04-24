@@ -2,12 +2,6 @@
   "cleanUrls": true,
   "redirects": [
     {
-      "source": "/(.*)",
-      "has": [{ "type": "host", "value": "perfect1.co.il" }],
-      "destination": "https://www.perfect1.co.il/$1",
-      "permanent": true
-    },
-    {
       "source": "/atzmaim-berega-final",
       "destination": "/atzmaim-berega",
       "permanent": true
@@ -30,6 +24,12 @@
     {
       "source": "/osek-murshe/requirments-for-opening-osek-murshe",
       "destination": "/osek-murshe/requirements",
+      "permanent": true
+    },
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "perfect1.co.il" }],
+      "destination": "https://www.perfect1.co.il/:path*",
       "permanent": true
     }
   ],
