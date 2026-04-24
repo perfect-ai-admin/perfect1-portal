@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "prebuild": "node scripts/generate-sitemap.js",
     "build": "vite build && node scripts/generate-static.js",
     "build:no-prerender": "vite build",
     "build:full-prerender": "vite build && node scripts/prerender.js",

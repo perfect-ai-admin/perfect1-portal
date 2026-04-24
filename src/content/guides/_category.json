@@ -2,30 +2,107 @@
   "title": "מידע ומדריכים",
   "description": "מדריכים כלליים, השוואות וכלים לעסקים בישראל.",
   "metaTitle": "מדריכים לפתיחת עסק בישראל | פרפקט וואן",
-  "metaDescription": "מדריכים, השוואות וכלים לפתיחת עסק: עצמאים, מיסוי, תמחור ועוד. כל מה שצריך לדעת לפני שמתחילים.",
+  "metaDescription": "מדריכים, השוואות וכלים לפתיחת עסק: עצמאים, מיסוי, תמחור ועוד. כל מה שצריך לדעת לפני שמתחילים. | מדריך מלא בפרפקט וואן, הרשמו לייעוץ חינם.",
   "color": "amber",
-  "keywords": ["מדריכים לעסקים", "פתיחת עסק", "השוואות", "מיסוי", "כלים לעסקים"],
+  "keywords": [
+    "מדריכים לעסקים",
+    "פתיחת עסק",
+    "השוואות",
+    "מיסוי",
+    "כלים לעסקים"
+  ],
   "subcategories": [
-    { "title": "מדריכים לפתיחת עסק", "slug": "opening-business" },
-    { "title": "השוואות", "slug": "comparisons" },
-    { "title": "מיסוי וחשבונאות", "slug": "taxation" },
-    { "title": "מדריכים לעצמאים", "slug": "freelancers" },
-    { "title": "כלים ומחשבונים", "slug": "tools" },
-    { "title": "שאלות נפוצות", "slug": "faq" }
+    {
+      "title": "מדריכים לפתיחת עסק",
+      "slug": "opening-business"
+    },
+    {
+      "title": "השוואות",
+      "slug": "comparisons"
+    },
+    {
+      "title": "מיסוי וחשבונאות",
+      "slug": "taxation"
+    },
+    {
+      "title": "מדריכים לעצמאים",
+      "slug": "freelancers"
+    },
+    {
+      "title": "כלים ומחשבונים",
+      "slug": "tools"
+    },
+    {
+      "title": "שאלות נפוצות",
+      "slug": "faq"
+    }
   ],
   "articles": [
-    { "slug": "which-business-type", "title": "איזה סוג עסק מתאים לך? מדריך בחירה מלא", "readTime": 15 },
-    { "slug": "opening-business", "title": "מדריך פתיחת עסק בישראל — הצעדים הראשונים שלך 2026", "readTime": 14 },
-    { "slug": "comparisons", "title": "השוואת סוגי עסקים — פטור, מורשה או חברה בע\"מ", "readTime": 12 },
-    { "slug": "taxation", "title": "מדריך מיסוי לעסקים בישראל — כל מה שצריך לדעת 2026", "readTime": 15 },
-    { "slug": "freelancers", "title": "מדריך מקיף לפרילנסרים בישראל 2026", "readTime": 14 },
-    { "slug": "tools", "title": "כלים ומחשבונים לעסקים קטנים — המדריך המלא 2026", "readTime": 12 },
-    { "slug": "faq", "title": "שאלות נפוצות על עסקים בישראל — כל התשובות במקום אחד", "readTime": 13 },
-    { "slug": "../maam/what-is-vat", "title": "מה זה מע״מ? מדריך מלא לעוסקים 2026", "readTime": 14, "href": "/maam/what-is-vat" },
-    { "slug": "../miktzoa/fitness-trainer", "title": "עוסק פטור למאמן כושר — המדריך המלא", "readTime": 12, "href": "/miktzoa/fitness-trainer" },
-    { "slug": "../miktzoa/graphic-designer", "title": "עוסק פטור למעצב גרפי — המדריך המלא", "readTime": 12, "href": "/miktzoa/graphic-designer" },
-    { "slug": "../miktzoa/private-tutor", "title": "עוסק פטור למורה פרטי — המדריך המלא", "readTime": 12, "href": "/miktzoa/private-tutor" },
-    { "slug": "../miktzoa/wolt-courier", "title": "עוסק פטור לשליח Wolt — המדריך המלא", "readTime": 15, "href": "/miktzoa/wolt-courier" }
+    {
+      "slug": "which-business-type",
+      "title": "איזה סוג עסק מתאים לך? מדריך בחירה מלא",
+      "readTime": 15
+    },
+    {
+      "slug": "opening-business",
+      "title": "מדריך פתיחת עסק בישראל — הצעדים הראשונים שלך 2026",
+      "readTime": 14
+    },
+    {
+      "slug": "comparisons",
+      "title": "השוואת סוגי עסקים — פטור, מורשה או חברה בע\"מ",
+      "readTime": 12
+    },
+    {
+      "slug": "taxation",
+      "title": "מדריך מיסוי לעסקים בישראל — כל מה שצריך לדעת 2026",
+      "readTime": 15
+    },
+    {
+      "slug": "freelancers",
+      "title": "מדריך מקיף לפרילנסרים בישראל 2026",
+      "readTime": 14
+    },
+    {
+      "slug": "tools",
+      "title": "כלים ומחשבונים לעסקים קטנים — המדריך המלא 2026",
+      "readTime": 12
+    },
+    {
+      "slug": "faq",
+      "title": "שאלות נפוצות על עסקים בישראל — כל התשובות במקום אחד",
+      "readTime": 13
+    },
+    {
+      "slug": "../maam/what-is-vat",
+      "title": "מה זה מע״מ? מדריך מלא לעוסקים 2026",
+      "readTime": 14,
+      "href": "/maam/what-is-vat"
+    },
+    {
+      "slug": "../miktzoa/fitness-trainer",
+      "title": "עוסק פטור למאמן כושר — המדריך המלא",
+      "readTime": 12,
+      "href": "/miktzoa/fitness-trainer"
+    },
+    {
+      "slug": "../miktzoa/graphic-designer",
+      "title": "עוסק פטור למעצב גרפי — המדריך המלא",
+      "readTime": 12,
+      "href": "/miktzoa/graphic-designer"
+    },
+    {
+      "slug": "../miktzoa/private-tutor",
+      "title": "עוסק פטור למורה פרטי — המדריך המלא",
+      "readTime": 12,
+      "href": "/miktzoa/private-tutor"
+    },
+    {
+      "slug": "../miktzoa/wolt-courier",
+      "title": "עוסק פטור לשליח Wolt — המדריך המלא",
+      "readTime": 15,
+      "href": "/miktzoa/wolt-courier"
+    }
   ],
   "faq": [
     {

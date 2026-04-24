@@ -2,25 +2,77 @@
   "title": "סגירת תיקים",
   "description": "סגירת עסק, תיקים ומול רשויות — בלי טעויות. מדריכים לסגירה מסודרת.",
   "metaTitle": "סגירת תיקים - מדריך לסגירת עסק בישראל | פרפקט וואן",
-  "metaDescription": "מדריכים לסגירת עוסק פטור, עוסק מורשה וחברה. סגירה מול מס הכנסה, מע\"מ וביטוח לאומי.",
+  "metaDescription": "מדריכים לסגירת עוסק פטור, עוסק מורשה וחברה. סגירה מול מס הכנסה, מע\"מ וביטוח לאומי. | מדריך מלא בפרפקט וואן, הרשמו לייעוץ חינם.",
   "color": "red",
-  "keywords": ["סגירת תיקים", "סגירת עסק", "סגירת עוסק פטור", "סגירת חברה", "ביטוח לאומי"],
+  "keywords": [
+    "סגירת תיקים",
+    "סגירת עסק",
+    "סגירת עוסק פטור",
+    "סגירת חברה",
+    "ביטוח לאומי"
+  ],
   "subcategories": [
-    { "title": "סגירת עוסק פטור", "slug": "close-osek-patur" },
-    { "title": "סגירת עוסק מורשה", "slug": "close-osek-murshe" },
-    { "title": "סגירת חברה", "slug": "close-company" },
-    { "title": "סגירה מול רשויות", "slug": "authorities" },
-    { "title": "חובות והשלכות", "slug": "consequences" },
-    { "title": "שאלות נפוצות", "slug": "faq" }
+    {
+      "title": "סגירת עוסק פטור",
+      "slug": "close-osek-patur"
+    },
+    {
+      "title": "סגירת עוסק מורשה",
+      "slug": "close-osek-murshe"
+    },
+    {
+      "title": "סגירת חברה",
+      "slug": "close-company"
+    },
+    {
+      "title": "סגירה מול רשויות",
+      "slug": "authorities"
+    },
+    {
+      "title": "חובות והשלכות",
+      "slug": "consequences"
+    },
+    {
+      "title": "שאלות נפוצות",
+      "slug": "faq"
+    }
   ],
   "articles": [
-    { "slug": "close-osek-patur", "title": "סגירת עוסק פטור — מדריך שלב אחר שלב", "readTime": 10 },
-    { "slug": "close-osek-murshe", "title": "סגירת עוסק מורשה — מדריך מלא", "readTime": 12 },
-    { "slug": "close-company", "title": "פירוק חברה מרצון — מדריך מלא 2026", "readTime": 14 },
-    { "slug": "fast-track-dissolution", "title": "פירוק מרצון בהליך מזורז — מדריך מלא", "readTime": 10 },
-    { "slug": "authorities", "title": "סגירת תיקים מול רשויות — מדריך שלב אחר שלב", "readTime": 12 },
-    { "slug": "consequences", "title": "חובות והשלכות סגירת עסק — כל מה שצריך לדעת", "readTime": 13 },
-    { "slug": "faq", "title": "שאלות נפוצות על סגירת עסק — 20 שאלות ותשובות", "readTime": 15 }
+    {
+      "slug": "close-osek-patur",
+      "title": "סגירת עוסק פטור — מדריך שלב אחר שלב",
+      "readTime": 10
+    },
+    {
+      "slug": "close-osek-murshe",
+      "title": "סגירת עוסק מורשה — מדריך מלא",
+      "readTime": 12
+    },
+    {
+      "slug": "close-company",
+      "title": "פירוק חברה מרצון — מדריך מלא 2026",
+      "readTime": 14
+    },
+    {
+      "slug": "fast-track-dissolution",
+      "title": "פירוק מרצון בהליך מזורז — מדריך מלא",
+      "readTime": 10
+    },
+    {
+      "slug": "authorities",
+      "title": "סגירת תיקים מול רשויות — מדריך שלב אחר שלב",
+      "readTime": 12
+    },
+    {
+      "slug": "consequences",
+      "title": "חובות והשלכות סגירת עסק — כל מה שצריך לדעת",
+      "readTime": 13
+    },
+    {
+      "slug": "faq",
+      "title": "שאלות נפוצות על סגירת עסק — 20 שאלות ותשובות",
+      "readTime": 15
+    }
   ],
   "faq": [
     {

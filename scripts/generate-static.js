@@ -170,7 +170,9 @@ function generateSchema(route) {
           height: 630
         }
       },
-      mainEntityOfPage: { '@type': 'WebPage', '@id': url }
+      mainEntityOfPage: { '@type': 'WebPage', '@id': url },
+      keywords: (data.keywords || []).join(', '),
+      articleSection: route.category || ''
     });
   }
 
@@ -325,17 +327,17 @@ function generate() {
     // Start with base HTML
     let html = baseHtml;
 
-    // Replace <title> and meta tags in <head>
-    html = html.replace(/<title>.*?<\/title>/, '');
-    html = html.replace(/<meta name="description"[^>]*>/, '');
-    html = html.replace(/<meta name="keywords"[^>]*>/, '');
-    html = html.replace(/<link rel="canonical"[^>]*>/, '');
-    html = html.replace(/<meta property="og:title"[^>]*>/, '');
-    html = html.replace(/<meta property="og:description"[^>]*>/, '');
-    html = html.replace(/<meta property="og:url"[^>]*>/, '');
-    html = html.replace(/<meta property="og:site_name"[^>]*>/, '');
-    html = html.replace(/<meta name="twitter:title"[^>]*>/, '');
-    html = html.replace(/<meta name="twitter:description"[^>]*>/, '');
+    // Strip ALL existing title/meta tags before injecting article-specific ones
+    html = html.replace(/<title>[^<]*<\/title>/g, '');
+    html = html.replace(/<meta\s+name="description"[^>]*>/g, '');
+    html = html.replace(/<meta\s+name="keywords"[^>]*>/g, '');
+    html = html.replace(/<link\s+rel="canonical"[^>]*>/g, '');
+    html = html.replace(/<meta\s+property="og:title"[^>]*>/g, '');
+    html = html.replace(/<meta\s+property="og:description"[^>]*>/g, '');
+    html = html.replace(/<meta\s+property="og:url"[^>]*>/g, '');
+    html = html.replace(/<meta\s+property="og:site_name"[^>]*>/g, '');
+    html = html.replace(/<meta\s+name="twitter:title"[^>]*>/g, '');
+    html = html.replace(/<meta\s+name="twitter:description"[^>]*>/g, '');
 
     // Inject new meta tags after <head>
     html = html.replace('<head>', `<head>\n    <meta name="prerender-status" content="200">\n    ${metaTags}`);

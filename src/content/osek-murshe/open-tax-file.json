@@ -1,7 +1,7 @@
 {
   "slug": "open-tax-file",
   "category": "osek-murshe",
-  "metaTitle": "פתיחת תיק עוסק מורשה במס הכנסה ובמע\"מ — מדריך 2026 | פרפקט וואן",
+  "metaTitle": "פתיחת תיק עוסק מורשה במס הכנסה ובמע\"מ — מדריך 2026",
   "metaDescription": "מדריך מלא לפתיחת תיק עוסק מורשה: טופס 821 למע\"מ, טופס 5329 למס הכנסה, פתיחה מקוונת באינטרנט, מסמכים נדרשים, לוחות זמנים וטיפים. מעודכן 2026.",
   "keywords": [
     "פתיחת תיק עוסק מורשה",
@@ -23,17 +23,50 @@
   "publishDate": "2026-04-05",
   "updatedDate": "2026-04-17",
   "toc": [
-    { "id": "overview", "title": "מה כולל תהליך פתיחת התיק?" },
-    { "id": "three-files", "title": "שלושת התיקים שצריך לפתוח" },
-    { "id": "documents", "title": "מסמכים נדרשים" },
-    { "id": "vat-file", "title": "פתיחת תיק במע\"מ (טופס 821)" },
-    { "id": "income-tax-file", "title": "פתיחת תיק במס הכנסה (טופס 5329)" },
-    { "id": "bituach-leumi-file", "title": "פתיחת תיק בביטוח לאומי" },
-    { "id": "online-process", "title": "פתיחת תיק מקוונת באינטרנט" },
-    { "id": "timelines", "title": "לוחות זמנים" },
-    { "id": "after-opening", "title": "מה עושים אחרי פתיחת התיק?" },
-    { "id": "common-mistakes", "title": "טעויות נפוצות" },
-    { "id": "faq", "title": "שאלות נפוצות" }
+    {
+      "id": "overview",
+      "title": "מה כולל תהליך פתיחת התיק?"
+    },
+    {
+      "id": "three-files",
+      "title": "שלושת התיקים שצריך לפתוח"
+    },
+    {
+      "id": "documents",
+      "title": "מסמכים נדרשים"
+    },
+    {
+      "id": "vat-file",
+      "title": "פתיחת תיק במע\"מ (טופס 821)"
+    },
+    {
+      "id": "income-tax-file",
+      "title": "פתיחת תיק במס הכנסה (טופס 5329)"
+    },
+    {
+      "id": "bituach-leumi-file",
+      "title": "פתיחת תיק בביטוח לאומי"
+    },
+    {
+      "id": "online-process",
+      "title": "פתיחת תיק מקוונת באינטרנט"
+    },
+    {
+      "id": "timelines",
+      "title": "לוחות זמנים"
+    },
+    {
+      "id": "after-opening",
+      "title": "מה עושים אחרי פתיחת התיק?"
+    },
+    {
+      "id": "common-mistakes",
+      "title": "טעויות נפוצות"
+    },
+    {
+      "id": "faq",
+      "title": "שאלות נפוצות"
+    }
   ],
   "sections": [
     {
