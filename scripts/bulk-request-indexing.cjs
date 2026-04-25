@@ -4,59 +4,39 @@
  * One-shot script — run via GitHub Actions workflow_dispatch.
  *
  * What it does:
- * 1. Reads all articles from src/content/{cat}/*.json (skip _category.json)
+ * 1. Reads all articles from src/content/ via lib/url-mapper.listAllArticles()
  * 2. Queries seo_published_articles to filter out articles already confirmed indexed
  * 3. For each unindexed URL:
  *    - POST to Google Indexing API (URL_UPDATED)
  *    - Add to IndexNow batch
  * 4. POST IndexNow batch to api.indexnow.org (Bing + Yandex pickup within hours)
  * 5. Submit sitemap.xml to GSC for re-fetch
- * 6. Report counts to console + send summary email
+ * 6. Email summary
+ *
+ * Refactored: pulls config + URL mapping from /config and /lib.
  *
  * Required env: GOOGLE_SERVICE_ACCOUNT_KEY, SUPABASE_SERVICE_KEY
  */
-const fs = require('fs');
 const path = require('path');
 const https = require('https');
 const { google } = require('googleapis');
 
-const SITE_HOST = 'www.perfect1.co.il';
-const SITE_URL = `https://${SITE_HOST}`;
-const SITE_PROPERTY = 'sc-domain:perfect1.co.il';
-const SITEMAP_URL = `${SITE_URL}/sitemap.xml`;
-const INDEXNOW_KEY = 'f192557dbb787a9c644cd9695b63976046d2eef1cd538d7a46318fc51a7e1aa8';
-const KEY_LOCATION = `${SITE_URL}/${INDEXNOW_KEY}.txt`;
-const SUPABASE_URL = (process.env.SUPABASE_URL || 'https://rtlpqjqdmomyptcdkmrq.supabase.co').trim();
+const {
+  SITE_HOST,
+  SITE_PROPERTY,
+  SITEMAP_URL,
+  SUPABASE_URL,
+  INDEXNOW_KEY,
+  INDEXNOW_KEY_LOCATION,
+  ALERT_EMAIL,
+  RATE_LIMIT_MS,
+} = require('../config/site.config.cjs');
+const { listAllArticles } = require('../lib/url-mapper.cjs');
+
 const SUPABASE_KEY = (process.env.SUPABASE_SERVICE_KEY || '').trim();
-const ALERT_EMAIL = (process.env.ALERT_EMAIL || 'yosi5919@gmail.com').trim();
 const CONTENT_DIR = path.resolve(__dirname, '../src/content');
 
-const CATEGORY_URL_MAP = {
-  'osek-patur':'/osek-patur','osek-murshe':'/osek-murshe','hevra-bam':'/hevra-bam',
-  'sgirat-tikim':'/sgirat-tikim','guides':'/guides','comparisons':'/compare',
-  'osek-zeir':'/osek-zeir','misui':'/misui','maam':'/maam','hashbonaut':'/hashbonaut',
-  'mishpati':'/mishpati','shivuk':'/shivuk','tech':'/tech','mimun':'/mimun',
-  'miktzoa':'/miktzoa','cities':'/cities','services':'/services','amuta':'/amuta',
-  'authors':'/authors',
-};
-
 // --- Helpers ---
-
-function listAllArticles() {
-  const out = [];
-  for (const cat of fs.readdirSync(CONTENT_DIR)) {
-    const dir = path.join(CONTENT_DIR, cat);
-    if (!fs.statSync(dir).isDirectory()) continue;
-    const prefix = CATEGORY_URL_MAP[cat];
-    if (!prefix) continue;
-    for (const f of fs.readdirSync(dir)) {
-      if (f.startsWith('_') || !f.endsWith('.json')) continue;
-      const slug = f.replace('.json', '');
-      out.push({ category: cat, slug, url: `${SITE_URL}${prefix}/${slug}` });
-    }
-  }
-  return out;
-}
 
 function supabaseGet(query) {
   return new Promise((resolve, reject) => {
@@ -85,7 +65,7 @@ function postIndexNowBatch(urls) {
   const payload = JSON.stringify({
     host: SITE_HOST,
     key: INDEXNOW_KEY,
-    keyLocation: KEY_LOCATION,
+    keyLocation: INDEXNOW_KEY_LOCATION,
     urlList: urls,
   });
   return new Promise((resolve, reject) => {
@@ -157,7 +137,7 @@ async function main() {
   console.log('=== Bulk Indexing Push ===\n');
 
   // 1. List all articles
-  const all = listAllArticles();
+  const all = listAllArticles(CONTENT_DIR);
   console.log(`Articles in src/content: ${all.length}`);
 
   // 2. Filter out already-indexed
@@ -206,12 +186,11 @@ async function main() {
     if ((googleSuccess + googleFailed) % 50 === 0) {
       console.log(` (${googleSuccess + googleFailed} / ${toPush.length})`);
     }
-    // Rate limit: 200/min, sleep 350ms ≈ 170/min
-    await new Promise(r => setTimeout(r, 350));
+    await new Promise(r => setTimeout(r, RATE_LIMIT_MS.google));
   }
   console.log(`\nGoogle: ${googleSuccess} OK, ${googleFailed} failed\n`);
 
-  // 4. IndexNow (Bing/Yandex) — batch up to 10000 per request
+  // 4. IndexNow (Bing/Yandex)
   console.log('Pushing to IndexNow...');
   const urls = toPush.map(a => a.url);
   const inResult = await postIndexNowBatch(urls);
