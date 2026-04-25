@@ -14,8 +14,16 @@
   ],
   "heroTitle": "איך פותחים עוסק זעיר — מדריך מלא 2026",
   "heroSubtitle": "כל שלב בפתיחת עוסק זעיר: מהמסמכים הנדרשים ועד לרישום הסופי במס הכנסה, מע\"מ וביטוח לאומי — עם עלויות ולוחות זמנים מדויקים.",
+  "heroForm": true,
+  "heroFormCta": "פתחו לי עוסק זעיר — ייעוץ חינם",
+  "trustSignals": [
+    { "icon": "clock", "title": "תוך 24 שעות", "description": "תיק פעיל" },
+    { "icon": "shield", "title": "ללא תשלום מקדמי", "description": "תשלום רק אחרי שמתחילים" },
+    { "icon": "users", "title": "מעל 100", "description": "עוסקים זעירים פתחנו" },
+    { "icon": "star", "title": "4.9/5", "description": "ממוצע ביקורות" }
+  ],
   "publishDate": "2026-04-12",
-  "updatedDate": "2026-04-12",
+  "updatedDate": "2026-04-25",
   "author": {
     "name": "צוות פרפקט וואן",
     "role": "מומחי עסקים"

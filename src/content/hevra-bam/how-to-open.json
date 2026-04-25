@@ -30,8 +30,14 @@
   "leadForm": {
     "title": "רוצים שנפתח לכם חברה? השאירו פרטים"
   },
+  "trustSignals": [
+    { "icon": "clock", "title": "תוך 7 ימים", "description": "תעודת התאגדות" },
+    { "icon": "shield", "title": "רו\"ח + עו\"ד", "description": "ליווי מקצועי מלא" },
+    { "icon": "users", "title": "300+ חברות", "description": "פתחנו השנה" },
+    { "icon": "star", "title": "מחיר קבוע", "description": "450₪ הכל כלול" }
+  ],
   "publishDate": "2026-03-28",
-  "updatedDate": "2026-04-08",
+  "updatedDate": "2026-04-25",
   "author": {
     "name": "צוות פרפקט וואן",
     "role": "מומחי עסקים"
