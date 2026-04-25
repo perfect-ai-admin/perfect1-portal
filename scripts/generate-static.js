@@ -217,10 +217,10 @@ function generateSchema(route) {
       '@type': 'FAQPage',
       mainEntity: faqItems.map(item => ({
         '@type': 'Question',
-        name: item.question,
+        name: stripMarkdown(item.question || ''),
         acceptedAnswer: {
           '@type': 'Answer',
-          text: item.answer
+          text: stripMarkdown(item.answer || '')
         }
       }))
     });
@@ -262,10 +262,10 @@ function generateContent(route) {
 
       case 'list':
         html += `<h2>${escapeHtml(section.title || '')}</h2>\n`;
-        if (section.description) html += `<p>${escapeHtml(section.description)}</p>\n`;
+        if (section.description) html += `<p>${formatContent(section.description)}</p>\n`;
         html += '<ul>\n';
         for (const item of (section.items || [])) {
-          html += `  <li><strong>${escapeHtml(item.title || '')}</strong>: ${escapeHtml(item.description || '')}</li>\n`;
+          html += `  <li><strong>${escapeHtml(item.title || '')}</strong>: ${formatContent(item.description || '')}</li>\n`;
         }
         html += '</ul>\n';
         break;
@@ -274,7 +274,7 @@ function generateContent(route) {
         html += `<h2>${escapeHtml(section.title || '')}</h2>\n`;
         html += '<ol>\n';
         for (const step of (section.steps || [])) {
-          html += `  <li><strong>${escapeHtml(step.title || '')}</strong>: ${escapeHtml(step.description || '')}</li>\n`;
+          html += `  <li><strong>${escapeHtml(step.title || '')}</strong>: ${formatContent(step.description || '')}</li>\n`;
         }
         html += '</ol>\n';
         break;
@@ -283,16 +283,16 @@ function generateContent(route) {
         html += `<h2>${escapeHtml(section.title || '')}</h2>\n`;
         for (const item of (section.items || [])) {
           html += `<h3>${escapeHtml(item.question)}</h3>\n`;
-          html += `<p>${escapeHtml(item.answer)}</p>\n`;
+          html += `<p>${formatContent(item.answer || '')}</p>\n`;
         }
         break;
 
       case 'callout':
-        html += `<aside><strong>${escapeHtml(section.title || '')}</strong>: ${escapeHtml(section.content || '')}</aside>\n`;
+        html += `<aside><strong>${escapeHtml(section.title || '')}</strong>: ${formatContent(section.content || '')}</aside>\n`;
         break;
 
       case 'cta-inline':
-        html += `<div><strong>${escapeHtml(section.title || '')}</strong> — ${escapeHtml(section.description || '')}</div>\n`;
+        html += `<div><strong>${escapeHtml(section.title || '')}</strong> — ${formatContent(section.description || '')}</div>\n`;
         break;
     }
   }
@@ -324,7 +324,7 @@ function generateCategoryContent(data) {
     html += '<h2>שאלות נפוצות</h2>\n';
     for (const item of data.faq) {
       html += `<h3>${escapeHtml(item.question)}</h3>\n`;
-      html += `<p>${escapeHtml(item.answer)}</p>\n`;
+      html += `<p>${formatContent(item.answer || '')}</p>\n`;
     }
   }
 
@@ -339,8 +339,28 @@ function escapeHtml(str) {
     .replace(/"/g, '&quot;');
 }
 
+// Strip markdown to plain text — for schema fields that should be plain text
+function stripMarkdown(text) {
+  return text
+    .replace(/\*\*([^*\n]+?)\*\*/g, '$1')
+    .replace(/(^|[^*])\*([^*\n]+?)\*(?!\*)/g, '$1$2')
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1');
+}
+
 function formatContent(text) {
-  return escapeHtml(text).replace(/\n\n/g, '</p><p>').replace(/\n/g, '<br>');
+  let html = escapeHtml(text);
+  // Markdown bold: **text** → <strong>text</strong>
+  html = html.replace(/\*\*([^*\n]+?)\*\*/g, '<strong>$1</strong>');
+  // Markdown italic: *text* → <em>text</em> (after bold to avoid conflicts)
+  html = html.replace(/(^|[^*])\*([^*\n]+?)\*(?!\*)/g, '$1<em>$2</em>');
+  // Markdown links: [text](url) → <a href="url">text</a>
+  html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_, t, u) => {
+    const isInternal = u.startsWith('/');
+    const rel = isInternal ? '' : ' rel="noopener noreferrer" target="_blank"';
+    return `<a href="${u}"${rel}>${t}</a>`;
+  });
+  // Paragraphs and line breaks
+  return html.replace(/\n\n/g, '</p><p>').replace(/\n/g, '<br>');
 }
 
 // Main: inject SEO content into each page's HTML
