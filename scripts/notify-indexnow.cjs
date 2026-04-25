@@ -1,65 +1,34 @@
 /**
- * IndexNow protocol notifier — Bing, Yandex, Naver, Seznam, IndexNow.
+ * IndexNow protocol notifier — Bing, Yandex, Naver, Seznam.
  *
  * Runs after deploy alongside Google Indexing API.
  * Detects content URL changes from last commit and pushes to IndexNow API.
  * Bing typically indexes within hours.
  *
- * IndexNow key: f192557dbb787a9c644cd9695b63976046d2eef1cd538d7a46318fc51a7e1aa8
- * Verification file: public/{key}.txt — must be accessible at https://www.perfect1.co.il/{key}.txt
+ * Refactored: pulls IndexNow key + URL mapping from /config and /lib.
  */
 
 const { execSync } = require('child_process');
 const https = require('https');
 
-const SITE_HOST = 'www.perfect1.co.il';
-const SITE_URL = `https://${SITE_HOST}`;
-const INDEXNOW_KEY = 'f192557dbb787a9c644cd9695b63976046d2eef1cd538d7a46318fc51a7e1aa8';
-const KEY_LOCATION = `${SITE_URL}/${INDEXNOW_KEY}.txt`;
-const CONTENT_DIR = 'src/content/';
-
-const CATEGORY_URL_MAP = {
-  'osek-patur': '/osek-patur',
-  'osek-murshe': '/osek-murshe',
-  'hevra-bam': '/hevra-bam',
-  'sgirat-tikim': '/sgirat-tikim',
-  'guides': '/guides',
-  'comparisons': '/compare',
-  'osek-zeir': '/osek-zeir',
-  'misui': '/misui',
-  'maam': '/maam',
-  'hashbonaut': '/hashbonaut',
-  'mishpati': '/mishpati',
-  'shivuk': '/shivuk',
-  'tech': '/tech',
-  'mimun': '/mimun',
-  'miktzoa': '/miktzoa',
-  'cities': '/cities',
-  'services': '/services',
-  'amuta': '/amuta',
-  'authors': '/authors',
-};
+const {
+  SITE_HOST,
+  INDEXNOW_KEY,
+  INDEXNOW_KEY_LOCATION,
+  CONTENT_DIR_REL,
+} = require('../config/site.config.cjs');
+const { fileToUrl } = require('../lib/url-mapper.cjs');
 
 function getChangedContentFiles() {
   try {
     const diff = execSync('git diff --name-only HEAD~1 HEAD', { encoding: 'utf-8' });
     return diff
       .split('\n')
-      .filter(f => f.startsWith(CONTENT_DIR) && f.endsWith('.json'))
+      .filter(f => f.startsWith(CONTENT_DIR_REL) && f.endsWith('.json'))
       .filter(f => !f.includes('_category.json'));
   } catch {
     return [];
   }
-}
-
-function fileToUrl(filePath) {
-  const relative = filePath.replace(CONTENT_DIR, '').replace('.json', '');
-  const parts = relative.split('/');
-  if (parts.length !== 2) return null;
-  const [category, slug] = parts;
-  const urlPrefix = CATEGORY_URL_MAP[category];
-  if (!urlPrefix) return null;
-  return `${SITE_URL}${urlPrefix}/${slug}`;
 }
 
 function postIndexNow(urls) {
@@ -67,7 +36,7 @@ function postIndexNow(urls) {
     const payload = JSON.stringify({
       host: SITE_HOST,
       key: INDEXNOW_KEY,
-      keyLocation: KEY_LOCATION,
+      keyLocation: INDEXNOW_KEY_LOCATION,
       urlList: urls,
     });
     const req = https.request({
