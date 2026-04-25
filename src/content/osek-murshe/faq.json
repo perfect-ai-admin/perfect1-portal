@@ -227,7 +227,7 @@
       "id": "summary",
       "type": "text",
       "title": "סיכום — הנקודות החשובות ביותר",
-      "content": "עוסק מורשה הוא הצעד הבא אחרי [עוסק פטור](/osek-patur/how-to-open) — מתאים לעסקים שגדלים מעבר ל[תקרת ההכנסות](/osek-patur/income-ceiling) או שצריכים להנפיק חשבוניות מס.\n\n**מדריכים חשובים:** [פתיחת עוסק מורשה](/osek-murshe/how-to-open) | [עלויות](/osek-murshe/cost) | [מע\"מ ומיסים](/osek-murshe/taxes) | [ניהול שוטף](/osek-murshe/management)\n\n**השוואות:** [עוסק פטור או מורשה](/compare/osek-patur-vs-murshe) | [מעבר מפטור למורשה](/osek-patur/status-change)\n\nאם ההכנסות שלכם עדיין נמוכות — שקלו להישאר כ[עוסק פטור](/osek-patur/how-to-open). אם הם גבוהים מאוד — שקלו [פתיחת חברה בע\"מ](/hevra-bam/how-to-open)."
+      "content": "עוסק מורשה הוא הצעד הבא אחרי [עוסק פטור](/osek-patur/how-to-open) — מתאים לעסקים שגדלים מעבר ל[תקרת ההכנסות](/osek-patur/income-ceiling) או שצריכים להנפיק חשבוניות מס.\n\n**מדריכים חשובים:** [פתיחת עוסק מורשה](/osek-murshe/how-to-open) | [עלויות](/osek-murshe/cost) | [מע\"מ ומיסים](/osek-murshe/taxes) | [ניהול שוטף](/osek-murshe/manage-murshe-daily)\n\n**השוואות:** [עוסק פטור או מורשה](/compare/osek-patur-vs-murshe) | [מעבר מפטור למורשה](/osek-patur/status-change)\n\nאם ההכנסות שלכם עדיין נמוכות — שקלו להישאר כ[עוסק פטור](/osek-patur/how-to-open). אם הם גבוהים מאוד — שקלו [פתיחת חברה בע\"מ](/hevra-bam/how-to-open)."
     }
   ],
   "relatedArticles": [
@@ -243,7 +243,7 @@
     },
     {
       "category": "osek-murshe",
-      "slug": "management",
+      "slug": "manage-murshe-daily",
       "title": "ניהול שוטף עוסק מורשה"
     },
     {

@@ -23,17 +23,50 @@
   },
   "readTime": 10,
   "toc": [
-    { "id": "what-is", "title": "מה זה עוסק פטור — הגדרה והיסטוריה" },
-    { "id": "registration-cost", "title": "עלות הרישום — כמה משלמים ברשויות" },
-    { "id": "ongoing-costs", "title": "עלויות שוטפות אחרי הפתיחה" },
-    { "id": "diy-vs-accountant", "title": "לפתוח לבד מול דרך רואה חשבון — השוואה" },
-    { "id": "bituach-leumi", "title": "ביטוח לאומי — כמה משלמים" },
-    { "id": "after-opening", "title": "מה קורה אחרי הפתיחה — דוחות, מע\"מ, ביטוח לאומי" },
-    { "id": "how-to-steps", "title": "איך פותחים שלב אחרי שלב" },
-    { "id": "pros-cons", "title": "יתרונות וחסרונות" },
-    { "id": "common-mistakes", "title": "טעויות נפוצות" },
-    { "id": "who-is-it-for", "title": "למי עוסק פטור מתאים" },
-    { "id": "faq", "title": "שאלות נפוצות" }
+    {
+      "id": "what-is",
+      "title": "מה זה עוסק פטור — הגדרה והיסטוריה"
+    },
+    {
+      "id": "registration-cost",
+      "title": "עלות הרישום — כמה משלמים ברשויות"
+    },
+    {
+      "id": "ongoing-costs",
+      "title": "עלויות שוטפות אחרי הפתיחה"
+    },
+    {
+      "id": "diy-vs-accountant",
+      "title": "לפתוח לבד מול דרך רואה חשבון — השוואה"
+    },
+    {
+      "id": "bituach-leumi",
+      "title": "ביטוח לאומי — כמה משלמים"
+    },
+    {
+      "id": "after-opening",
+      "title": "מה קורה אחרי הפתיחה — דוחות, מע\"מ, ביטוח לאומי"
+    },
+    {
+      "id": "how-to-steps",
+      "title": "איך פותחים שלב אחרי שלב"
+    },
+    {
+      "id": "pros-cons",
+      "title": "יתרונות וחסרונות"
+    },
+    {
+      "id": "common-mistakes",
+      "title": "טעויות נפוצות"
+    },
+    {
+      "id": "who-is-it-for",
+      "title": "למי עוסק פטור מתאים"
+    },
+    {
+      "id": "faq",
+      "title": "שאלות נפוצות"
+    }
   ],
   "sections": [
     {
@@ -207,26 +240,5 @@
       "answer": "מומלץ לשקול מעבר כאשר: הכנסתך מתקרבת ל-100,000 ₪ לשנה, יש לך הוצאות עסקיות משמעותיות שאפשר לקזז את המע\"מ עליהן, או כאשר רוב לקוחותיך הם עסקים שמבקשים חשבונית מס. למידע מלא — [מדריך פתיחת עוסק מורשה](/osek-murshe/how-to-open)."
     }
   ],
-  "relatedArticles": [
-    {
-      "title": "פתיחת עוסק פטור — המדריך המלא",
-      "url": "/osek-patur/how-to-open",
-      "category": "osek-patur"
-    },
-    {
-      "title": "פתיחת עוסק מורשה — מתי לעבור?",
-      "url": "/osek-murshe/how-to-open",
-      "category": "osek-murshe"
-    },
-    {
-      "title": "תקרת הכנסות עוסק פטור 2026",
-      "url": "/osek-patur/income-ceiling",
-      "category": "osek-patur"
-    },
-    {
-      "title": "מיסוי עוסק פטור — כל מה שצריך לדעת",
-      "url": "/osek-patur/taxes",
-      "category": "osek-patur"
-    }
-  ]
+  "relatedArticles": []
 }

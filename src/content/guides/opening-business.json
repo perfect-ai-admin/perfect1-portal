@@ -515,6 +515,21 @@
       "category": "services",
       "slug": "open-osek-patur-service",
       "title": "שירות פתיחת עוסק פטור — מהיר ומקצועי"
+    },
+    {
+      "category": "amuta",
+      "slug": "how-to-open",
+      "title": "פתיחת עמותה"
+    },
+    {
+      "category": "osek-zeir",
+      "slug": "how-to-open",
+      "title": "פתיחת עוסק זעיר"
+    },
+    {
+      "category": "cities",
+      "slug": "tel-aviv",
+      "title": "פתיחת עסק בתל אביב"
     }
   ],
   "faq": [

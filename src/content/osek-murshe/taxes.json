@@ -325,7 +325,7 @@
   "relatedArticles": [
     {
       "category": "osek-murshe",
-      "slug": "management",
+      "slug": "manage-murshe-daily",
       "title": "ניהול שוטף עוסק מורשה — מדריך מלא"
     },
     {
@@ -342,6 +342,16 @@
       "category": "osek-patur",
       "slug": "taxes",
       "title": "מיסים ודיווחים לעוסק פטור — השוואה"
+    },
+    {
+      "category": "maam",
+      "slug": "what-is-vat",
+      "title": "מע\"מ — מדריך מלא"
+    },
+    {
+      "category": "misui",
+      "slug": "advance-payments",
+      "title": "מקדמות מס הכנסה"
     }
   ],
   "faq": [

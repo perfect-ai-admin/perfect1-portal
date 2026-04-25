@@ -231,6 +231,16 @@
       "category": "osek-patur",
       "slug": "how-to-open",
       "title": "איך פותחים עוסק פטור — מדריך מלא"
+    },
+    {
+      "category": "services",
+      "slug": "open-company-service",
+      "title": "שירותי פתיחת חברה"
+    },
+    {
+      "category": "cities",
+      "slug": "jerusalem",
+      "title": "פתיחת עסק בירושלים"
     }
   ],
   "faq": [

@@ -293,6 +293,16 @@
       "category": "guides",
       "slug": "tools",
       "title": "כלים ומחשבונים לעסקים"
+    },
+    {
+      "category": "misui",
+      "slug": "tax-30000",
+      "title": "מיסוי לעצמאי שמרוויח 30,000 ₪"
+    },
+    {
+      "category": "services",
+      "slug": "bookkeeping-service",
+      "title": "שירותי הנהלת חשבונות"
     }
   ]
 }

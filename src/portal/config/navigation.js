@@ -95,9 +95,6 @@ export const PORTAL_CATEGORIES = [
       { title: 'שאלות נפוצות', href: '/amuta/faq', description: 'תשובות לשאלות הנפוצות על עמותות בישראל' },
     ]
   },
-  // misui (מיסוי לעצמאים) — accessible via /calculators/net-income, not main nav
-  // maam (מע"מ) — moved under מידע ומדריכים → מיסוי וחשבונאות
-  // miktzoa (מדריכים לפי מקצוע) — moved under מידע ומדריכים → מדריכים לפתיחת עסק
   {
     id: 'guides',
     title: 'מידע ומדריכים',
@@ -108,10 +105,25 @@ export const PORTAL_CATEGORIES = [
     subcategories: [
       { title: 'מדריכים לפתיחת עסק', href: '/guides/opening-business', description: 'כל מה שצריך לדעת לפני שפותחים עסק בישראל' },
       { title: 'מדריכים לפי מקצוע', href: '/miktzoa', description: 'מאמן כושר, מעצב גרפי, מורה פרטי, שליח וולט ועוד' },
-      { title: 'מיסוי וחשבונאות', href: '/guides/taxation', description: 'מס הכנסה, מע"מ, ביטוח לאומי ורואה חשבון' },
+      { title: 'מיסוי לעצמאים', href: '/misui', description: 'מס הכנסה לפי הכנסה — ₪10K, ₪20K, ₪30K, ₪50K ועוד' },
+      { title: 'מדריך מע"מ', href: '/maam/what-is-vat', description: 'הסבר מקיף — מע"מ עוסק מורשה, חישובים ודיווח' },
       { title: 'השוואות', href: '/guides/comparisons', description: 'טבלאות השוואה — עוסק פטור מול מורשה, תוכנות, שירותים' },
       { title: 'מדריכים לעצמאים', href: '/guides/freelancers', description: 'טיפים לפרילנסרים — תמחור, לקוחות, חוזים וביטוח' },
+      { title: 'מדריכים לפי עיר', href: '/cities/tel-aviv', description: 'תל אביב, ירושלים, חיפה — מדריכי פתיחת עסק לפי מיקום' },
       { title: 'שאלות נפוצות', href: '/guides/faq', description: 'תשובות לשאלות כלליות על עסקים בישראל' },
+    ]
+  },
+  {
+    id: 'services',
+    title: 'שירותים',
+    href: '/services',
+    icon: 'Wrench',
+    description: 'שירותי פתיחת עסק והנהלת חשבונות',
+    color: 'cyan',
+    subcategories: [
+      { title: 'פתיחת עוסק פטור', href: '/services/open-osek-patur-service', description: 'פתיחת עוסק פטור מקצועית — אנחנו עושים בשבילך' },
+      { title: 'פתיחת חברה בע"מ', href: '/services/open-company-service', description: 'הקמת חברה — תקנון, רישום ברשם, הכנת מסמכים' },
+      { title: 'הנהלת חשבונות', href: '/services/bookkeeping-service', description: 'שירותי הנהלת חשבונות מלאה לעצמאים ולחברות' },
     ]
   },
   {

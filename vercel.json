@@ -27,6 +27,26 @@
       "permanent": true
     },
     {
+      "source": "/guides/test-query-guide",
+      "destination": "/guides",
+      "permanent": true
+    },
+    {
+      "source": "/osek-murshe/management",
+      "destination": "/osek-murshe/manage-murshe-daily",
+      "permanent": true
+    },
+    {
+      "source": "/osek-murshe/osek-murshe-comprehensive",
+      "destination": "/osek-murshe",
+      "permanent": true
+    },
+    {
+      "source": "/osek-patur/recognized-expenses-for-osek-murshe",
+      "destination": "/osek-murshe/tax-deductions",
+      "permanent": true
+    },
+    {
       "source": "/:path*",
       "has": [{ "type": "host", "value": "perfect1.co.il" }],
       "destination": "https://www.perfect1.co.il/:path*",

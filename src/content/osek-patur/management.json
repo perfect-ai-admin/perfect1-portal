@@ -280,13 +280,23 @@
     },
     {
       "category": "osek-murshe",
-      "slug": "management",
+      "slug": "manage-murshe-daily",
       "title": "ניהול שוטף עוסק מורשה — השוואה"
     },
     {
       "category": "comparisons",
       "slug": "osek-patur-vs-murshe",
       "title": "עוסק פטור או מורשה — מה מתאים לך?"
+    },
+    {
+      "category": "osek-zeir",
+      "slug": "management",
+      "title": "ניהול שוטף עוסק זעיר"
+    },
+    {
+      "category": "misui",
+      "slug": "advance-payments",
+      "title": "מקדמות מס הכנסה לעצמאי"
     }
   ],
   "faq": [

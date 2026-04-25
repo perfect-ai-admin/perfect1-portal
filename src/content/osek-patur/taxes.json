@@ -321,6 +321,16 @@
       "category": "osek-murshe",
       "slug": "taxes",
       "title": "מע\"מ ומסים לעוסק מורשה — השוואה"
+    },
+    {
+      "category": "misui",
+      "slug": "tax-brackets",
+      "title": "מדרגות מס הכנסה לעצמאי 2026"
+    },
+    {
+      "category": "misui",
+      "slug": "tax-50000",
+      "title": "מיסוי לעצמאי שמרוויח 50,000 ₪"
     }
   ],
   "faq": [
