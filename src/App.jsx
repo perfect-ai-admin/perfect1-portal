@@ -4,7 +4,7 @@ import { queryClientInstance } from '@/lib/query-client'
 import NavigationTracker from '@/lib/NavigationTracker'
 import { pagesConfig } from './pages.config'
 import React, { Suspense } from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate, useParams } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import GeneralErrorBoundary from '@/components/GeneralErrorBoundary';
 import { LazyAuthProvider as AuthProvider, useAuthFromContext as useAuth } from '@/lib/LazyAuthProvider';
@@ -65,6 +65,17 @@ const SubdomainPage = lazyWithRetry(() => import('@/pages/SubdomainPage'));
 const PortalHomePage = lazyWithRetry(() => import('./portal/templates/PortalHomePage'));
 const CategoryHubPage = lazyWithRetry(() => import('./portal/templates/CategoryHubPage'));
 const SEOArticlePage = lazyWithRetry(() => import('./portal/templates/SEOArticlePage'));
+const HowToOpenLandingPage = lazyWithRetry(() => import('./portal/templates/HowToOpenLandingPage'));
+
+// Wrapper: serve the dedicated landing template for /how-to-open in selected categories
+const HOW_TO_OPEN_CATEGORIES = new Set(['osek-patur', 'osek-murshe', 'hevra-bam', 'osek-zeir', 'amuta']);
+const ArticleOrLanding = ({ category }) => {
+  const { slug } = useParams();
+  const isLanding = slug === 'how-to-open' && HOW_TO_OPEN_CATEGORIES.has(category);
+  return isLanding
+    ? <HowToOpenLandingPage category={category} />
+    : <SEOArticlePage category={category} />;
+};
 const ComparisonPage = lazyWithRetry(() => import('./portal/templates/ComparisonPage'));
 const CalculatorsPage = lazyWithRetry(() => import('./portal/templates/CalculatorsPage'));
 const NetIncomeCalcPage = lazyWithRetry(() => import('./portal/templates/NetIncomeCalcPage'));
@@ -234,15 +245,15 @@ const PortalRoutes = () => (
     <Route path="/" element={<PortalWrapper><PortalHomePage /></PortalWrapper>} />
     <Route path="/opening-business-israel" element={<PortalWrapper><PortalHomePage /></PortalWrapper>} />
     <Route path="/osek-patur" element={<PortalWrapper><CategoryHubPage category="osek-patur" /></PortalWrapper>} />
-    <Route path="/osek-patur/:slug" element={<PortalWrapper><SEOArticlePage category="osek-patur" /></PortalWrapper>} />
+    <Route path="/osek-patur/:slug" element={<PortalWrapper><ArticleOrLanding category="osek-patur" /></PortalWrapper>} />
     <Route path="/osek-murshe" element={<PortalWrapper><CategoryHubPage category="osek-murshe" /></PortalWrapper>} />
-    <Route path="/osek-murshe/:slug" element={<PortalWrapper><SEOArticlePage category="osek-murshe" /></PortalWrapper>} />
+    <Route path="/osek-murshe/:slug" element={<PortalWrapper><ArticleOrLanding category="osek-murshe" /></PortalWrapper>} />
     <Route path="/hevra-bam" element={<PortalWrapper><CategoryHubPage category="hevra-bam" /></PortalWrapper>} />
-    <Route path="/hevra-bam/:slug" element={<PortalWrapper><SEOArticlePage category="hevra-bam" /></PortalWrapper>} />
+    <Route path="/hevra-bam/:slug" element={<PortalWrapper><ArticleOrLanding category="hevra-bam" /></PortalWrapper>} />
     <Route path="/osek-zeir" element={<PortalWrapper><CategoryHubPage category="osek-zeir" /></PortalWrapper>} />
-    <Route path="/osek-zeir/:slug" element={<PortalWrapper><SEOArticlePage category="osek-zeir" /></PortalWrapper>} />
+    <Route path="/osek-zeir/:slug" element={<PortalWrapper><ArticleOrLanding category="osek-zeir" /></PortalWrapper>} />
     <Route path="/amuta" element={<PortalWrapper><CategoryHubPage category="amuta" /></PortalWrapper>} />
-    <Route path="/amuta/:slug" element={<PortalWrapper><SEOArticlePage category="amuta" /></PortalWrapper>} />
+    <Route path="/amuta/:slug" element={<PortalWrapper><ArticleOrLanding category="amuta" /></PortalWrapper>} />
     <Route path="/sgirat-tikim" element={<PortalWrapper><CategoryHubPage category="sgirat-tikim" /></PortalWrapper>} />
     <Route path="/sgirat-tikim/:slug" element={<PortalWrapper><SEOArticlePage category="sgirat-tikim" /></PortalWrapper>} />
     <Route path="/misui" element={<PortalWrapper><CategoryHubPage category="misui" /></PortalWrapper>} />
@@ -371,15 +382,15 @@ const DevRoutes = () => (
     <Route path="/portal" element={<PortalWrapper><PortalHomePage /></PortalWrapper>} />
     <Route path="/opening-business-israel" element={<PortalWrapper><PortalHomePage /></PortalWrapper>} />
     <Route path="/osek-patur" element={<PortalWrapper><CategoryHubPage category="osek-patur" /></PortalWrapper>} />
-    <Route path="/osek-patur/:slug" element={<PortalWrapper><SEOArticlePage category="osek-patur" /></PortalWrapper>} />
+    <Route path="/osek-patur/:slug" element={<PortalWrapper><ArticleOrLanding category="osek-patur" /></PortalWrapper>} />
     <Route path="/osek-murshe" element={<PortalWrapper><CategoryHubPage category="osek-murshe" /></PortalWrapper>} />
-    <Route path="/osek-murshe/:slug" element={<PortalWrapper><SEOArticlePage category="osek-murshe" /></PortalWrapper>} />
+    <Route path="/osek-murshe/:slug" element={<PortalWrapper><ArticleOrLanding category="osek-murshe" /></PortalWrapper>} />
     <Route path="/hevra-bam" element={<PortalWrapper><CategoryHubPage category="hevra-bam" /></PortalWrapper>} />
-    <Route path="/hevra-bam/:slug" element={<PortalWrapper><SEOArticlePage category="hevra-bam" /></PortalWrapper>} />
+    <Route path="/hevra-bam/:slug" element={<PortalWrapper><ArticleOrLanding category="hevra-bam" /></PortalWrapper>} />
     <Route path="/osek-zeir" element={<PortalWrapper><CategoryHubPage category="osek-zeir" /></PortalWrapper>} />
-    <Route path="/osek-zeir/:slug" element={<PortalWrapper><SEOArticlePage category="osek-zeir" /></PortalWrapper>} />
+    <Route path="/osek-zeir/:slug" element={<PortalWrapper><ArticleOrLanding category="osek-zeir" /></PortalWrapper>} />
     <Route path="/amuta" element={<PortalWrapper><CategoryHubPage category="amuta" /></PortalWrapper>} />
-    <Route path="/amuta/:slug" element={<PortalWrapper><SEOArticlePage category="amuta" /></PortalWrapper>} />
+    <Route path="/amuta/:slug" element={<PortalWrapper><ArticleOrLanding category="amuta" /></PortalWrapper>} />
     <Route path="/sgirat-tikim" element={<PortalWrapper><CategoryHubPage category="sgirat-tikim" /></PortalWrapper>} />
     <Route path="/sgirat-tikim/:slug" element={<PortalWrapper><SEOArticlePage category="sgirat-tikim" /></PortalWrapper>} />
     <Route path="/misui" element={<PortalWrapper><CategoryHubPage category="misui" /></PortalWrapper>} />
