@@ -4,7 +4,7 @@ import { queryClientInstance } from '@/lib/query-client'
 import NavigationTracker from '@/lib/NavigationTracker'
 import { pagesConfig } from './pages.config'
 import React, { Suspense } from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import GeneralErrorBoundary from '@/components/GeneralErrorBoundary';
 import { LazyAuthProvider as AuthProvider, useAuthFromContext as useAuth } from '@/lib/LazyAuthProvider';
@@ -222,6 +222,7 @@ const PortalRoutes = () => (
     <Route path="/open-osek-patur-online" element={<SafePage><OpenOsekPaturOnline /></SafePage>} />
     <Route path="/open-hevra-bam-online" element={<SafePage><OpenCompanyOnline /></SafePage>} />
     <Route path="/atzmaim-berega" element={<SafePage><AtzmaimBerega /></SafePage>} />
+    <Route path="/atzmaim-berega-final" element={<Navigate to="/atzmaim-berega" replace />} />
     {/* Osek Zeir — מסלול נפרד לחלוטין. חייב להישאר מנותק מעוסק פטור בכל המסרים */}
     <Route path="/OsekZeirLanding" element={<SafePage><OsekZeirLanding /></SafePage>} />
     <Route path="/osek-zair-landing" element={<SafePage><OsekZeirLanding /></SafePage>} />
@@ -358,6 +359,7 @@ const DevRoutes = () => (
     <Route path="/open-osek-patur-online" element={<SafePage><OpenOsekPaturOnline /></SafePage>} />
     <Route path="/open-hevra-bam-online" element={<SafePage><OpenCompanyOnline /></SafePage>} />
     <Route path="/atzmaim-berega" element={<SafePage><AtzmaimBerega /></SafePage>} />
+    <Route path="/atzmaim-berega-final" element={<Navigate to="/atzmaim-berega" replace />} />
     {/* Osek Zeir — מסלול נפרד לחלוטין (Dev) */}
     <Route path="/OsekZeirLanding" element={<SafePage><OsekZeirLanding /></SafePage>} />
     <Route path="/osek-zair-landing" element={<SafePage><OsekZeirLanding /></SafePage>} />

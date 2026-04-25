@@ -576,6 +576,7 @@ function generateSPAFallbacks() {
     '/authors/perfect1-team',
     '/open-osek-patur',
     '/atzmaim-berega',
+    '/atzmaim-berega-final',
     // Calculators (React pages, not JSON content)
     '/calculators',
     '/calculators/net-income',
