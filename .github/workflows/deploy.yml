@@ -93,3 +93,15 @@ jobs:
         env:
           GOOGLE_SERVICE_ACCOUNT_KEY: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}
         continue-on-error: true
+
+      - name: Notify IndexNow (Bing/Yandex)
+        if: success()
+        run: node scripts/notify-indexnow.cjs
+        continue-on-error: true
+
+      - name: Submit Sitemap to GSC
+        if: success()
+        run: node scripts/submit-sitemap-gsc.cjs
+        env:
+          GOOGLE_SERVICE_ACCOUNT_KEY: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}
+        continue-on-error: true
