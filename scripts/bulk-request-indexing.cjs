@@ -66,7 +66,17 @@ function supabaseGet(query) {
       headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` },
     }, res => {
       let d = ''; res.on('data', c => d += c);
-      res.on('end', () => { try { resolve(JSON.parse(d)); } catch { resolve([]); } });
+      res.on('end', () => {
+        try {
+          const parsed = JSON.parse(d);
+          if (!Array.isArray(parsed)) {
+            console.warn(`Supabase returned non-array (status ${res.statusCode}):`, JSON.stringify(parsed).slice(0,200));
+            resolve([]);
+          } else {
+            resolve(parsed);
+          }
+        } catch (e) { console.warn('Supabase parse error:', e.message); resolve([]); }
+      });
     }).on('error', reject);
   });
 }
@@ -151,8 +161,13 @@ async function main() {
   console.log(`Articles in src/content: ${all.length}`);
 
   // 2. Filter out already-indexed
-  const indexed = await supabaseGet('/seo_published_articles?select=category,slug,indexed_at&indexed_at=not.is.null');
-  const indexedKeys = new Set((indexed || []).map(a => `${a.category}/${a.slug}`));
+  let indexed = [];
+  try {
+    indexed = await supabaseGet('/seo_published_articles?select=category,slug,indexed_at&indexed_at=not.is.null');
+  } catch (e) {
+    console.warn('DB query failed, treating all as unindexed:', e.message);
+  }
+  const indexedKeys = new Set(Array.isArray(indexed) ? indexed.map(a => `${a.category}/${a.slug}`) : []);
   console.log(`Already indexed (per DB): ${indexedKeys.size}`);
 
   const toPush = all.filter(a => !indexedKeys.has(`${a.category}/${a.slug}`));
