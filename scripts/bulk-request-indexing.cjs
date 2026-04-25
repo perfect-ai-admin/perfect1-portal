@@ -26,9 +26,9 @@ const SITE_PROPERTY = 'sc-domain:perfect1.co.il';
 const SITEMAP_URL = `${SITE_URL}/sitemap.xml`;
 const INDEXNOW_KEY = 'f192557dbb787a9c644cd9695b63976046d2eef1cd538d7a46318fc51a7e1aa8';
 const KEY_LOCATION = `${SITE_URL}/${INDEXNOW_KEY}.txt`;
-const SUPABASE_URL = process.env.SUPABASE_URL || 'https://rtlpqjqdmomyptcdkmrq.supabase.co';
-const SUPABASE_KEY = process.env.SUPABASE_SERVICE_KEY;
-const ALERT_EMAIL = process.env.ALERT_EMAIL || 'yosi5919@gmail.com';
+const SUPABASE_URL = (process.env.SUPABASE_URL || 'https://rtlpqjqdmomyptcdkmrq.supabase.co').trim();
+const SUPABASE_KEY = (process.env.SUPABASE_SERVICE_KEY || '').trim();
+const ALERT_EMAIL = (process.env.ALERT_EMAIL || 'yosi5919@gmail.com').trim();
 const CONTENT_DIR = path.resolve(__dirname, '../src/content');
 
 const CATEGORY_URL_MAP = {

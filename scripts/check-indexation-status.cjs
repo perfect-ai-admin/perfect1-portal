@@ -20,9 +20,9 @@ const https = require('https');
 
 const SITE_PROPERTY = 'sc-domain:perfect1.co.il';
 const SITE_URL = 'https://www.perfect1.co.il';
-const SUPABASE_URL = process.env.SUPABASE_URL || 'https://rtlpqjqdmomyptcdkmrq.supabase.co';
-const SUPABASE_KEY = process.env.SUPABASE_SERVICE_KEY;
-const ALERT_EMAIL = process.env.ALERT_EMAIL || 'yosi5919@gmail.com';
+const SUPABASE_URL = (process.env.SUPABASE_URL || 'https://rtlpqjqdmomyptcdkmrq.supabase.co').trim();
+const SUPABASE_KEY = (process.env.SUPABASE_SERVICE_KEY || '').trim();
+const ALERT_EMAIL = (process.env.ALERT_EMAIL || 'yosi5919@gmail.com').trim();
 const GSA_KEY = process.env.GOOGLE_SERVICE_ACCOUNT_KEY;
 const ALERT_AGE_HOURS = 48; // alert if unindexed after this many hours
 
