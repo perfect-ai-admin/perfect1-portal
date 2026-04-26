@@ -1,212 +1,275 @@
-# פרפקט וואן - פורטל עסקי ישראלי
+# פרפקט וואן — פורטל עסקי ישראלי
 
-## מטרת SEO ראשית
-**להגיע ל-500–1,000 ביטויי חיפוש בגוגל שהאתר מקודם בהם.**
+> **Snapshot date:** 2026-04-26 — לרענון, הריצו `npm run health` והעתיקו את המספרים לחלק "מצב נוכחי".
 
-### מצב נוכחי (מרץ 2026)
-- 5 מאמרים (כולם בקטגוריית עוסק פטור)
-- 5 עמודי קטגוריה (רכזות)
-- 1 דף השוואה
-- ~30-50 ביטויים מכוסים
-- **הפער: צריך ~150-250 מאמרים חדשים**
+## מטרה
+
+500–1,000 ביטויי חיפוש מדורגים בגוגל. נכון להיום (מ-GSC): 17 דפים מאונדקסים, 101 לא — אחרי תיקוני sprint זה אנו צופים 55–70 indexed תוך 4–6 שבועות.
 
 ---
 
-## אסטרטגיית תוכן SEO — תוכנית עבודה
+## מצב נוכחי
 
-### שלב 1: השלמת קטגוריות קיימות (50 מאמרים)
-כל קטגוריה צריכה 10-15 מאמרים. כרגע רק "עוסק פטור" מכיל מאמרים.
+| | מספר |
+|---|---:|
+| מאמרים פעילים | **97** |
+| URLs ב-sitemap | **120** |
+| Hard QA failures | **0** |
+| מאמרים מתחת ל-1,200 מילים (thin) | 79 |
+| מאמרים עם פחות מ-3 שאלות FAQ | 16 |
+| Broken `relatedArticles` references | 0 |
 
-#### עוסק מורשה (osek-murshe) — 10 מאמרים
-| slug | ביטוי ראשי | ביטויים משניים |
-|------|-----------|---------------|
-| how-to-open | פתיחת עוסק מורשה | איך פותחים עוסק מורשה, רישום עוסק מורשה |
-| cost | עלות עוסק מורשה | כמה עולה עוסק מורשה, מחיר רואה חשבון עוסק מורשה |
-| vat-guide | מעמ עוסק מורשה | חשבונית מס עוסק מורשה, דיווח מעמ |
-| bookkeeping | הנהלת חשבונות עוסק מורשה | ניהול ספרים עוסק מורשה |
-| tax-deductions | הוצאות מוכרות עוסק מורשה | ניכוי הוצאות, קיזוז מעמ |
-| income-tax | מס הכנסה עוסק מורשה | דיווח שנתי, מקדמות מס |
-| bituach-leumi | ביטוח לאומי עוסק מורשה | תשלומי ביטוח לאומי עצמאי |
-| invoice-types | סוגי חשבוניות | חשבונית מס, חשבונית עסקה, קבלה |
-| when-to-switch | מתי לעבור לעוסק מורשה | מעבר מפטור למורשה, תקרת הכנסות |
-| accountant | רואה חשבון לעוסק מורשה | כמה עולה רואה חשבון, מתי צריך רואה חשבון |
+### מאמרים לפי קטגוריה (auto-refreshable דרך `npm run health`)
 
-#### חברה בע"מ (hevra-bam) — 10 מאמרים
-| slug | ביטוי ראשי | ביטויים משניים |
-|------|-----------|---------------|
-| how-to-open | פתיחת חברה בעמ | איך פותחים חברה, רישום חברה בישראל |
-| cost | עלות הקמת חברה בעמ | כמה עולה לפתוח חברה |
-| taxes | מיסוי חברה בעמ | מס חברות, מס דיבידנד |
-| advantages | יתרונות חברה בעמ | למה לפתוח חברה, הגנה משפטית |
-| accountant | רואה חשבון לחברה | הנהלת חשבונות כפולה, עלות רואה חשבון חברה |
-| directors | דירקטורים בחברה | תפקיד דירקטור, אחריות דירקטורים |
-| shareholders | בעלי מניות | חלוקת מניות, הסכם מייסדים |
-| annual-reports | דוחות שנתיים חברה | דוח שנתי לרשם החברות, אגרה שנתית |
-| when-to-incorporate | מתי לפתוח חברה | מעבר מעצמאי לחברה, כדאיות חברה |
-| dissolving | סגירת חברה בעמ | פירוק חברה, מחיקת חברה מרשם |
-
-#### סגירת תיקים (sgirat-tikim) — 10 מאמרים
-| slug | ביטוי ראשי | ביטויים משניים |
-|------|-----------|---------------|
-| how-to-close | סגירת תיק במס הכנסה | איך סוגרים עוסק, סגירת עסק |
-| close-osek-patur | סגירת עוסק פטור | ביטול עוסק פטור |
-| close-osek-murshe | סגירת עוסק מורשה | ביטול עוסק מורשה |
-| close-vat | סגירת תיק מעמ | ביטול תיק מעמ |
-| close-bituach-leumi | סגירת תיק ביטוח לאומי | ביטול עצמאי בביטוח לאומי |
-| debts | חובות לאחר סגירת עסק | מה קורה עם חובות, הסדר חובות |
-| timing | מתי כדאי לסגור עסק | סימנים שצריך לסגור, עסק לא רווחי |
-| reopen | פתיחת עסק מחדש | לפתוח עסק אחרי סגירה |
-| tax-implications | מיסוי בסגירת עסק | דוח שנתי אחרון, החזר מס |
-| checklist | צ׳קליסט סגירת עסק | רשימת מטלות סגירת עסק |
-
-#### מדריכים (guides) — 15 מאמרים
-| slug | ביטוי ראשי | ביטויים משניים |
-|------|-----------|---------------|
-| first-business | פתיחת עסק ראשון | מדריך לעסק חדש, צעדים ראשונים בעסק |
-| business-plan | תוכנית עסקית | איך כותבים תוכנית עסקית, תבנית תוכנית עסקית |
-| pricing | תמחור שירותים | איך לתמחר, אסטרטגיית תמחור |
-| freelancer-guide | מדריך לפרילנסרים | פרילנס בישראל, עבודה עצמאית |
-| home-business | עסק מהבית | עבודה מהבית, עסק ביתי רישום |
-| digital-marketing | שיווק דיגיטלי לעסקים קטנים | פרסום בפייסבוק, שיווק באינסטגרם |
-| client-acquisition | איך להשיג לקוחות | מציאת לקוחות, שיווק לעסק קטן |
-| contracts | חוזים לעסקים | חוזה שירות, הסכם עבודה עם לקוח |
-| insurance | ביטוח לעסק | ביטוח עצמאים, ביטוח אחריות מקצועית |
-| grants | מענקים לעסקים | מענק פתיחת עסק, הלוואות לעסקים קטנים |
-| cash-flow | ניהול תזרים מזומנים | תזרים לעסק קטן, ניהול כספי עסק |
-| hiring-first-employee | גיוס עובד ראשון | העסקת עובדים, חובות מעסיק |
-| taxes-101 | מדריך מיסים לעסקים | מס הכנסה עצמאי, מיסוי עצמאים |
-| receipt-management | ניהול קבלות | ארגון קבלות, שמירת קבלות דיגיטלי |
-| year-end | סוף שנת מס | הכנה לדוח שנתי, סגירת שנה |
-
-#### עוסק פטור — 5 מאמרים נוספים
-| slug | ביטוי ראשי | ביטויים משניים |
-|------|-----------|---------------|
-| bituach-leumi | ביטוח לאומי עוסק פטור | תשלומי ביטוח לאומי, דמי ביטוח |
-| receipt-guide | קבלה עוסק פטור | איך מוציאים קבלה, דוגמת קבלה |
-| bank-account | חשבון בנק עוסק פטור | חשבון עסקי, הפרדת חשבונות |
-| side-income | עבודה נוספת עוסק פטור | עוסק פטור ושכיר, הכנסה נוספת |
-| etsy-ebay | עוסק פטור למכירות אונליין | מכירה באיביי, חנות אטסי, מכירות באינטרנט |
-
-### שלב 2: דפי השוואה (20 דפים)
-| slug | ביטוי ראשי |
-|------|-----------|
-| osek-patur-vs-murshe | עוסק פטור או מורשה (קיים) |
-| osek-vs-hevra | עוסק מורשה או חברה בעמ |
-| patur-vs-hevra | עוסק פטור או חברה |
-| freelancer-vs-employee | פרילנס או שכיר |
-| sole-vs-partnership | עוסק עצמאי או שותפות |
-| invoice-software-compare | השוואת תוכנות חשבוניות |
-| accounting-software | השוואת תוכנות הנהלת חשבונות |
-| bank-accounts-compare | השוואת חשבונות בנק לעסק |
-| insurance-compare | השוואת ביטוחים לעצמאים |
-| crm-compare | השוואת מערכות CRM |
-| payment-processors | השוואת סליקת אשראי |
-| website-builders | השוואת בוני אתרים לעסקים |
-| accounting-firms | השוואת משרדי רואי חשבון |
-| coworking-spaces | השוואת חללי עבודה משותפים |
-| business-loans | השוואת הלוואות לעסקים |
-| digital-marketing-agencies | השוואת חברות שיווק דיגיטלי |
-| email-marketing | השוואת כלי דיוור |
-| project-management | השוואת כלי ניהול פרויקטים |
-| pos-systems | השוואת קופות רושמות |
-| cloud-storage | השוואת אחסון ענן לעסק |
-
-### שלב 3: קטגוריות חדשות (80+ מאמרים)
-קטגוריות חדשות שצריך להוסיף לפורטל:
-
-#### מיסוי ומע"מ (misui) — 15 מאמרים
-מדריכים על מס הכנסה, מע"מ, ביטוח לאומי, מס שבח, ניכוי במקור
-
-#### חשבונאות (hashbonaut) — 10 מאמרים
-הנהלת חשבונות, ניהול ספרים, דוחות כספיים, רואה חשבון
-
-#### משפטי ורגולציה (mishpati) — 10 מאמרים
-רישיון עסק, רגולציה, הסכמים, קניין רוחני, GDPR
-
-#### שיווק ומכירות (shivuk) — 15 מאמרים
-שיווק דיגיטלי, SEO, רשתות חברתיות, מיתוג, שיווק תוכן
-
-#### טכנולוגיה לעסקים (tech) — 10 מאמרים
-כלים דיגיטליים, אוטומציה, AI לעסקים, אתר אינטרנט
-
-#### מימון וגיוס הון (mimun) — 10 מאמרים
-הלוואות, מענקים, משקיעים, קרנות, מימון המונים
-
-#### עסקים לפי מקצוע (miktzoa) — 15 מאמרים
-מורה פרטי, מעצב גרפי, צלם, מאמן כושר, יועץ, מתרגם...
-
----
-
-## ארכיטקטורת SEO טכנית
-
-### מבנה URLs
 ```
-/                                  → דף בית
-/{category}                        → רכזת קטגוריה (hub)
-/{category}/{slug}                → מאמר
-/compare/{slug}                    → דף השוואה
+osek-murshe  18    osek-zeir   6
+guides       15    miktzoa     4
+osek-patur   14    cities      3
+amuta        10    services    3
+hevra-bam     9    comparisons 1
+sgirat-tikim  7    maam        1
+misui         6
 ```
 
-### תבנית מאמר (JSON)
-כל מאמר הוא קובץ JSON ב-`src/content/{category}/{slug}.json` עם:
-- `metaTitle` — עד 60 תווים, כולל ביטוי ראשי + מותג
-- `metaDescription` — עד 155 תווים, כולל ביטוי ראשי + CTA
-- `keywords` — 4-8 ביטויים (ראשי + משניים + long-tail)
-- `sections` — לפחות 5 sections עם types מגוונים
-- `toc` — תוכן עניינים (חשוב ל-featured snippets)
-- `relatedArticles` — 3-4 מאמרים קשורים (internal linking)
-- `faq` — 3-5 שאלות (לקבלת FAQ snippet בגוגל)
+---
 
-### סוגי sections נתמכים
-`text` | `list` | `steps` | `callout` | `faq` | `quote` | `comparison` | `cta-inline`
+## ארכיטקטורה — מה אמיתי, מה לא לגעת
 
-### עקרונות כתיבה לדירוג
-1. **כל מאמר מטרגט ביטוי ראשי אחד** + 3-5 ביטויים משניים
-2. **אורך מינימלי: 1,500 מילים** (8-12 sections)
-3. **FAQ בכל מאמר** — מטרגט "אנשים גם שואלים"
-4. **Internal linking** — כל מאמר מקשר ל-3+ מאמרים אחרים
-5. **Schema markup** — Article + FAQ + BreadcrumbList (אוטומטי)
-6. **H1 יחיד** = heroTitle, **H2** = section titles
-7. **תאריך עדכון** — לעדכן `updatedDate` בכל שינוי
+### Build & deploy chain
 
-### עדכון Sitemap
-אחרי הוספת מאמרים חדשים, לעדכן את `public/sitemap.xml`
+```
+GitHub push (main)
+   ↓
+.github/workflows/deploy.yml
+   ↓
+npm ci  →  npm run build:no-prerender
+              ↓ (npm lifecycle pre-hook)
+              prebuild:no-prerender:
+                node scripts/generate-sitemap.js
+                npm test                              ← vitest, 28 tests / 5 suites
+                node scripts/qa-content-scan.cjs      ← exit 1 on hard failures
+                node scripts/qa-sitemap-audit.cjs     ← exit 1 on broken sitemap
+              ↓ (only if all gates pass)
+              vite build
+   ↓
+node scripts/generate-static.js     (SPA fallbacks + SEO pages)
+   ↓
+node scripts/prerender.js           (Puppeteer)
+   ↓
+node scripts/smoke-test-routes.js   (no white-screen check)
+   ↓
+vercel deploy --prod
+   ↓ (post-deploy, all `continue-on-error: true`)
+node scripts/notify-google-indexing.cjs   (Google Indexing API)
+node scripts/notify-indexnow.cjs          (Bing/Yandex)
+node scripts/submit-sitemap-gsc.cjs       (GSC submit + cleanup)
+```
 
-### עדכון Navigation
-אחרי הוספת קטגוריה חדשה, לעדכן את `src/portal/config/navigation.js`
+### Production scripts (do not delete — referenced by CI)
+
+```
+scripts/generate-sitemap.js          prebuild
+scripts/generate-static.js           build step
+scripts/prerender.js                 deploy step
+scripts/smoke-test-routes.js         deploy step
+scripts/notify-google-indexing.cjs   post-deploy
+scripts/notify-indexnow.cjs          post-deploy
+scripts/submit-sitemap-gsc.cjs       post-deploy
+scripts/bulk-request-indexing.cjs    bulk-indexing.yml (manual + planned weekly)
+scripts/check-indexation-status.cjs  check-indexation.yml (daily 09:00 UTC)
+scripts/submit-all-urls.cjs          submit-all-to-google.yml (manual)
+scripts/qa-content-scan.cjs          npm run qa:content
+scripts/qa-sitemap-audit.cjs         npm run qa:sitemap
+scripts/report-health.cjs            npm run health
+scripts/add-cross-category-links.cjs idempotent re-run helper
+```
+
+### GitHub workflows
+
+| Workflow | Trigger | Purpose |
+|---|---|---|
+| `deploy.yml` | push to main / manual | full build → deploy → notify |
+| `bulk-indexing.yml` | manual | force-push every URL to Google Indexing API + IndexNow + sitemap submit |
+| `check-indexation.yml` | cron `0 9 * * *` (daily 12:00 Israel) | poll GSC URL Inspection for every URL |
+| `submit-all-to-google.yml` | manual | one-shot bulk URL submit |
+
+### Cron / scheduled jobs
+
+| איפה | תדירות | מה |
+|---|---|---|
+| GitHub Actions | יומי 12:00 IST | `check-indexation.yml` → status sync ל-`seo_published_articles` |
+| Supabase pg_cron | כל 5 דקות | FollowUp Bot dispatch (לא לגעת) |
+| Supabase pg_cron | יומי | gmail inbox poller (לא לגעת) |
+| n8n | מגוון | F33 article writer, FollowUp Bot, social publisher (לא לגעת ב-UI חי) |
 
 ---
 
-## סיכום מספרי — יעד התוכן
+## איך SEO publishing עובד
 
-| שלב | סוג תוכן | כמות | ביטויים צפויים |
-|------|----------|------|---------------|
-| קיים | מאמרים + קטגוריות + השוואה | 11 | ~40 |
-| שלב 1 | השלמת קטגוריות קיימות | 50 | ~200 |
-| שלב 2 | דפי השוואה | 20 | ~80 |
-| שלב 3 | קטגוריות חדשות | 80 | ~320 |
-| **סה"כ** | | **~161** | **~640** |
+1. **n8n F33** מייצר מאמר חדש (Claude Opus + QA gate) → דוחף PR ל-GitHub עם קובץ JSON ב-`src/content/<category>/<slug>.json`.
+2. **המאמר חייב לעבור 3 שערים** לפני merge:
+   - F33 quality gate ב-n8n (score ≥ 85, word count ≥ 1200, FAQ ≥ 3, author whitelist)
+   - `npm test` בעת merge (28 tests — מבני ולא קוסמטי)
+   - `npm run qa:content` (placeholder detection, broken stubs, broken relatedArticles)
+3. אחרי merge ל-main → deploy.yml רץ אוטומטית → המאמר עולה ל-perfect1.co.il.
+4. ב-deploy.yml: `notify-google-indexing.cjs` מקבל את הקובץ החדש מ-`git diff HEAD~1 HEAD` ושולח `URL_UPDATED` ל-Google Indexing API + IndexNow.
+5. Google מבקר ב-URL תוך 24-72 שעות. החלטת אינדוקס תוך 1-4 שבועות נוספים, תלוי באיכות.
 
-עם הזמן, כל מאמר צפוי לדרג גם ב-long-tail keywords נוספים, מה שיביא את הסך הכולל ל-800-1,000+ ביטויים.
+### Quality gate config (`config/site.config.cjs`)
 
----
-
-## כללים חשובים
-
-- **שפת תוכן:** עברית בלבד
-- **RTL:** כל הטקסט מימין לשמאל
-- **מותג:** פרפקט וואן | perfect1.co.il
-- **CTA בכל עמוד:** טופס לידים + WhatsApp
-- **אין SSR** — האתר הוא SPA (React + Vite), אז התוכן מוגש כ-JSON ומרונדר בצד לקוח
+```js
+QUALITY_THRESHOLD     = 85    // F33 score gate (0-100)
+MIN_WORD_COUNT        = 1200  // CI gate
+MAX_ARTICLES_PER_DAY  = 3
+RATE_LIMIT_MS.google  = 350   // ~170 req/min, under quota
+```
 
 ---
 
-## ⚠️ זהירות — Repository הנכון
+## איך אינדוקס עובד
 
-**עבוד רק עם: `perfect-ai-admin/perfect1-portal`**
+| ערוץ | מי משתמש | תדירות | רץ מ |
+|---|---|---|---|
+| Google Indexing API | scripts/notify-google-indexing.cjs | בכל deploy, רק על קבצים שהשתנו | deploy.yml |
+| Google Indexing API (bulk) | scripts/bulk-request-indexing.cjs | manual / שבועי | bulk-indexing.yml |
+| IndexNow (Bing + Yandex) | scripts/notify-indexnow.cjs | בכל deploy | deploy.yml |
+| GSC Sitemap submit | scripts/submit-sitemap-gsc.cjs | בכל deploy | deploy.yml |
+| GSC URL Inspection (status) | scripts/check-indexation-status.cjs | יומי 12:00 IST | check-indexation.yml |
 
-**אל תתקשר עם: `perfect-ai-admin/5bisnes`** (repo אחר לחלוטין)
+`submit-sitemap-gsc.cjs` גם **מוחק** את ה-bogus `/sitemap` entry (ללא .xml) שגרם ל-GSC להציג שגיאת parse — מבצע cleanup אוטומטי בכל deploy. Idempotent.
 
-**Deployment:**
+---
+
+## QA — איך מריצים לפני deploy
+
+```bash
+# הסט המלא (זה מה שה-CI ירוץ אוטומטית)
+npm run qa:full
+
+# או רכיבים בנפרד:
+npm test                    # vitest — 28 tests
+npm run qa:content          # תוכן: hard failures + thin/FAQ stats
+npm run qa:sitemap          # sitemap structure
+npm run qa:sitemap -- --probe   # + 20 critical URLs HTTP probe
+
+# סטטוס מהיר של הפרויקט
+npm run health
+```
+
+`qa:full` מתבצע אוטומטית בכל `npm run build:no-prerender` (כלומר בכל deploy). אם משהו נכשל — ה-deploy לא יוצא.
+
+---
+
+## ⛔ מה לא לגעת
+
+הצגה ברורה — קוד שהפועל בפרודקשן ושינוי שלו מסכן הכנסות / לקוחות / SEO equity:
+
+| | למה |
+|---|---|
+| `supabase/functions/tranzilaConfirmPayment/`, `tranzilaCreatePayment/`, `stripeWebhook/`, `fulfillPayment/` | תשלומים. שינוי = איבוד עסקאות. |
+| `supabase/functions/botStartFlow/`, `botHandleReply/`, `smartMentorEngine/` | WhatsApp Bot — מקבל לידים. |
+| `supabase/functions/crm*` | 26 פונקציות CRM. |
+| n8n workflows חיים (FollowUp Bot, F33, post-purchase, social-publisher) | live automation. עורכים דרך n8n UI, לא דרך JSON exports. |
+| `vercel.json` headers/CSP | Content-Security-Policy. שגיאה = שבירת iframes של Tranzila/Stripe. |
+| `public/sitemap.xml` ידנית | ה-prebuild מייצר אותו אוטומטית. עריכה ידנית עלולה לשבור את הצהרת ה-XML. |
+| `pg_cron` jobs קיימים ב-Supabase | למשל ה-followup tick כל 5 דקות. שינוי = הודעות חוזרות / עיכובים אצל לידים. |
+
+לפני שינוי בכל אחד מהדברים האלה — `git checkout -b safe-experiment` ובדיקה מקומית.
+
+---
+
+## Emergency rollback
+
+### תרחיש 1 — deploy חדש שובר את האתר
+
+```bash
+# מצא את ה-commit שעבד אחרון
+git log --oneline -10
+
+# החזר את main לאותו commit וpush --force-with-lease
+git reset --hard <good-sha>
+git push --force-with-lease origin main
+```
+
+Vercel ירוץ deploy אוטומטי על הdesha המוחזר (תוך ~5-9 דקות). זה נכון רק אם אף אחד אחר לא דחף בינתיים.
+
+### תרחיש 2 — Vercel deploy עצמו תקין אבל ה-content לא נכון
+
+```bash
+# Vercel UI → Deployments → בחר deploy ירוק קודם → "Promote to Production"
+# או דרך CLI:
+vercel rollback <previous-deployment-url> --token=$VERCEL_TOKEN
+```
+
+### תרחיש 3 — Sitemap שבור / GSC parse error
+
+```bash
+# Backup branch קיים מהsprint הזה:
+git diff backup/pre-cleanup-20260426 -- public/sitemap.xml
+
+# אם צריך, החזר רק את הsitemap:
+git checkout backup/pre-cleanup-20260426 -- public/sitemap.xml
+git commit -m "rollback: restore sitemap.xml from backup branch"
+git push
+```
+
+### תרחיש 4 — n8n workflow נשבר
+
+לא נוגעים ב-JSON exports שב-`/docs/`. n8n UI הוא source of truth — תיקון ב-UI, ייצוא חדש ל-`/docs/` בעת הצורך כדי לעדכן backup.
+
+### Backup branches
+
+- `backup/pre-cleanup-20260426` — מצב לפני sprint הניקיון של 26/4/2026
+- כשנעשה sprint גדול הבא — `backup/pre-<topic>-YYYYMMDD`
+
+---
+
+## כללי כתיבה לתוכן (סיכום מתומצת)
+
+תקפים מ-CLAUDE.md הקודם, עדיין רלוונטיים:
+
+- **שפת תוכן:** עברית בלבד, RTL.
+- **כל מאמר** — meta title ≤ 60 תווים, meta description 120-160 תווים, ≥ 5 sections, ≥ 3 FAQ entries, 1200+ מילים (יעד 1500+).
+- **TOC** — מספר ה-entries ב-TOC לא יכול לעלות על מספר ה-sections בפועל ביותר מ-2 (אחרת soft 404 בעיני Google).
+- **relatedArticles** — לפחות 3 entries, כולן צריכות להפנות לקבצים קיימים (CI ייכשל אחרת).
+- **Schema markup** — אוטומטי (Article + FAQ + BreadcrumbList).
+- **Internal linking** — כל מאמר חדש צריך לקבל לפחות 2-3 קישורים נכנסים ממאמרים בקטגוריות סמכות (osek-patur, osek-murshe, guides).
+
+---
+
+## Roadmap מקוצר (התוכנית הארוכה ב-`docs/quality-baseline.md`)
+
+1. **2 שבועות הקרובים** — הרחבת 10 thin הקצרים ביותר ל-1,200+ מילים. רשימה מוכנה ב-`docs/quality-baseline.md`.
+2. **חודש הקרוב** — שכתוב ייחודי של `cities/tel-aviv`, `cities/jerusalem`, `cities/haifa` (כיום template duplicates).
+3. **רבעון הקרוב** — הורדת thin count מ-79 ל-<40, ואז ל-0.
+4. **בדיקה שבועית** — `npm run health`. אם דגל אדום — לטפל לפני שעולה.
+
+---
+
+## קבצים חשובים — איפה הם
+
+```
+.github/workflows/        ← deploy.yml + 3 indexing workflows
+config/site.config.cjs    ← single source of truth ל-thresholds
+lib/url-mapper.cjs        ← category → URL mapping
+src/content/              ← כל המאמרים, JSON
+src/portal/config/navigation.js   ← תפריט ראשי + sub-categories
+public/sitemap.xml        ← regenerated automatically by prebuild hook
+public/robots.txt         ← static, includes Sitemap reference
+vercel.json               ← redirects, headers, CSP
+tests/                    ← vitest suites
+docs/CI-HARDENING.md      ← workflow patches awaiting manual apply
+docs/quality-baseline.md  ← starting state for content metrics
+docs/_archive/            ← versioned n8n payload snapshots (history only)
+```
+
+---
+
+## ⚠️ מקור הקוד הנכון
+
+עבוד רק עם: **`perfect-ai-admin/perfect1-portal`**
+
+אל תתקשר עם: ~~`perfect-ai-admin/5bisnes`~~ (repo אחר לחלוטין למרות ש-package.json עדיין רושם name=`5bisnes`)
+
 - GitHub Actions: https://github.com/perfect-ai-admin/perfect1-portal/actions
-- Live site: https://perfect1.co.il
+- Live site: https://www.perfect1.co.il
