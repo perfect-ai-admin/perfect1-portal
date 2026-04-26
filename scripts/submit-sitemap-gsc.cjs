@@ -61,7 +61,9 @@ async function main() {
   } catch (e) {
     console.error(`  ✗ Submit failed: ${e.code || ''} ${e.message || ''}`.trim());
     console.error('    Service account may need Search Console access to the property.');
-    return;
+    // Submit is the critical step. Surface failure as a non-zero exit so the
+    // workflow step shows red even though deploy.yml has continue-on-error.
+    process.exit(1);
   }
 
   console.log(`\n[3] Sitemaps state after maintenance:`);
@@ -82,5 +84,8 @@ async function main() {
 
 main().catch((e) => {
   console.error('Fatal:', e.message);
-  process.exit(0);
+  // Real exceptions (network, auth misconfig) should fail loudly so they're
+  // visible in the workflow run UI. deploy.yml's continue-on-error keeps the
+  // overall deploy from breaking, but the step itself will now show red.
+  process.exit(1);
 });

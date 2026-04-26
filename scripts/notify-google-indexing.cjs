@@ -94,5 +94,7 @@ async function main() {
 
 main().catch(err => {
   console.error('Indexing notification error:', err.message);
-  process.exit(0);
+  // Fail loudly. deploy.yml has continue-on-error: true on this step, so a
+  // non-zero exit only paints the step red without breaking the deploy.
+  process.exit(1);
 });

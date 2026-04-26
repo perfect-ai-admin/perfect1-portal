@@ -77,6 +77,7 @@ async function main() {
   urls.forEach(u => console.log(`  → ${u}`));
   console.log();
 
+  let failed = false;
   try {
     const r = await postIndexNow(urls);
     if (r.status === 200 || r.status === 202) {
@@ -85,10 +86,15 @@ async function main() {
     } else {
       console.error(`✗ IndexNow returned HTTP ${r.status}`);
       console.error(`  Body: ${r.body}`);
+      failed = true;
     }
   } catch (e) {
     console.error('IndexNow error:', e.message);
+    failed = true;
   }
+  if (failed) process.exit(1);
 }
 
-main().catch(e => { console.error('Fatal:', e.message); process.exit(0); });
+// Fail loudly on real exceptions. deploy.yml has continue-on-error: true
+// on this step so a non-zero exit shows the step red without breaking deploy.
+main().catch(e => { console.error('Fatal:', e.message); process.exit(1); });
