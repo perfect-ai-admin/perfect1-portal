@@ -37,9 +37,9 @@
 const fs = require('fs');
 const path = require('path');
 const https = require('https');
-const { SITE_URL, CATEGORY_URL_MAP } = require('../config/site.config.cjs');
+const { SITE_URL, CATEGORY_URL_MAP } = require('../../config/site.config.cjs');
 
-const ROOT = path.resolve(__dirname, '..');
+const ROOT = path.resolve(__dirname, '..', '..');
 const CONTENT = path.join(ROOT, 'src/content');
 const SITEMAP = path.join(ROOT, 'public/sitemap.xml');
 const VERCEL = path.join(ROOT, 'vercel.json');

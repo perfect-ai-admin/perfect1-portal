@@ -28,9 +28,9 @@
 const fs = require('fs');
 const path = require('path');
 const https = require('https');
-const { SITE_URL, SITEMAP_URL } = require('../config/site.config.cjs');
+const { SITE_URL, SITEMAP_URL } = require('../../config/site.config.cjs');
 
-const SITEMAP_PATH = path.resolve(__dirname, '..', 'public', 'sitemap.xml');
+const SITEMAP_PATH = path.resolve(__dirname, '..', '..', 'public', 'sitemap.xml');
 const EXPECTED_HOST = SITE_URL; // https://www.perfect1.co.il
 
 // 20 critical URLs to probe by default. Picked because they are

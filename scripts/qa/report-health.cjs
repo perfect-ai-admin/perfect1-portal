@@ -15,7 +15,7 @@ const path = require('path');
 const { execSync } = require('child_process');
 const https = require('https');
 
-const ROOT = path.resolve(__dirname, '..');
+const ROOT = path.resolve(__dirname, '..', '..');
 const CONTENT = path.join(ROOT, 'src/content');
 const SITEMAP = path.join(ROOT, 'public/sitemap.xml');
 const PKG = path.join(ROOT, 'package.json');

@@ -25,9 +25,9 @@
 
 const fs = require('fs');
 const path = require('path');
-const { MIN_WORD_COUNT, CATEGORY_URL_MAP } = require('../config/site.config.cjs');
+const { MIN_WORD_COUNT, CATEGORY_URL_MAP } = require('../../config/site.config.cjs');
 
-const ROOT = path.resolve(__dirname, '..');
+const ROOT = path.resolve(__dirname, '..', '..');
 const CONTENT = path.join(ROOT, 'src/content');
 const VERCEL_CONFIG = path.join(ROOT, 'vercel.json');
 
