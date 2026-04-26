@@ -273,11 +273,40 @@ function generateContent(route) {
       case 'steps':
         html += `<h2>${escapeHtml(section.title || '')}</h2>\n`;
         html += '<ol>\n';
-        for (const step of (section.steps || [])) {
-          html += `  <li><strong>${escapeHtml(step.title || '')}</strong>: ${formatContent(step.description || '')}</li>\n`;
+        for (const step of (section.steps || section.items || [])) {
+          if (typeof step === 'string') {
+            const colonIdx = step.search(/[:—–-]/);
+            if (colonIdx > 0 && colonIdx < 80) {
+              const t = step.slice(0, colonIdx).trim();
+              const d = step.slice(colonIdx + 1).trim();
+              html += `  <li><strong>${escapeHtml(t)}</strong>: ${formatContent(d)}</li>\n`;
+            } else {
+              html += `  <li>${formatContent(step)}</li>\n`;
+            }
+          } else {
+            html += `  <li><strong>${escapeHtml(step.title || '')}</strong>: ${formatContent(step.description || '')}</li>\n`;
+          }
         }
         html += '</ol>\n';
         break;
+
+      case 'comparison': {
+        html += `<h2>${escapeHtml(section.title || '')}</h2>\n`;
+        if (section.description) html += `<p>${formatContent(section.description)}</p>\n`;
+        if (Array.isArray(section.headers) && Array.isArray(section.rows) && section.rows.length) {
+          html += '<table><thead><tr>';
+          for (const h of section.headers) html += `<th>${escapeHtml(h)}</th>`;
+          html += '</tr></thead><tbody>';
+          for (const row of section.rows) {
+            html += '<tr>';
+            for (const cell of (row || [])) html += `<td>${escapeHtml(String(cell))}</td>`;
+            html += '</tr>';
+          }
+          html += '</tbody></table>\n';
+        }
+        if (section.content) html += `<div>${formatContent(section.content)}</div>\n`;
+        break;
+      }
 
       case 'faq':
         html += `<h2>${escapeHtml(section.title || '')}</h2>\n`;
