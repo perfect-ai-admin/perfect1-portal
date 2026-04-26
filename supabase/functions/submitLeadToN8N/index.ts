@@ -199,24 +199,11 @@ Deno.serve(async (req) => {
         .catch(e => console.warn('botStartFlow fire-and-forget failed:', e.message));
     }
 
-    // Also notify n8n — fire and forget (no await)
-    {
-      const n8nPayload = {
-        _event_type: 'new_lead',
-        lead_id: leadResult.id,
-        name: safeName || 'אתר',
-        phone: cleanPhone || '',
-        email: email || '',
-        page_slug: pageSlug || 'open-osek-patur',
-        service_type: intent.service_type || 'osek_patur',
-      };
-      fetch('https://n8n.perfect-1.one/webhook/perfect-one-osek-patur', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(n8nPayload),
-      }).then(() => console.log('N8N webhook sent for lead:', leadResult.id))
-        .catch((e: any) => console.warn('N8N webhook failed:', e.message));
-    }
+    // n8n webhook on INSERT removed — was causing duplicate WhatsApp greetings
+    // (n8n FollowUp Bot workflow was sending its own greeting in parallel with botStartFlow).
+    // Status changes still flow to n8n via trg_notify_n8n_lead_change (UPDATE trigger).
+    // If n8n needs new-lead events for non-greeting purposes (analytics, staff notifications)
+    // add it back here with `_skip_greeting: true` and gate the greeting node in n8n on it.
 
     // 3. Also save crm_lead (per-user CRM view)
     try {
@@ -277,7 +264,8 @@ Deno.serve(async (req) => {
       }
     }
 
-    // N8N channel — handled by DB trigger (trg_notify_n8n_new_lead), no direct call needed
+    // N8N channel — DB trigger trg_notify_n8n_new_lead was dropped (caused dup greetings).
+    // Status changes still go to n8n via trg_notify_n8n_lead_change (UPDATE trigger).
 
     // WhatsApp notification to business owner (not to lead — bot handles that via n8n)
     if (channels.includes('whatsapp') && destPhone) {
