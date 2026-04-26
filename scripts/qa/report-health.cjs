@@ -76,7 +76,13 @@ function contentFacts() {
         if (s.title) text += ' ' + s.title;
         if (s.answerBlock) text += ' ' + s.answerBlock;
         if (s.description) text += ' ' + s.description;
-        if (Array.isArray(s.items)) text += ' ' + s.items.map((i) => typeof i === 'string' ? i : (i.text || i.content || '')).join(' ');
+        if (Array.isArray(s.items)) {
+          text += ' ' + s.items.map((i) => {
+            if (typeof i === 'string') return i;
+            return [i.text, i.content, i.title, i.description, i.question, i.answer]
+              .filter(Boolean).join(' ');
+          }).join(' ');
+        }
       }
       for (const fa of d.faq || []) text += ' ' + (fa.question || '') + ' ' + (fa.answer || '');
       const wc = (text.trim().match(/\S+/g) || []).length;

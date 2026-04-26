@@ -58,7 +58,15 @@ function articleWordCount(d) {
     if (s.title)   text += ' ' + s.title;
     if (s.answerBlock) text += ' ' + s.answerBlock;
     if (s.description) text += ' ' + s.description;
-    if (Array.isArray(s.items)) text += ' ' + s.items.map((i) => typeof i === 'string' ? i : (i.text || i.content || '')).join(' ');
+    if (Array.isArray(s.items)) {
+      // Items may be strings or objects with any of {text, content, title, description, question, answer}
+      // — count every text field that's present rather than just two of them.
+      text += ' ' + s.items.map((i) => {
+        if (typeof i === 'string') return i;
+        return [i.text, i.content, i.title, i.description, i.question, i.answer]
+          .filter(Boolean).join(' ');
+      }).join(' ');
+    }
   }
   for (const f of d.faq || []) {
     text += ' ' + (f.question || '') + ' ' + (f.answer || '');
