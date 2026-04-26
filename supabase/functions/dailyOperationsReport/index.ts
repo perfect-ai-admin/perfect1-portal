@@ -80,7 +80,15 @@ async function getContentIdeas(date: string) {
     .select('id', { count: 'exact', head: true })
     .eq('status', 'new');
 
-  return { todayIdeas: todayIdeas || [], totalPending: totalPending || 0 };
+  // Top 5 pending ideas by priority — next articles F33 will publish
+  const { data: topPending } = await supabaseAdmin
+    .from('seo_content_ideas')
+    .select('target_query,suggested_article_title,priority_score,parent_page_url')
+    .eq('status', 'new')
+    .order('priority_score', { ascending: false })
+    .limit(5);
+
+  return { todayIdeas: todayIdeas || [], totalPending: totalPending || 0, topPending: topPending || [] };
 }
 
 async function getTodayArticle(date: string) {
@@ -121,8 +129,8 @@ async function getF33Runs(date: string) {
 }
 
 // === Phase 5 additions ===
-// Top 3 queries by clicks over the last 7 days (week-level GSC summary).
-async function getGSCTop3Week(date: string) {
+// Top 10 queries by clicks over the last 7 days (week-level GSC summary).
+async function getGSCTop10Week(date: string) {
   const d = new Date(date);
   d.setDate(d.getDate() - 6);
   const weekStart = d.toISOString().split('T')[0];
@@ -135,23 +143,25 @@ async function getGSCTop3Week(date: string) {
     .lte('date', date);
   if (!data || data.length === 0) return [];
 
-  const map = new Map<string, { query: string; clicks: number; impressions: number; positions: number[] }>();
+  const map = new Map<string, { query: string; clicks: number; impressions: number; ctrs: number[]; positions: number[] }>();
   for (const row of data) {
     const key = row.query as string;
-    const e = map.get(key) || { query: key, clicks: 0, impressions: 0, positions: [] };
+    const e = map.get(key) || { query: key, clicks: 0, impressions: 0, ctrs: [], positions: [] };
     e.clicks += row.clicks || 0;
     e.impressions += row.impressions || 0;
     if (row.avg_position) e.positions.push(row.avg_position as number);
+    if (row.ctr) e.ctrs.push(row.ctr as number);
     map.set(key, e);
   }
   const list = [...map.values()].map((e) => ({
     query: e.query,
     clicks: e.clicks,
     impressions: e.impressions,
+    ctr: e.ctrs.length ? (e.ctrs.reduce((a, b) => a + b, 0) / e.ctrs.length * 100).toFixed(1) : '-',
     avg_position: e.positions.length ? e.positions.reduce((a, b) => a + b, 0) / e.positions.length : null,
   }));
   list.sort((a, b) => b.clicks - a.clicks || b.impressions - a.impressions);
-  return list.slice(0, 3);
+  return list.slice(0, 10);
 }
 
 // Workflow status badges — fetch last execution of each tracked n8n workflow.
@@ -203,7 +213,7 @@ Deno.serve(async (req) => {
     const dateLabel = israelDateLabel(date);
 
     // Gather all data concurrently
-    const [gscQueries, gscTotals, gscYesterday, ideas, todayArticle, weekStats, runs, gscTop3Week, wfBadges] = await Promise.all([
+    const [gscQueries, gscTotals, gscYesterday, ideas, todayArticle, weekStats, runs, gscTop10Week, wfBadges] = await Promise.all([
       getGSCData(date),
       getGSCTotals(date),
       getGSCYesterday(date),
@@ -211,7 +221,7 @@ Deno.serve(async (req) => {
       getTodayArticle(date),
       getWeeklyStats(date),
       getF33Runs(date),
-      getGSCTop3Week(date),
+      getGSCTop10Week(date),
       getWorkflowBadges(),
     ]);
 
@@ -346,7 +356,8 @@ Deno.serve(async (req) => {
     </div>`;
 
     if (ideas.todayIdeas.length > 0) {
-      html += `<table style="width:100%;border-collapse:collapse;font-size:13px;">
+      html += `<div style="font-size:12px;font-weight:700;color:#6b7280;margin-bottom:6px;">נוצרו היום:</div>`;
+      html += `<table style="width:100%;border-collapse:collapse;font-size:13px;margin-bottom:16px;">
         <tr style="background:#f1f5f9;"><th style="padding:7px 10px;text-align:right;color:#374151;">ביטוי מטרה</th><th style="padding:7px 10px;text-align:right;color:#374151;">כותרת מוצעת</th><th style="padding:7px 10px;text-align:center;color:#374151;">ציון</th></tr>`;
       ideas.todayIdeas.forEach((idea: any, i: number) => {
         const bg = i % 2 === 0 ? '#fff' : '#f9fafb';
@@ -358,24 +369,59 @@ Deno.serve(async (req) => {
       });
       html += `</table>`;
     } else {
-      html += `<p style="color:#9ca3af;font-size:13px;margin:0;">לא נוצרו ideas חדשים היום.</p>`;
+      html += `<p style="color:#9ca3af;font-size:13px;margin:0 0 16px;">לא נוצרו ideas חדשים היום.</p>`;
+    }
+
+    // Top 5 pending ideas — next in queue for F33
+    if (ideas.topPending.length > 0) {
+      html += `<div style="font-size:12px;font-weight:700;color:#6b7280;margin-bottom:6px;">5 הבאים בתור לפרסום:</div>`;
+      html += `<table style="width:100%;border-collapse:collapse;font-size:13px;">
+        <tr style="background:#f1f5f9;">
+          <th style="padding:7px 10px;text-align:right;color:#374151;">ביטוי מטרה</th>
+          <th style="padding:7px 10px;text-align:right;color:#374151;">כותרת מוצעת</th>
+          <th style="padding:7px 10px;text-align:center;color:#374151;">ציון</th>
+          <th style="padding:7px 10px;text-align:right;color:#374151;">עמוד אב</th>
+        </tr>`;
+      ideas.topPending.forEach((idea: any, i: number) => {
+        const bg = i % 2 === 0 ? '#fff' : '#f9fafb';
+        const parentLink = idea.parent_page_url
+          ? `<a href="${idea.parent_page_url}" target="_blank" style="color:#6b7280;font-size:11px;text-decoration:none;">${idea.parent_page_url.replace('https://www.perfect1.co.il','')}</a>`
+          : '<span style="color:#d1d5db;font-size:11px;">—</span>';
+        html += `<tr style="background:${bg};">
+          <td style="padding:6px 10px;color:#1d4ed8;font-weight:600;">${idea.target_query}</td>
+          <td style="padding:6px 10px;color:#374151;">${idea.suggested_article_title}</td>
+          <td style="padding:6px 10px;text-align:center;font-weight:700;color:#059669;">${idea.priority_score}</td>
+          <td style="padding:6px 10px;">${parentLink}</td>
+        </tr>`;
+      });
+      html += `</table>`;
     }
     html += `</div>`;
 
-    // === Phase 5: GSC top 3 queries this week + idea-shortage warning ===
-    if (gscTop3Week && gscTop3Week.length > 0) {
+    // Top 10 keywords this week
+    if (gscTop10Week && gscTop10Week.length > 0) {
       html += `<div style="background:white;border-radius:10px;padding:20px 24px;margin-bottom:16px;box-shadow:0 1px 4px rgba(0,0,0,0.06);">`;
-      html += `<h2 style="font-size:15px;font-weight:700;color:#1e3a5f;border-bottom:2px solid #dbeafe;padding-bottom:8px;margin:0 0 14px;">Top 3 ביטויים — 7 ימים אחרונים</h2>`;
+      html += `<h2 style="font-size:15px;font-weight:700;color:#1e3a5f;border-bottom:2px solid #dbeafe;padding-bottom:8px;margin:0 0 14px;">דירוגים בגוגל — Top 10 ביטויים (7 ימים אחרונים)</h2>`;
       html += `<table style="width:100%;border-collapse:collapse;font-size:13px;">
-        <tr style="background:#f1f5f9;"><th style="padding:7px 10px;text-align:right;color:#374151;">ביטוי</th><th style="padding:7px 10px;text-align:center;color:#374151;">קליקים</th><th style="padding:7px 10px;text-align:center;color:#374151;">חשיפות</th><th style="padding:7px 10px;text-align:center;color:#374151;">מיקום ממוצע</th></tr>`;
-      gscTop3Week.forEach((q, i) => {
+        <tr style="background:#f1f5f9;">
+          <th style="padding:7px 10px;text-align:right;color:#374151;">#</th>
+          <th style="padding:7px 10px;text-align:right;color:#374151;">ביטוי</th>
+          <th style="padding:7px 10px;text-align:center;color:#374151;">מיקום</th>
+          <th style="padding:7px 10px;text-align:center;color:#374151;">קליקים</th>
+          <th style="padding:7px 10px;text-align:center;color:#374151;">חשיפות</th>
+          <th style="padding:7px 10px;text-align:center;color:#374151;">CTR</th>
+        </tr>`;
+      gscTop10Week.forEach((q, i) => {
         const bg = i % 2 === 0 ? '#fff' : '#f9fafb';
         const pos = q.avg_position !== null ? q.avg_position.toFixed(1) : '-';
+        const posColor = q.avg_position !== null && q.avg_position <= 3 ? '#059669' : q.avg_position !== null && q.avg_position <= 10 ? '#d97706' : '#6b7280';
         html += `<tr style="background:${bg};">
+          <td style="padding:6px 10px;text-align:right;color:#9ca3af;font-size:11px;">${i + 1}</td>
           <td style="padding:6px 10px;font-weight:600;color:#1d4ed8;">${q.query}</td>
+          <td style="padding:6px 10px;text-align:center;font-weight:700;color:${posColor};">${pos}</td>
           <td style="padding:6px 10px;text-align:center;font-weight:700;">${q.clicks}</td>
           <td style="padding:6px 10px;text-align:center;">${q.impressions}</td>
-          <td style="padding:6px 10px;text-align:center;">${pos}</td>
+          <td style="padding:6px 10px;text-align:center;color:#6b7280;">${q.ctr}%</td>
         </tr>`;
       });
       html += `</table></div>`;
