@@ -71,28 +71,6 @@ Deno.serve(async (req) => {
 
     if (sessionErr) throw new Error(`Session create failed: ${sessionErr.message}`);
 
-    // 4. Update lead with bot fields
-    if (lead_id) {
-      console.log(`Updating lead ${lead_id} with bot fields`);
-      const { data: updatedLead, error: leadUpdateErr } = await supabaseAdmin.from('leads').update({
-        page_intent: intent.page_intent,
-        flow_type: intent.flow_type,
-        bot_current_step: 'opening',
-        bot_started_at: new Date().toISOString(),
-        bot_messages_count: 0,
-        interaction_type: 'bot',
-        service_type: intent.service_type,
-      }).eq('id', lead_id).select();
-
-      if (leadUpdateErr) {
-        console.error(`Error updating lead ${lead_id}: ${leadUpdateErr.message}`);
-      } else if (!updatedLead || updatedLead.length === 0) {
-        console.warn(`Lead ${lead_id} not updated — 0 rows affected`);
-      } else {
-        console.log(`Lead ${lead_id} updated successfully`);
-      }
-    }
-
     // Common send options for this session
     const sendOpts = {
       phone: cleanPhone,
@@ -101,29 +79,54 @@ Deno.serve(async (req) => {
       sender_type: 'bot' as const,
     };
 
-    // 5. Send greeting via Green API + store in DB
+    // 4. Send greeting via Green API + store in DB
+    // IMPORTANT: We send BEFORE marking the lead with flow_type / bot_current_step.
+    // Reason: scan_and_trigger_catchup_bot retries leads where flow_type IS NULL AND
+    // bot_current_step IS NULL. If we marked the lead before sending and the WhatsApp
+    // send failed (e.g. Green API disconnected), the lead would be permanently stuck
+    // because catchup would skip it.
     const greetingMsg = `שלום! 👋\n\nהגעת ל*פרפקט וואן* — מומחים בפתיחה וניהול עסקים בישראל.\n\nאיך נוכל לעזור לך היום?`;
     const greetingButtons = [
       { id: 'start_now', label: 'פתיחת עוסק פטור אונליין' },
       { id: 'cta_call', label: 'שיחה עם רואה חשבון' },
       { id: 'cta_question', label: 'יש לי שאלה' },
     ];
-    await sendAndStoreButtons(supabaseAdmin, { ...sendOpts, message: greetingMsg, buttons: greetingButtons });
+    const sendResult = await sendAndStoreButtons(supabaseAdmin, { ...sendOpts, message: greetingMsg, buttons: greetingButtons });
 
-    // 6. Update session — greeting sent, waiting for user choice (1/2/3)
+    // 5. If send failed — close the orphan session, leave lead untouched, return 502.
+    // Catchup scanner will retry on the next minute tick.
+    if (!sendResult.success) {
+      console.warn(`botStartFlow: greeting send failed for lead=${lead_id || 'n/a'} phone=${cleanPhone}. Closing orphan session ${session.id} so catchup can retry.`);
+      await supabaseAdmin.from('bot_sessions').update({
+        completed_at: new Date().toISOString(),
+      }).eq('id', session.id);
+      return errorResponse('WhatsApp send failed (Green API)', 502, req);
+    }
+
+    // 6. Send succeeded — update session
     await supabaseAdmin.from('bot_sessions').update({
       current_step: 'entry_menu',
       messages_count: 1,
       last_message_at: new Date().toISOString(),
     }).eq('id', session.id);
 
-    // 7. Update lead
+    // 7. Send succeeded — mark lead with flow_type so catchup skips it
     if (lead_id) {
-      await supabaseAdmin.from('leads').update({
+      console.log(`Updating lead ${lead_id} with bot fields after successful send`);
+      const { error: leadUpdateErr } = await supabaseAdmin.from('leads').update({
+        page_intent: intent.page_intent,
+        flow_type: intent.flow_type,
         bot_current_step: 'entry_menu',
+        bot_started_at: new Date().toISOString(),
         bot_messages_count: 1,
         bot_last_message_at: new Date().toISOString(),
+        interaction_type: 'bot',
+        service_type: intent.service_type,
       }).eq('id', lead_id);
+
+      if (leadUpdateErr) {
+        console.error(`Error updating lead ${lead_id}: ${leadUpdateErr.message}`);
+      }
     }
 
     // 8. Log event

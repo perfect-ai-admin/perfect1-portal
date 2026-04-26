@@ -113,6 +113,30 @@ Deno.serve(async (req) => {
 
     console.log(`Google lead saved: ${lead.id}${isTest ? ' (TEST)' : ''}`);
 
+    // Trigger botStartFlow — FIRE AND FORGET (no await)
+    // Skip for test leads to avoid spam.
+    if (cleanedPhone && cleanedPhone !== 'test' && !isTest) {
+      const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+      const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+      fetch(`${supabaseUrl}/functions/v1/botStartFlow`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${serviceKey}`,
+          'apikey': serviceKey,
+        },
+        body: JSON.stringify({
+          lead_id: lead.id,
+          lead_name: name || 'Google Lead',
+          phone: cleanedPhone,
+          email: email || '',
+          page_slug: leadData.source_page,
+          page_title: company || '',
+        }),
+      }).then(r => console.log('botStartFlow triggered:', lead.id, r.status))
+        .catch(e => console.warn('botStartFlow fire-and-forget failed:', e.message));
+    }
+
     // Return simple 200 — Google expects this
     return new Response(JSON.stringify({ success: true }), {
       status: 200,
