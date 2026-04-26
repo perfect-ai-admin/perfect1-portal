@@ -1,0 +1,1606 @@
+{
+  "updatedAt": "2026-04-26T10:00:50.928Z",
+  "createdAt": "2026-04-15T13:57:50.077Z",
+  "id": "F33CbVflx4aApT71",
+  "name": "SEO - Auto Article Publisher",
+  "description": null,
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "id": "trigger",
+      "name": "Schedule - 11:00 Daily",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        200,
+        300
+      ],
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 2 13 * * *"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "log-start",
+      "name": "Log Run Start",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        440,
+        300
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://rtlpqjqdmomyptcdkmrq.supabase.co/rest/v1/seo_runs",
+        "authentication": "none",
+        "sendHeaders": true,
+        "specifyHeaders": "keypair",
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ0bHBxanFkbW9teXB0Y2RrbXJxIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NDg2NzQ2MywiZXhwIjoyMDkwNDQzNDYzfQ.nKtIxxVr2xQgAVMJkCaipzEIaO5LFT3ChU2mAIyxOzo"
+            },
+            {
+              "name": "apikey",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ0bHBxanFkbW9teXB0Y2RrbXJxIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NDg2NzQ2MywiZXhwIjoyMDkwNDQzNDYzfQ.nKtIxxVr2xQgAVMJkCaipzEIaO5LFT3ChU2mAIyxOzo"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Prefer",
+              "value": "return=representation"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "json",
+        "jsonBody": "{\"run_type\": \"content_ideas\", \"status\": \"running\"}",
+        "options": {}
+      }
+    },
+    {
+      "id": "fetch-ideas",
+      "name": "Fetch Ideas to Publish",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        680,
+        300
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://rtlpqjqdmomyptcdkmrq.supabase.co/rest/v1/rpc/get_seo_ideas_to_publish",
+        "authentication": "none",
+        "sendHeaders": true,
+        "specifyHeaders": "keypair",
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ0bHBxanFkbW9teXB0Y2RrbXJxIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NDg2NzQ2MywiZXhwIjoyMDkwNDQzNDYzfQ.nKtIxxVr2xQgAVMJkCaipzEIaO5LFT3ChU2mAIyxOzo"
+            },
+            {
+              "name": "apikey",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ0bHBxanFkbW9teXB0Y2RrbXJxIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NDg2NzQ2MywiZXhwIjoyMDkwNDQzNDYzfQ.nKtIxxVr2xQgAVMJkCaipzEIaO5LFT3ChU2mAIyxOzo"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "json",
+        "jsonBody": "={\"max_per_day\": 3}",
+        "options": {}
+      }
+    },
+    {
+      "id": "check-slots",
+      "name": "Has Slots?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        920,
+        300
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "slot-check",
+              "leftValue": "={{ $json.available_slots }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "split-ideas",
+      "name": "Split Ideas",
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        1160,
+        220
+      ],
+      "parameters": {
+        "fieldToSplitOut": "ideas",
+        "options": {}
+      }
+    },
+    {
+      "id": "build-prompt",
+      "name": "Build Article Prompt",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1400,
+        220
+      ],
+      "parameters": {
+        "jsCode": "const idea = $input.first().json;\n\n// Infer category from parent_page_url if idea.category is missing\nconst CATEGORY_MAP = {\n  'osek-patur': 'osek-patur',\n  'osek-murshe': 'osek-murshe',\n  'hevra-bam': 'hevra-bam',\n  'sgirat-tikim': 'sgirat-tikim',\n  'guides': 'guides',\n  'compare': 'comparisons',\n  'amuta': 'amuta',\n  'cities': 'cities'\n};\nfunction inferCategory(idea) {\n  if (idea.category) return idea.category;\n  const url = idea.parent_page_url || idea.source_page_url || '';\n  for (const [key, val] of Object.entries(CATEGORY_MAP)) {\n    if (url.includes('/' + key)) return val;\n  }\n  return 'osek-patur';\n}\nconst ideaCategory = inferCategory(idea);\nconst today = new Date().toISOString().split('T')[0];\n\nconst systemPrompt = `You are an SEO writer for perfect1.co.il, an Israeli business portal focused on עוסק פטור, עוסק מורשה, חברה בע\"מ, מיסוי, and guides for self-employed in Israel.\n\nYou must output a COMPLETE valid JSON article file (Hebrew, RTL) matching this exact schema:\n\n{\n  \"slug\": \"kebab-case-slug\",\n  \"category\": \"one of: misui, maam, miktzoa, osek-patur, osek-murshe, hevra-bam, sgirat-tikim, guides\",\n  \"metaTitle\": \"SEO title EXACTLY 55-60 chars, ending with | פרפקט וואן\",\n  \"metaDescription\": \"EXACTLY 145-155 chars with CTA like → קרא עכשיו\",\n  \"keywords\": [\"5-8 Hebrew keywords\"],\n  \"heroTitle\": \"strong Hebrew H1\",\n  \"heroSubtitle\": \"1-2 sentences explaining the article value\",\n  \"publishDate\": \"2026-04-25\",\n  \"updatedDate\": \"2026-04-25\",\n  \"author\": {\"name\": \"צוות פרפקט וואן\", \"role\": \"מומחי מיסוי ועסקים\"},\n  \"readTime\": 10,\n  \"toc\": [{\"id\": \"...\", \"title\": \"...\"}],\n  \"sections\": [\n    {\n      \"id\": \"intro\",\n      \"type\": \"text\",\n      \"title\": \"...\",\n      \"answerBlock\": \"1-2 sentences direct answer for AI citation\",\n      \"content\": \"long paragraph (200+ words) with [internal links](/category/slug) in markdown\"\n    },\n    {\"id\": \"list-section\", \"type\": \"list\", \"title\": \"...\", \"description\": \"...\", \"items\": [{\"title\": \"...\", \"description\": \"...\"}]},\n    {\"id\": \"steps\", \"type\": \"steps\", \"title\": \"...\", \"answerBlock\": \"...\", \"steps\": [{\"number\": 1, \"title\": \"...\", \"description\": \"...\"}]},\n    {\"id\": \"callout\", \"type\": \"callout\", \"variant\": \"tip\", \"title\": \"...\", \"content\": \"...\"},\n    {\"id\": \"comparison\", \"type\": \"comparison\", \"title\": \"...\", \"content\": \"markdown table\"}\n  ],\n  \"faq\": [{\"question\": \"...\", \"answer\": \"...\"}],\n  \"relatedArticles\": [{\"category\": \"...\", \"slug\": \"...\", \"title\": \"...\", \"url\": \"/category/slug\"}]\n}\n\nMANDATORY RULES — article will be REJECTED if violated:\n1. MINIMUM 1500 words total across all sections + FAQ (count carefully — each section content must be 150+ words)\n2. relatedArticles MUST include EXACTLY 4 links\n3. AT LEAST 2 of the 4 relatedArticles must be from this Hub pages list:\n   - /osek-patur/how-to-open (flagship — highest priority)\n   - /osek-murshe/how-to-open\n   - /hevra-bam/how-to-open\n   - /osek-patur/cost\n   - /osek-patur/taxes\n   - /osek-patur/income-ceiling\n4. AT LEAST 1 of the 4 relatedArticles must be a \"how-to-open\" page (highest conversion):\n   - /osek-patur/how-to-open\n   - /osek-murshe/how-to-open\n   - /hevra-bam/how-to-open\n5. relatedArticles must use \"url\" field with full path like \"/osek-patur/how-to-open\"\n6. metaTitle: EXACTLY 55-60 characters (count the chars!)\n7. metaDescription: EXACTLY 145-155 characters (count the chars!)\n8. Add at least 3 inline markdown links to Hub pages within section \"content\" fields\n9. 8-12 sections minimum\n10. 6-10 FAQ questions\n11. answerBlock on every major text section (for AEO)\n12. All Hebrew, RTL\n13. Year 2026 facts only\n14. Commercial intent (CTA section in the middle)\n15. Return ONLY the JSON, no markdown fences, no explanation`;\n\nreturn [{\n  json: {\n    idea_id: idea.id,\n    target_query: idea.target_query,\n    parent_page_url: idea.parent_page_url,\n    prompt: systemPrompt,\n    idea: idea,\n    messages: [\n      { role: 'system', content: systemPrompt },\n      { role: 'user', content: 'כתוב את המאמר עכשיו. החזר JSON בלבד.' }\n    ]\n  }\n}];"
+      }
+    },
+    {
+      "id": "openai-call",
+      "name": "Call OpenAI",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1640,
+        220
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/chat/completions",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "sendHeaders": true,
+        "specifyHeaders": "keypair",
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"gpt-4o\",\n  \"max_tokens\": 8000,\n  \"temperature\": 0.7,\n  \"response_format\": {\"type\": \"json_object\"},\n  \"messages\": {{ JSON.stringify($json.messages) }}\n}",
+        "options": {}
+      },
+      "credentials": {
+        "openAiApi": {
+          "id": "enLroXreMPFDnrNF",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "id": "parse-article",
+      "name": "Parse Article JSON",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1880,
+        220
+      ],
+      "parameters": {
+        "jsCode": "const openaiResp = $input.first().json;\nconst promptCtx = $('Build Article Prompt').first().json;\n\nlet article;\ntry {\n  const text = openaiResp.choices[0].message.content;\n  article = JSON.parse(text);\n} catch (e) {\n  return [{ json: { error: 'parse_failed', message: e.message, idea_id: promptCtx.idea_id } }];\n}\n\nif (!article.slug || !article.category || !article.sections) {\n  return [{ json: { error: 'missing_fields', idea_id: promptCtx.idea_id } }];\n}\n\nconst today = new Date().toISOString().split('T')[0];\narticle.publishDate = today;\narticle.updatedDate = today;\n\nconst wordCount = JSON.stringify(article).split(/\\s+/).length;\n\nconst filePath = `src/content/${article.category}/${article.slug}.json`;\nconst fileContent = JSON.stringify(article, null, 2);\n\nreturn [{\n  json: {\n    idea_id: promptCtx.idea_id,\n    category: article.category,\n    slug: article.slug,\n    title: article.heroTitle || article.metaTitle,\n    file_path: filePath,\n    file_content: fileContent,\n    file_content_b64: Buffer.from(fileContent, 'utf-8').toString('base64'),\n    commit_message: `Feat: Auto-published article — ${article.heroTitle || article.slug}\\n\\nAuto-generated by SEO Content Pipeline from idea ${promptCtx.idea_id}`,\n    word_count: wordCount\n  }\n}];"
+      }
+    },
+    {
+      "id": "github-commit",
+      "name": "GitHub - Create File",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2740,
+        220
+      ],
+      "onError": "continueRegularOutput",
+      "parameters": {
+        "method": "PUT",
+        "url": "=https://api.github.com/repos/perfect-ai-admin/perfect1-portal/contents/{{ $json.file_path }}",
+        "authentication": "genericCredentialType",
+        "sendHeaders": true,
+        "specifyHeaders": "keypair",
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Accept",
+              "value": "application/vnd.github+json"
+            },
+            {
+              "name": "X-GitHub-Api-Version",
+              "value": "2022-11-28"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"message\": {{ JSON.stringify($json.commit_message) }},\n  \"content\": {{ JSON.stringify($json.file_content_b64) }},\n  \"branch\": \"main\"\n}",
+        "options": {},
+        "genericAuthType": "httpHeaderAuth"
+      },
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "vnu7CHFvm9UDM36w",
+          "name": "GitHub API - SEO Publisher"
+        }
+      }
+    },
+    {
+      "id": "mark-published",
+      "name": "Mark as Published",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2980,
+        220
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://rtlpqjqdmomyptcdkmrq.supabase.co/rest/v1/rpc/mark_seo_idea_published",
+        "authentication": "none",
+        "sendHeaders": true,
+        "specifyHeaders": "keypair",
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ0bHBxanFkbW9teXB0Y2RrbXJxIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NDg2NzQ2MywiZXhwIjoyMDkwNDQzNDYzfQ.nKtIxxVr2xQgAVMJkCaipzEIaO5LFT3ChU2mAIyxOzo"
+            },
+            {
+              "name": "apikey",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ0bHBxanFkbW9teXB0Y2RrbXJxIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NDg2NzQ2MywiZXhwIjoyMDkwNDQzNDYzfQ.nKtIxxVr2xQgAVMJkCaipzEIaO5LFT3ChU2mAIyxOzo"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"p_idea_id\": {{ $(\"Parse Article JSON\").item.json.idea_id }},\n  \"p_category\": {{ JSON.stringify($(\"Parse Article JSON\").item.json.category) }},\n  \"p_slug\": {{ JSON.stringify($(\"Parse Article JSON\").item.json.slug) }},\n  \"p_title\": {{ JSON.stringify($(\"Parse Article JSON\").item.json.title) }},\n  \"p_file_path\": {{ JSON.stringify($(\"Parse Article JSON\").item.json.file_path) }},\n  \"p_git_sha\": {{ JSON.stringify($json.commit && $json.commit.sha || \"\") }},\n  \"p_word_count\": {{ $(\"Parse Article JSON\").item.json.word_count }}\n}",
+        "options": {}
+      }
+    },
+    {
+      "id": "notify-email",
+      "name": "Send Publish Notification Email",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3220,
+        220
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://rtlpqjqdmomyptcdkmrq.supabase.co/functions/v1/sendEmail",
+        "authentication": "none",
+        "sendHeaders": true,
+        "specifyHeaders": "keypair",
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ0bHBxanFkbW9teXB0Y2RrbXJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ4Njc0NjMsImV4cCI6MjA5MDQ0MzQ2M30.NceenXJ43_B3NN9MVz4b5wR4t1Si0hRfYedfmtoujXQ"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"to\": \"yosi5919@gmail.com\",\n  \"from\": \"no-reply@perfect1.co.il\",\n  \"subject\": {{ JSON.stringify(\"📝 מאמר חדש חי: \" + $('Quality Gate').item.json.title) }},\n  \"html\": {{ JSON.stringify(\"<div dir=\\\"rtl\\\" style=\\\"font-family:Arial,sans-serif;max-width:640px;margin:0 auto;padding:24px;background:#f9fafb;\\\"><div style=\\\"background:#1E3A5F;color:white;padding:20px;border-radius:8px 8px 0 0;\\\"><h1 style=\\\"margin:0;font-size:22px;\\\">📝 מאמר חדש עלה לאוויר</h1><p style=\\\"margin:6px 0 0;opacity:0.85;font-size:13px;\\\">perfect1.co.il</p></div><div style=\\\"background:white;padding:24px;border:1px solid #e5e7eb;border-top:none;\\\"><h2 style=\\\"color:#1E3A5F;margin:0 0 12px;\\\">\" + $('Quality Gate').item.json.title + \"</h2><p style=\\\"color:#4b5563;font-size:14px;line-height:1.6;margin:0 0 20px;\\\">\" + ($('Quality Gate').item.json.metaDescription || '') + \"</p><table style=\\\"width:100%;font-size:13px;margin-bottom:24px;border-collapse:collapse;\\\"><tr><td style=\\\"color:#9ca3af;padding:6px 0;width:120px;\\\">קטגוריה:</td><td>\" + $('Quality Gate').item.json.category + \"</td></tr><tr><td style=\\\"color:#9ca3af;padding:6px 0;\\\">מילים:</td><td>\" + $('Quality Gate').item.json.gate.wordCount + \"</td></tr><tr><td style=\\\"color:#9ca3af;padding:6px 0;\\\">ציון איכות:</td><td><strong style=\\\"color:#059669;\\\">\" + $('Quality Gate').item.json.gate.score + \"/100</strong></td></tr><tr><td style=\\\"color:#9ca3af;padding:6px 0;\\\">Sections:</td><td>\" + ($('Quality Gate').item.json.sections || []).length + \"</td></tr><tr><td style=\\\"color:#9ca3af;padding:6px 0;\\\">FAQ:</td><td>\" + ($('Quality Gate').item.json.faq || []).length + \" שאלות</td></tr></table><div style=\\\"text-align:center;margin:24px 0;\\\"><a href=\\\"https://www.perfect1.co.il/\" + $('Quality Gate').item.json.category + \"/\" + $('Quality Gate').item.json.slug + \"\\\" style=\\\"display:inline-block;background:#1E3A5F;color:white;padding:14px 28px;border-radius:6px;text-decoration:none;font-size:15px;font-weight:bold;\\\">🔗 פתח מאמר באתר</a></div><p style=\\\"color:#9ca3af;font-size:11px;text-align:center;margin:20px 0 0;\\\"><a href=\\\"https://github.com/perfect-ai-admin/perfect1-portal/blob/main/\" + $('Quality Gate').item.json.file_path + \"\\\" style=\\\"color:#6b7280;\\\">view on github</a> &nbsp;•&nbsp; אתר יעודכן תוך 2-3 דקות אחרי commit (Vercel build)</p></div></div>\") }}\n}",
+        "options": {}
+      }
+    },
+    {
+      "id": "gate-switch",
+      "name": "Gate Switch",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        2360,
+        220
+      ],
+      "parameters": {
+        "mode": "expression",
+        "numberOutputs": 2,
+        "output": "={{ $json.gate && $json.gate.passed === true ? 0 : 1 }}"
+      }
+    },
+    {
+      "id": "log-gate-failure",
+      "name": "Log Gate Failure",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2600,
+        380
+      ],
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://rtlpqjqdmomyptcdkmrq.supabase.co/rest/v1/seo_content_ideas?id=eq.{{ $json.idea_id }}",
+        "authentication": "none",
+        "sendHeaders": true,
+        "specifyHeaders": "keypair",
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ0bHBxanFkbW9teXB0Y2RrbXJxIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NDg2NzQ2MywiZXhwIjoyMDkwNDQzNDYzfQ.nKtIxxVr2xQgAVMJkCaipzEIaO5LFT3ChU2mAIyxOzo"
+            },
+            {
+              "name": "apikey",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ0bHBxanFkbW9teXB0Y2RrbXJxIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NDg2NzQ2MywiZXhwIjoyMDkwNDQzNDYzfQ.nKtIxxVr2xQgAVMJkCaipzEIaO5LFT3ChU2mAIyxOzo"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Prefer",
+              "value": "return=representation"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "keypair",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "status",
+              "value": "dismissed"
+            },
+            {
+              "name": "notes",
+              "value": "=Gate {{ $json.gate.score }}/100 failed: {{ $json.gate.failures.slice(0,2).join(\"; \") }}"
+            }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "wait-deploy",
+      "name": "Wait for Deploy",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        2840,
+        220
+      ],
+      "parameters": {
+        "amount": 4,
+        "unit": "minutes"
+      }
+    },
+    {
+      "id": "verify-live-url",
+      "name": "Verify Live URL",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3080,
+        220
+      ],
+      "parameters": {
+        "method": "GET",
+        "url": "={{ 'https://www.perfect1.co.il/' + $('Parse Article JSON').item.json.category + '/' + $('Parse Article JSON').item.json.slug }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "text"
+            }
+          },
+          "redirect": {
+            "redirect": {
+              "followRedirects": true,
+              "maxRedirects": 5
+            }
+          }
+        },
+        "sendHeaders": true,
+        "specifyHeaders": "keypair",
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Agent",
+              "value": "Mozilla/5.0 PerfectOneBot"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "qa-result",
+      "name": "QA Result",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3320,
+        220
+      ],
+      "parameters": {
+        "jsCode": "const html = $json.data || $json.body || '';\nconst size = typeof html === 'string' ? html.length : 0;\nconst articleTitle = $('Parse Article JSON').item.json.title || '';\nconst hasContent = size > 20000;\nconst hasTitle = articleTitle ? html.includes(articleTitle.substring(0, 20)) : false;\n\nconst qa = {\n  live: hasContent,\n  pageSize: size,\n  titleFound: hasTitle,\n  url: 'https://www.perfect1.co.il/' + $('Parse Article JSON').item.json.category + '/' + $('Parse Article JSON').item.json.slug\n};\n\nreturn [{\n  json: {\n    ...$('Parse Article JSON').item.json,\n    idea_id: $('Parse Article JSON').item.json.idea_id,\n    commit: $('GitHub - Create File').item.json.commit,\n    qa\n  }\n}];"
+      }
+    },
+    {
+      "id": "quality-gate",
+      "name": "Quality Gate",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2050,
+        220
+      ],
+      "parameters": {
+        "jsCode": "const item = $input.first().json;\n\n// If upstream parse failed, pass through the error\nif (item.error) return [{ json: item }];\n\n// Extract full text for word count\nconst article = JSON.parse(item.file_content);\n\nconst sectionText = (article.sections || []).map(s => {\n  const parts = [s.answerBlock || '', s.content || '', s.description || ''];\n  if (s.items) parts.push(s.items.map(i => (i.title || '') + ' ' + (i.description || '')).join(' '));\n  if (s.steps) parts.push(s.steps.map(i => (i.title || '') + ' ' + (i.description || '')).join(' '));\n  return parts.join(' ');\n}).join(' ');\n\nconst faqText = (article.faq || []).map(q => (q.question || '') + ' ' + (q.answer || '')).join(' ');\nconst wordCount = (sectionText + ' ' + faqText).split(/\\s+/).filter(Boolean).length;\n\nconst errors = [];\n\nif (wordCount < 1400) {\n  errors.push(`Article too short: ${wordCount} words (need 1400+)`);\n}\n\nconst related = article.relatedArticles || [];\nif (related.length < 3) {\n  errors.push(`Need 3+ relatedArticles (got ${related.length})`);\n}\n\nconst validUrls = related.filter(r => r.url && r.url.startsWith('/'));\nif (validUrls.length < 3) {\n  errors.push(`relatedArticles must have valid /path URLs (got ${validUrls.length})`);\n}\n\nconst HUB_PAGES = [\n  '/osek-patur/how-to-open',\n  '/osek-murshe/how-to-open',\n  '/hevra-bam/how-to-open',\n  '/osek-patur/cost',\n  '/osek-patur/taxes',\n  '/osek-patur/income-ceiling'\n];\nconst hubCount = related.filter(r => HUB_PAGES.includes(r.url)).length;\nif (hubCount < 2) {\n  errors.push(`Must link to 2+ Hub pages (found ${hubCount}). Hub pages: ${HUB_PAGES.join(', ')}`);\n}\n\nconst HOW_TO_OPEN = ['/osek-patur/how-to-open', '/osek-murshe/how-to-open', '/hevra-bam/how-to-open'];\nif (!related.some(r => HOW_TO_OPEN.includes(r.url))) {\n  errors.push('Must link to at least 1 how-to-open page (highest conversion)');\n}\n\nif (!article.metaTitle || article.metaTitle.length < 50) {\n  errors.push(`metaTitle too short (${(article.metaTitle || '').length} chars, need 50+)`);\n}\nif (!article.metaDescription || article.metaDescription.length < 140) {\n  errors.push(`metaDescription too short (${(article.metaDescription || '').length} chars, need 140+)`);\n}\n\nif (errors.length > 0) {\n  // Pass errors forward for retry logic\n  return [{\n    json: {\n      ...item,\n      qa_failed: true,\n      qa_errors: errors,\n      qa_word_count: wordCount,\n      retry_count: (item.retry_count || 0)\n    }\n  }];\n}\n\nreturn [{\n  json: {\n    ...item,\n    qa_passed: true,\n    qa_word_count: wordCount\n  }\n}];"
+      }
+    },
+    {
+      "id": "retry-check",
+      "name": "Should Retry?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2280,
+        220
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "qa-failed-check",
+              "leftValue": "={{ $json.qa_failed }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "retry-count-check",
+              "leftValue": "={{ $json.retry_count || 0 }}",
+              "rightValue": 2,
+              "operator": {
+                "type": "number",
+                "operation": "lt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "retry-build-prompt",
+      "name": "Build Retry Prompt",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2510,
+        120
+      ],
+      "parameters": {
+        "jsCode": "const item = $input.first().json;\nconst article = JSON.parse(item.file_content);\nconst errors = item.qa_errors || [];\n\nconst retrySystemPrompt = `You are an SEO writer for perfect1.co.il, an Israeli business portal focused on עוסק פטור, עוסק מורשה, חברה בע\"מ, מיסוי, and guides for self-employed in Israel.\n\nYou must output a COMPLETE valid JSON article file (Hebrew, RTL) matching this exact schema:\n\n{\n  \"slug\": \"kebab-case-slug\",\n  \"category\": \"one of: misui, maam, miktzoa, osek-patur, osek-murshe, hevra-bam, sgirat-tikim, guides\",\n  \"metaTitle\": \"SEO title EXACTLY 55-60 chars, ending with | פרפקט וואן\",\n  \"metaDescription\": \"EXACTLY 145-155 chars with CTA like → קרא עכשיו\",\n  \"keywords\": [\"5-8 Hebrew keywords\"],\n  \"heroTitle\": \"strong Hebrew H1\",\n  \"heroSubtitle\": \"1-2 sentences explaining the article value\",\n  \"publishDate\": \"2026-04-25\",\n  \"updatedDate\": \"2026-04-25\",\n  \"author\": {\"name\": \"צוות פרפקט וואן\", \"role\": \"מומחי מיסוי ועסקים\"},\n  \"readTime\": 10,\n  \"toc\": [{\"id\": \"...\", \"title\": \"...\"}],\n  \"sections\": [\n    {\n      \"id\": \"intro\",\n      \"type\": \"text\",\n      \"title\": \"...\",\n      \"answerBlock\": \"1-2 sentences direct answer for AI citation\",\n      \"content\": \"long paragraph (200+ words) with [internal links](/category/slug) in markdown\"\n    },\n    {\"id\": \"list-section\", \"type\": \"list\", \"title\": \"...\", \"description\": \"...\", \"items\": [{\"title\": \"...\", \"description\": \"...\"}]},\n    {\"id\": \"steps\", \"type\": \"steps\", \"title\": \"...\", \"answerBlock\": \"...\", \"steps\": [{\"number\": 1, \"title\": \"...\", \"description\": \"...\"}]},\n    {\"id\": \"callout\", \"type\": \"callout\", \"variant\": \"tip\", \"title\": \"...\", \"content\": \"...\"},\n    {\"id\": \"comparison\", \"type\": \"comparison\", \"title\": \"...\", \"content\": \"markdown table\"}\n  ],\n  \"faq\": [{\"question\": \"...\", \"answer\": \"...\"}],\n  \"relatedArticles\": [{\"category\": \"...\", \"slug\": \"...\", \"title\": \"...\", \"url\": \"/category/slug\"}]\n}\n\nMANDATORY RULES — article will be REJECTED if violated:\n1. MINIMUM 1500 words total across all sections + FAQ (count carefully — each section content must be 150+ words)\n2. relatedArticles MUST include EXACTLY 4 links\n3. AT LEAST 2 of the 4 relatedArticles must be from this Hub pages list:\n   - /osek-patur/how-to-open (flagship — highest priority)\n   - /osek-murshe/how-to-open\n   - /hevra-bam/how-to-open\n   - /osek-patur/cost\n   - /osek-patur/taxes\n   - /osek-patur/income-ceiling\n4. AT LEAST 1 of the 4 relatedArticles must be a \"how-to-open\" page (highest conversion):\n   - /osek-patur/how-to-open\n   - /osek-murshe/how-to-open\n   - /hevra-bam/how-to-open\n5. relatedArticles must use \"url\" field with full path like \"/osek-patur/how-to-open\"\n6. metaTitle: EXACTLY 55-60 characters (count the chars!)\n7. metaDescription: EXACTLY 145-155 characters (count the chars!)\n8. Add at least 3 inline markdown links to Hub pages within section \"content\" fields\n9. 8-12 sections minimum\n10. 6-10 FAQ questions\n11. answerBlock on every major text section (for AEO)\n12. All Hebrew, RTL\n13. Year 2026 facts only\n14. Commercial intent (CTA section in the middle)\n15. Return ONLY the JSON, no markdown fences, no explanation`;\n\nconst retryUserPrompt = `The previous article failed quality checks. Fix ALL the following issues and rewrite the article:\n\nFAILURES:\n${errors.map((e, i) => `${i+1}. ${e}`).join('\\n')}\n\nOriginal article data:\n- Category: ${article.category}\n- Slug: ${article.slug}\n- Target topic: ${article.heroTitle || article.metaTitle}\n\nRewrite the ENTIRE article JSON fixing all issues above. Return only valid JSON.`;\n\nreturn [{\n  json: {\n    ...item,\n    retry_count: (item.retry_count || 0) + 1,\n    messages: [\n      { role: 'system', content: retrySystemPrompt },\n      { role: 'user', content: retryUserPrompt }\n    ]\n  }\n}];"
+      }
+    },
+    {
+      "id": "mark-failed-qa",
+      "name": "Mark Failed Quality",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2510,
+        320
+      ],
+      "parameters": {
+        "jsCode": "const item = $input.first().json;\nconsole.log('Article failed QA after retries:', item.qa_errors);\n// Do NOT mark as published — idea stays available for next run\nreturn [{ json: { ...item, status: 'failed_quality', skipped: true } }];"
+      }
+    }
+  ],
+  "connections": {
+    "Schedule - 11:00 Daily": {
+      "main": [
+        [
+          {
+            "node": "Log Run Start",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log Run Start": {
+      "main": [
+        [
+          {
+            "node": "Fetch Ideas to Publish",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Ideas to Publish": {
+      "main": [
+        [
+          {
+            "node": "Has Slots?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Has Slots?": {
+      "main": [
+        [
+          {
+            "node": "Split Ideas",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Split Ideas": {
+      "main": [
+        [
+          {
+            "node": "Build Article Prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Article Prompt": {
+      "main": [
+        [
+          {
+            "node": "Call OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call OpenAI": {
+      "main": [
+        [
+          {
+            "node": "Parse Article JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Article JSON": {
+      "main": [
+        [
+          {
+            "node": "Quality Gate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GitHub - Create File": {
+      "main": [
+        [
+          {
+            "node": "Wait for Deploy",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark as Published": {
+      "main": [
+        []
+      ]
+    },
+    "Quality Gate": {
+      "main": [
+        [
+          {
+            "node": "Should Retry?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gate Switch": {
+      "main": [
+        [
+          {
+            "node": "GitHub - Create File",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Log Gate Failure",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait for Deploy": {
+      "main": [
+        [
+          {
+            "node": "Verify Live URL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verify Live URL": {
+      "main": [
+        [
+          {
+            "node": "QA Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "QA Result": {
+      "main": [
+        [
+          {
+            "node": "Mark as Published",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Should Retry?": {
+      "main": [
+        [
+          {
+            "node": "Build Retry Prompt",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Mark Failed Quality",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "GitHub - Create File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Retry Prompt": {
+      "main": [
+        [
+          {
+            "node": "Call OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark Failed Quality": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Asia/Jerusalem",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "staticData": {
+    "node:Schedule - 11:00 Daily": {
+      "recurrenceRules": []
+    }
+  },
+  "meta": null,
+  "pinData": null,
+  "versionId": "72115687-4e4b-4329-a264-ff5e6b1da5e3",
+  "activeVersionId": "72115687-4e4b-4329-a264-ff5e6b1da5e3",
+  "versionCounter": 167,
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2026-04-15T13:57:50.077Z",
+      "createdAt": "2026-04-15T13:57:50.077Z",
+      "role": "workflow:owner",
+      "workflowId": "F33CbVflx4aApT71",
+      "projectId": "Ua9EZRcbUDU2fFvK",
+      "project": {
+        "updatedAt": "2026-01-11T16:51:00.159Z",
+        "createdAt": "2026-01-11T13:49:03.851Z",
+        "id": "Ua9EZRcbUDU2fFvK",
+        "name": "Yosi Levi <yosi5919@gmail.com>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "2726ec4e-54fd-4211-b551-c99e9eb9eb3d",
+        "projectRelations": [
+          {
+            "updatedAt": "2026-01-11T13:49:03.851Z",
+            "createdAt": "2026-01-11T13:49:03.851Z",
+            "userId": "2726ec4e-54fd-4211-b551-c99e9eb9eb3d",
+            "projectId": "Ua9EZRcbUDU2fFvK",
+            "user": {
+              "updatedAt": "2026-04-26T09:53:37.509Z",
+              "createdAt": "2026-01-11T13:49:02.351Z",
+              "id": "2726ec4e-54fd-4211-b551-c99e9eb9eb3d",
+              "email": "yosi5919@gmail.com",
+              "firstName": "Yosi",
+              "lastName": "Levi",
+              "personalizationAnswers": {
+                "version": "v4",
+                "personalization_survey_submitted_at": "2026-01-11T16:52:04.147Z",
+                "personalization_survey_n8n_version": "2.2.6",
+                "companyIndustryExtended": [
+                  "msp"
+                ],
+                "companySize": "<20",
+                "companyType": "other",
+                "role": "business-owner",
+                "reportedSource": "google"
+              },
+              "settings": {
+                "userActivated": true,
+                "easyAIWorkflowOnboarded": true,
+                "firstSuccessfulWorkflowId": "l5FNaXfwHD1Mf6By7PC_1",
+                "userActivatedAt": 1768574538002,
+                "npsSurvey": {
+                  "responded": true,
+                  "lastShownAt": 1768987318070
+                }
+              },
+              "disabled": false,
+              "mfaEnabled": false,
+              "lastActiveAt": "2026-04-25",
+              "isPending": false
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "tags": [],
+  "activeVersion": {
+    "updatedAt": "2026-04-26T10:00:50.930Z",
+    "createdAt": "2026-04-26T10:00:50.930Z",
+    "versionId": "72115687-4e4b-4329-a264-ff5e6b1da5e3",
+    "workflowId": "F33CbVflx4aApT71",
+    "nodes": [
+      {
+        "id": "trigger",
+        "name": "Schedule - 11:00 Daily",
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "typeVersion": 1.2,
+        "position": [
+          200,
+          300
+        ],
+        "parameters": {
+          "rule": {
+            "interval": [
+              {
+                "field": "cronExpression",
+                "expression": "0 2 13 * * *"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "id": "log-start",
+        "name": "Log Run Start",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          440,
+          300
+        ],
+        "parameters": {
+          "method": "POST",
+          "url": "https://rtlpqjqdmomyptcdkmrq.supabase.co/rest/v1/seo_runs",
+          "authentication": "none",
+          "sendHeaders": true,
+          "specifyHeaders": "keypair",
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Authorization",
+                "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ0bHBxanFkbW9teXB0Y2RrbXJxIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NDg2NzQ2MywiZXhwIjoyMDkwNDQzNDYzfQ.nKtIxxVr2xQgAVMJkCaipzEIaO5LFT3ChU2mAIyxOzo"
+              },
+              {
+                "name": "apikey",
+                "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ0bHBxanFkbW9teXB0Y2RrbXJxIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NDg2NzQ2MywiZXhwIjoyMDkwNDQzNDYzfQ.nKtIxxVr2xQgAVMJkCaipzEIaO5LFT3ChU2mAIyxOzo"
+              },
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "name": "Prefer",
+                "value": "return=representation"
+              }
+            ]
+          },
+          "sendBody": true,
+          "contentType": "json",
+          "specifyBody": "json",
+          "jsonBody": "{\"run_type\": \"content_ideas\", \"status\": \"running\"}",
+          "options": {}
+        }
+      },
+      {
+        "id": "fetch-ideas",
+        "name": "Fetch Ideas to Publish",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          680,
+          300
+        ],
+        "parameters": {
+          "method": "POST",
+          "url": "https://rtlpqjqdmomyptcdkmrq.supabase.co/rest/v1/rpc/get_seo_ideas_to_publish",
+          "authentication": "none",
+          "sendHeaders": true,
+          "specifyHeaders": "keypair",
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Authorization",
+                "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ0bHBxanFkbW9teXB0Y2RrbXJxIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NDg2NzQ2MywiZXhwIjoyMDkwNDQzNDYzfQ.nKtIxxVr2xQgAVMJkCaipzEIaO5LFT3ChU2mAIyxOzo"
+              },
+              {
+                "name": "apikey",
+                "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ0bHBxanFkbW9teXB0Y2RrbXJxIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NDg2NzQ2MywiZXhwIjoyMDkwNDQzNDYzfQ.nKtIxxVr2xQgAVMJkCaipzEIaO5LFT3ChU2mAIyxOzo"
+              },
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "contentType": "json",
+          "specifyBody": "json",
+          "jsonBody": "={\"max_per_day\": 3}",
+          "options": {}
+        }
+      },
+      {
+        "id": "check-slots",
+        "name": "Has Slots?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          920,
+          300
+        ],
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict"
+            },
+            "conditions": [
+              {
+                "id": "slot-check",
+                "leftValue": "={{ $json.available_slots }}",
+                "rightValue": 0,
+                "operator": {
+                  "type": "number",
+                  "operation": "gt"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        }
+      },
+      {
+        "id": "split-ideas",
+        "name": "Split Ideas",
+        "type": "n8n-nodes-base.splitOut",
+        "typeVersion": 1,
+        "position": [
+          1160,
+          220
+        ],
+        "parameters": {
+          "fieldToSplitOut": "ideas",
+          "options": {}
+        }
+      },
+      {
+        "id": "build-prompt",
+        "name": "Build Article Prompt",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1400,
+          220
+        ],
+        "parameters": {
+          "jsCode": "const idea = $input.first().json;\n\n// Infer category from parent_page_url if idea.category is missing\nconst CATEGORY_MAP = {\n  'osek-patur': 'osek-patur',\n  'osek-murshe': 'osek-murshe',\n  'hevra-bam': 'hevra-bam',\n  'sgirat-tikim': 'sgirat-tikim',\n  'guides': 'guides',\n  'compare': 'comparisons',\n  'amuta': 'amuta',\n  'cities': 'cities'\n};\nfunction inferCategory(idea) {\n  if (idea.category) return idea.category;\n  const url = idea.parent_page_url || idea.source_page_url || '';\n  for (const [key, val] of Object.entries(CATEGORY_MAP)) {\n    if (url.includes('/' + key)) return val;\n  }\n  return 'osek-patur';\n}\nconst ideaCategory = inferCategory(idea);\nconst today = new Date().toISOString().split('T')[0];\n\nconst systemPrompt = `You are an SEO writer for perfect1.co.il, an Israeli business portal focused on עוסק פטור, עוסק מורשה, חברה בע\"מ, מיסוי, and guides for self-employed in Israel.\n\nYou must output a COMPLETE valid JSON article file (Hebrew, RTL) matching this exact schema:\n\n{\n  \"slug\": \"kebab-case-slug\",\n  \"category\": \"one of: misui, maam, miktzoa, osek-patur, osek-murshe, hevra-bam, sgirat-tikim, guides\",\n  \"metaTitle\": \"SEO title EXACTLY 55-60 chars, ending with | פרפקט וואן\",\n  \"metaDescription\": \"EXACTLY 145-155 chars with CTA like → קרא עכשיו\",\n  \"keywords\": [\"5-8 Hebrew keywords\"],\n  \"heroTitle\": \"strong Hebrew H1\",\n  \"heroSubtitle\": \"1-2 sentences explaining the article value\",\n  \"publishDate\": \"2026-04-25\",\n  \"updatedDate\": \"2026-04-25\",\n  \"author\": {\"name\": \"צוות פרפקט וואן\", \"role\": \"מומחי מיסוי ועסקים\"},\n  \"readTime\": 10,\n  \"toc\": [{\"id\": \"...\", \"title\": \"...\"}],\n  \"sections\": [\n    {\n      \"id\": \"intro\",\n      \"type\": \"text\",\n      \"title\": \"...\",\n      \"answerBlock\": \"1-2 sentences direct answer for AI citation\",\n      \"content\": \"long paragraph (200+ words) with [internal links](/category/slug) in markdown\"\n    },\n    {\"id\": \"list-section\", \"type\": \"list\", \"title\": \"...\", \"description\": \"...\", \"items\": [{\"title\": \"...\", \"description\": \"...\"}]},\n    {\"id\": \"steps\", \"type\": \"steps\", \"title\": \"...\", \"answerBlock\": \"...\", \"steps\": [{\"number\": 1, \"title\": \"...\", \"description\": \"...\"}]},\n    {\"id\": \"callout\", \"type\": \"callout\", \"variant\": \"tip\", \"title\": \"...\", \"content\": \"...\"},\n    {\"id\": \"comparison\", \"type\": \"comparison\", \"title\": \"...\", \"content\": \"markdown table\"}\n  ],\n  \"faq\": [{\"question\": \"...\", \"answer\": \"...\"}],\n  \"relatedArticles\": [{\"category\": \"...\", \"slug\": \"...\", \"title\": \"...\", \"url\": \"/category/slug\"}]\n}\n\nMANDATORY RULES — article will be REJECTED if violated:\n1. MINIMUM 1500 words total across all sections + FAQ (count carefully — each section content must be 150+ words)\n2. relatedArticles MUST include EXACTLY 4 links\n3. AT LEAST 2 of the 4 relatedArticles must be from this Hub pages list:\n   - /osek-patur/how-to-open (flagship — highest priority)\n   - /osek-murshe/how-to-open\n   - /hevra-bam/how-to-open\n   - /osek-patur/cost\n   - /osek-patur/taxes\n   - /osek-patur/income-ceiling\n4. AT LEAST 1 of the 4 relatedArticles must be a \"how-to-open\" page (highest conversion):\n   - /osek-patur/how-to-open\n   - /osek-murshe/how-to-open\n   - /hevra-bam/how-to-open\n5. relatedArticles must use \"url\" field with full path like \"/osek-patur/how-to-open\"\n6. metaTitle: EXACTLY 55-60 characters (count the chars!)\n7. metaDescription: EXACTLY 145-155 characters (count the chars!)\n8. Add at least 3 inline markdown links to Hub pages within section \"content\" fields\n9. 8-12 sections minimum\n10. 6-10 FAQ questions\n11. answerBlock on every major text section (for AEO)\n12. All Hebrew, RTL\n13. Year 2026 facts only\n14. Commercial intent (CTA section in the middle)\n15. Return ONLY the JSON, no markdown fences, no explanation`;\n\nreturn [{\n  json: {\n    idea_id: idea.id,\n    target_query: idea.target_query,\n    parent_page_url: idea.parent_page_url,\n    prompt: systemPrompt,\n    idea: idea,\n    messages: [\n      { role: 'system', content: systemPrompt },\n      { role: 'user', content: 'כתוב את המאמר עכשיו. החזר JSON בלבד.' }\n    ]\n  }\n}];"
+        }
+      },
+      {
+        "id": "openai-call",
+        "name": "Call OpenAI",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1640,
+          220
+        ],
+        "parameters": {
+          "method": "POST",
+          "url": "https://api.openai.com/v1/chat/completions",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "openAiApi",
+          "sendHeaders": true,
+          "specifyHeaders": "keypair",
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "contentType": "json",
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"model\": \"gpt-4o\",\n  \"max_tokens\": 8000,\n  \"temperature\": 0.7,\n  \"response_format\": {\"type\": \"json_object\"},\n  \"messages\": {{ JSON.stringify($json.messages) }}\n}",
+          "options": {}
+        },
+        "credentials": {
+          "openAiApi": {
+            "id": "enLroXreMPFDnrNF",
+            "name": "OpenAi account"
+          }
+        }
+      },
+      {
+        "id": "parse-article",
+        "name": "Parse Article JSON",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1880,
+          220
+        ],
+        "parameters": {
+          "jsCode": "const openaiResp = $input.first().json;\nconst promptCtx = $('Build Article Prompt').first().json;\n\nlet article;\ntry {\n  const text = openaiResp.choices[0].message.content;\n  article = JSON.parse(text);\n} catch (e) {\n  return [{ json: { error: 'parse_failed', message: e.message, idea_id: promptCtx.idea_id } }];\n}\n\nif (!article.slug || !article.category || !article.sections) {\n  return [{ json: { error: 'missing_fields', idea_id: promptCtx.idea_id } }];\n}\n\nconst today = new Date().toISOString().split('T')[0];\narticle.publishDate = today;\narticle.updatedDate = today;\n\nconst wordCount = JSON.stringify(article).split(/\\s+/).length;\n\nconst filePath = `src/content/${article.category}/${article.slug}.json`;\nconst fileContent = JSON.stringify(article, null, 2);\n\nreturn [{\n  json: {\n    idea_id: promptCtx.idea_id,\n    category: article.category,\n    slug: article.slug,\n    title: article.heroTitle || article.metaTitle,\n    file_path: filePath,\n    file_content: fileContent,\n    file_content_b64: Buffer.from(fileContent, 'utf-8').toString('base64'),\n    commit_message: `Feat: Auto-published article — ${article.heroTitle || article.slug}\\n\\nAuto-generated by SEO Content Pipeline from idea ${promptCtx.idea_id}`,\n    word_count: wordCount\n  }\n}];"
+        }
+      },
+      {
+        "id": "github-commit",
+        "name": "GitHub - Create File",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          2740,
+          220
+        ],
+        "onError": "continueRegularOutput",
+        "parameters": {
+          "method": "PUT",
+          "url": "=https://api.github.com/repos/perfect-ai-admin/perfect1-portal/contents/{{ $json.file_path }}",
+          "authentication": "genericCredentialType",
+          "sendHeaders": true,
+          "specifyHeaders": "keypair",
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Accept",
+                "value": "application/vnd.github+json"
+              },
+              {
+                "name": "X-GitHub-Api-Version",
+                "value": "2022-11-28"
+              },
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "contentType": "json",
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"message\": {{ JSON.stringify($json.commit_message) }},\n  \"content\": {{ JSON.stringify($json.file_content_b64) }},\n  \"branch\": \"main\"\n}",
+          "options": {},
+          "genericAuthType": "httpHeaderAuth"
+        },
+        "credentials": {
+          "httpHeaderAuth": {
+            "id": "vnu7CHFvm9UDM36w",
+            "name": "GitHub API - SEO Publisher"
+          }
+        }
+      },
+      {
+        "id": "mark-published",
+        "name": "Mark as Published",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          2980,
+          220
+        ],
+        "parameters": {
+          "method": "POST",
+          "url": "https://rtlpqjqdmomyptcdkmrq.supabase.co/rest/v1/rpc/mark_seo_idea_published",
+          "authentication": "none",
+          "sendHeaders": true,
+          "specifyHeaders": "keypair",
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Authorization",
+                "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ0bHBxanFkbW9teXB0Y2RrbXJxIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NDg2NzQ2MywiZXhwIjoyMDkwNDQzNDYzfQ.nKtIxxVr2xQgAVMJkCaipzEIaO5LFT3ChU2mAIyxOzo"
+              },
+              {
+                "name": "apikey",
+                "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ0bHBxanFkbW9teXB0Y2RrbXJxIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NDg2NzQ2MywiZXhwIjoyMDkwNDQzNDYzfQ.nKtIxxVr2xQgAVMJkCaipzEIaO5LFT3ChU2mAIyxOzo"
+              },
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "contentType": "json",
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"p_idea_id\": {{ $(\"Parse Article JSON\").item.json.idea_id }},\n  \"p_category\": {{ JSON.stringify($(\"Parse Article JSON\").item.json.category) }},\n  \"p_slug\": {{ JSON.stringify($(\"Parse Article JSON\").item.json.slug) }},\n  \"p_title\": {{ JSON.stringify($(\"Parse Article JSON\").item.json.title) }},\n  \"p_file_path\": {{ JSON.stringify($(\"Parse Article JSON\").item.json.file_path) }},\n  \"p_git_sha\": {{ JSON.stringify($json.commit && $json.commit.sha || \"\") }},\n  \"p_word_count\": {{ $(\"Parse Article JSON\").item.json.word_count }}\n}",
+          "options": {}
+        }
+      },
+      {
+        "id": "notify-email",
+        "name": "Send Publish Notification Email",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          3220,
+          220
+        ],
+        "parameters": {
+          "method": "POST",
+          "url": "https://rtlpqjqdmomyptcdkmrq.supabase.co/functions/v1/sendEmail",
+          "authentication": "none",
+          "sendHeaders": true,
+          "specifyHeaders": "keypair",
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Authorization",
+                "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ0bHBxanFkbW9teXB0Y2RrbXJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ4Njc0NjMsImV4cCI6MjA5MDQ0MzQ2M30.NceenXJ43_B3NN9MVz4b5wR4t1Si0hRfYedfmtoujXQ"
+              },
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "contentType": "json",
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"to\": \"yosi5919@gmail.com\",\n  \"from\": \"no-reply@perfect1.co.il\",\n  \"subject\": {{ JSON.stringify(\"📝 מאמר חדש חי: \" + $('Quality Gate').item.json.title) }},\n  \"html\": {{ JSON.stringify(\"<div dir=\\\"rtl\\\" style=\\\"font-family:Arial,sans-serif;max-width:640px;margin:0 auto;padding:24px;background:#f9fafb;\\\"><div style=\\\"background:#1E3A5F;color:white;padding:20px;border-radius:8px 8px 0 0;\\\"><h1 style=\\\"margin:0;font-size:22px;\\\">📝 מאמר חדש עלה לאוויר</h1><p style=\\\"margin:6px 0 0;opacity:0.85;font-size:13px;\\\">perfect1.co.il</p></div><div style=\\\"background:white;padding:24px;border:1px solid #e5e7eb;border-top:none;\\\"><h2 style=\\\"color:#1E3A5F;margin:0 0 12px;\\\">\" + $('Quality Gate').item.json.title + \"</h2><p style=\\\"color:#4b5563;font-size:14px;line-height:1.6;margin:0 0 20px;\\\">\" + ($('Quality Gate').item.json.metaDescription || '') + \"</p><table style=\\\"width:100%;font-size:13px;margin-bottom:24px;border-collapse:collapse;\\\"><tr><td style=\\\"color:#9ca3af;padding:6px 0;width:120px;\\\">קטגוריה:</td><td>\" + $('Quality Gate').item.json.category + \"</td></tr><tr><td style=\\\"color:#9ca3af;padding:6px 0;\\\">מילים:</td><td>\" + $('Quality Gate').item.json.gate.wordCount + \"</td></tr><tr><td style=\\\"color:#9ca3af;padding:6px 0;\\\">ציון איכות:</td><td><strong style=\\\"color:#059669;\\\">\" + $('Quality Gate').item.json.gate.score + \"/100</strong></td></tr><tr><td style=\\\"color:#9ca3af;padding:6px 0;\\\">Sections:</td><td>\" + ($('Quality Gate').item.json.sections || []).length + \"</td></tr><tr><td style=\\\"color:#9ca3af;padding:6px 0;\\\">FAQ:</td><td>\" + ($('Quality Gate').item.json.faq || []).length + \" שאלות</td></tr></table><div style=\\\"text-align:center;margin:24px 0;\\\"><a href=\\\"https://www.perfect1.co.il/\" + $('Quality Gate').item.json.category + \"/\" + $('Quality Gate').item.json.slug + \"\\\" style=\\\"display:inline-block;background:#1E3A5F;color:white;padding:14px 28px;border-radius:6px;text-decoration:none;font-size:15px;font-weight:bold;\\\">🔗 פתח מאמר באתר</a></div><p style=\\\"color:#9ca3af;font-size:11px;text-align:center;margin:20px 0 0;\\\"><a href=\\\"https://github.com/perfect-ai-admin/perfect1-portal/blob/main/\" + $('Quality Gate').item.json.file_path + \"\\\" style=\\\"color:#6b7280;\\\">view on github</a> &nbsp;•&nbsp; אתר יעודכן תוך 2-3 דקות אחרי commit (Vercel build)</p></div></div>\") }}\n}",
+          "options": {}
+        }
+      },
+      {
+        "id": "gate-switch",
+        "name": "Gate Switch",
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3.2,
+        "position": [
+          2360,
+          220
+        ],
+        "parameters": {
+          "mode": "expression",
+          "numberOutputs": 2,
+          "output": "={{ $json.gate && $json.gate.passed === true ? 0 : 1 }}"
+        }
+      },
+      {
+        "id": "log-gate-failure",
+        "name": "Log Gate Failure",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          2600,
+          380
+        ],
+        "parameters": {
+          "method": "PATCH",
+          "url": "=https://rtlpqjqdmomyptcdkmrq.supabase.co/rest/v1/seo_content_ideas?id=eq.{{ $json.idea_id }}",
+          "authentication": "none",
+          "sendHeaders": true,
+          "specifyHeaders": "keypair",
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Authorization",
+                "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ0bHBxanFkbW9teXB0Y2RrbXJxIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NDg2NzQ2MywiZXhwIjoyMDkwNDQzNDYzfQ.nKtIxxVr2xQgAVMJkCaipzEIaO5LFT3ChU2mAIyxOzo"
+              },
+              {
+                "name": "apikey",
+                "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ0bHBxanFkbW9teXB0Y2RrbXJxIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NDg2NzQ2MywiZXhwIjoyMDkwNDQzNDYzfQ.nKtIxxVr2xQgAVMJkCaipzEIaO5LFT3ChU2mAIyxOzo"
+              },
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "name": "Prefer",
+                "value": "return=representation"
+              }
+            ]
+          },
+          "sendBody": true,
+          "contentType": "json",
+          "specifyBody": "keypair",
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "status",
+                "value": "dismissed"
+              },
+              {
+                "name": "notes",
+                "value": "=Gate {{ $json.gate.score }}/100 failed: {{ $json.gate.failures.slice(0,2).join(\"; \") }}"
+              }
+            ]
+          },
+          "options": {}
+        }
+      },
+      {
+        "id": "wait-deploy",
+        "name": "Wait for Deploy",
+        "type": "n8n-nodes-base.wait",
+        "typeVersion": 1.1,
+        "position": [
+          2840,
+          220
+        ],
+        "parameters": {
+          "amount": 4,
+          "unit": "minutes"
+        }
+      },
+      {
+        "id": "verify-live-url",
+        "name": "Verify Live URL",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          3080,
+          220
+        ],
+        "parameters": {
+          "method": "GET",
+          "url": "={{ 'https://www.perfect1.co.il/' + $('Parse Article JSON').item.json.category + '/' + $('Parse Article JSON').item.json.slug }}",
+          "options": {
+            "response": {
+              "response": {
+                "responseFormat": "text"
+              }
+            },
+            "redirect": {
+              "redirect": {
+                "followRedirects": true,
+                "maxRedirects": 5
+              }
+            }
+          },
+          "sendHeaders": true,
+          "specifyHeaders": "keypair",
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "User-Agent",
+                "value": "Mozilla/5.0 PerfectOneBot"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "id": "qa-result",
+        "name": "QA Result",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          3320,
+          220
+        ],
+        "parameters": {
+          "jsCode": "const html = $json.data || $json.body || '';\nconst size = typeof html === 'string' ? html.length : 0;\nconst articleTitle = $('Parse Article JSON').item.json.title || '';\nconst hasContent = size > 20000;\nconst hasTitle = articleTitle ? html.includes(articleTitle.substring(0, 20)) : false;\n\nconst qa = {\n  live: hasContent,\n  pageSize: size,\n  titleFound: hasTitle,\n  url: 'https://www.perfect1.co.il/' + $('Parse Article JSON').item.json.category + '/' + $('Parse Article JSON').item.json.slug\n};\n\nreturn [{\n  json: {\n    ...$('Parse Article JSON').item.json,\n    idea_id: $('Parse Article JSON').item.json.idea_id,\n    commit: $('GitHub - Create File').item.json.commit,\n    qa\n  }\n}];"
+        }
+      },
+      {
+        "id": "quality-gate",
+        "name": "Quality Gate",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          2050,
+          220
+        ],
+        "parameters": {
+          "jsCode": "const item = $input.first().json;\n\n// If upstream parse failed, pass through the error\nif (item.error) return [{ json: item }];\n\n// Extract full text for word count\nconst article = JSON.parse(item.file_content);\n\nconst sectionText = (article.sections || []).map(s => {\n  const parts = [s.answerBlock || '', s.content || '', s.description || ''];\n  if (s.items) parts.push(s.items.map(i => (i.title || '') + ' ' + (i.description || '')).join(' '));\n  if (s.steps) parts.push(s.steps.map(i => (i.title || '') + ' ' + (i.description || '')).join(' '));\n  return parts.join(' ');\n}).join(' ');\n\nconst faqText = (article.faq || []).map(q => (q.question || '') + ' ' + (q.answer || '')).join(' ');\nconst wordCount = (sectionText + ' ' + faqText).split(/\\s+/).filter(Boolean).length;\n\nconst errors = [];\n\nif (wordCount < 1400) {\n  errors.push(`Article too short: ${wordCount} words (need 1400+)`);\n}\n\nconst related = article.relatedArticles || [];\nif (related.length < 3) {\n  errors.push(`Need 3+ relatedArticles (got ${related.length})`);\n}\n\nconst validUrls = related.filter(r => r.url && r.url.startsWith('/'));\nif (validUrls.length < 3) {\n  errors.push(`relatedArticles must have valid /path URLs (got ${validUrls.length})`);\n}\n\nconst HUB_PAGES = [\n  '/osek-patur/how-to-open',\n  '/osek-murshe/how-to-open',\n  '/hevra-bam/how-to-open',\n  '/osek-patur/cost',\n  '/osek-patur/taxes',\n  '/osek-patur/income-ceiling'\n];\nconst hubCount = related.filter(r => HUB_PAGES.includes(r.url)).length;\nif (hubCount < 2) {\n  errors.push(`Must link to 2+ Hub pages (found ${hubCount}). Hub pages: ${HUB_PAGES.join(', ')}`);\n}\n\nconst HOW_TO_OPEN = ['/osek-patur/how-to-open', '/osek-murshe/how-to-open', '/hevra-bam/how-to-open'];\nif (!related.some(r => HOW_TO_OPEN.includes(r.url))) {\n  errors.push('Must link to at least 1 how-to-open page (highest conversion)');\n}\n\nif (!article.metaTitle || article.metaTitle.length < 50) {\n  errors.push(`metaTitle too short (${(article.metaTitle || '').length} chars, need 50+)`);\n}\nif (!article.metaDescription || article.metaDescription.length < 140) {\n  errors.push(`metaDescription too short (${(article.metaDescription || '').length} chars, need 140+)`);\n}\n\nif (errors.length > 0) {\n  // Pass errors forward for retry logic\n  return [{\n    json: {\n      ...item,\n      qa_failed: true,\n      qa_errors: errors,\n      qa_word_count: wordCount,\n      retry_count: (item.retry_count || 0)\n    }\n  }];\n}\n\nreturn [{\n  json: {\n    ...item,\n    qa_passed: true,\n    qa_word_count: wordCount\n  }\n}];"
+        }
+      },
+      {
+        "id": "retry-check",
+        "name": "Should Retry?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          2280,
+          220
+        ],
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict"
+            },
+            "conditions": [
+              {
+                "id": "qa-failed-check",
+                "leftValue": "={{ $json.qa_failed }}",
+                "rightValue": true,
+                "operator": {
+                  "type": "boolean",
+                  "operation": "equals"
+                }
+              },
+              {
+                "id": "retry-count-check",
+                "leftValue": "={{ $json.retry_count || 0 }}",
+                "rightValue": 2,
+                "operator": {
+                  "type": "number",
+                  "operation": "lt"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        }
+      },
+      {
+        "id": "retry-build-prompt",
+        "name": "Build Retry Prompt",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          2510,
+          120
+        ],
+        "parameters": {
+          "jsCode": "const item = $input.first().json;\nconst article = JSON.parse(item.file_content);\nconst errors = item.qa_errors || [];\n\nconst retrySystemPrompt = `You are an SEO writer for perfect1.co.il, an Israeli business portal focused on עוסק פטור, עוסק מורשה, חברה בע\"מ, מיסוי, and guides for self-employed in Israel.\n\nYou must output a COMPLETE valid JSON article file (Hebrew, RTL) matching this exact schema:\n\n{\n  \"slug\": \"kebab-case-slug\",\n  \"category\": \"one of: misui, maam, miktzoa, osek-patur, osek-murshe, hevra-bam, sgirat-tikim, guides\",\n  \"metaTitle\": \"SEO title EXACTLY 55-60 chars, ending with | פרפקט וואן\",\n  \"metaDescription\": \"EXACTLY 145-155 chars with CTA like → קרא עכשיו\",\n  \"keywords\": [\"5-8 Hebrew keywords\"],\n  \"heroTitle\": \"strong Hebrew H1\",\n  \"heroSubtitle\": \"1-2 sentences explaining the article value\",\n  \"publishDate\": \"2026-04-25\",\n  \"updatedDate\": \"2026-04-25\",\n  \"author\": {\"name\": \"צוות פרפקט וואן\", \"role\": \"מומחי מיסוי ועסקים\"},\n  \"readTime\": 10,\n  \"toc\": [{\"id\": \"...\", \"title\": \"...\"}],\n  \"sections\": [\n    {\n      \"id\": \"intro\",\n      \"type\": \"text\",\n      \"title\": \"...\",\n      \"answerBlock\": \"1-2 sentences direct answer for AI citation\",\n      \"content\": \"long paragraph (200+ words) with [internal links](/category/slug) in markdown\"\n    },\n    {\"id\": \"list-section\", \"type\": \"list\", \"title\": \"...\", \"description\": \"...\", \"items\": [{\"title\": \"...\", \"description\": \"...\"}]},\n    {\"id\": \"steps\", \"type\": \"steps\", \"title\": \"...\", \"answerBlock\": \"...\", \"steps\": [{\"number\": 1, \"title\": \"...\", \"description\": \"...\"}]},\n    {\"id\": \"callout\", \"type\": \"callout\", \"variant\": \"tip\", \"title\": \"...\", \"content\": \"...\"},\n    {\"id\": \"comparison\", \"type\": \"comparison\", \"title\": \"...\", \"content\": \"markdown table\"}\n  ],\n  \"faq\": [{\"question\": \"...\", \"answer\": \"...\"}],\n  \"relatedArticles\": [{\"category\": \"...\", \"slug\": \"...\", \"title\": \"...\", \"url\": \"/category/slug\"}]\n}\n\nMANDATORY RULES — article will be REJECTED if violated:\n1. MINIMUM 1500 words total across all sections + FAQ (count carefully — each section content must be 150+ words)\n2. relatedArticles MUST include EXACTLY 4 links\n3. AT LEAST 2 of the 4 relatedArticles must be from this Hub pages list:\n   - /osek-patur/how-to-open (flagship — highest priority)\n   - /osek-murshe/how-to-open\n   - /hevra-bam/how-to-open\n   - /osek-patur/cost\n   - /osek-patur/taxes\n   - /osek-patur/income-ceiling\n4. AT LEAST 1 of the 4 relatedArticles must be a \"how-to-open\" page (highest conversion):\n   - /osek-patur/how-to-open\n   - /osek-murshe/how-to-open\n   - /hevra-bam/how-to-open\n5. relatedArticles must use \"url\" field with full path like \"/osek-patur/how-to-open\"\n6. metaTitle: EXACTLY 55-60 characters (count the chars!)\n7. metaDescription: EXACTLY 145-155 characters (count the chars!)\n8. Add at least 3 inline markdown links to Hub pages within section \"content\" fields\n9. 8-12 sections minimum\n10. 6-10 FAQ questions\n11. answerBlock on every major text section (for AEO)\n12. All Hebrew, RTL\n13. Year 2026 facts only\n14. Commercial intent (CTA section in the middle)\n15. Return ONLY the JSON, no markdown fences, no explanation`;\n\nconst retryUserPrompt = `The previous article failed quality checks. Fix ALL the following issues and rewrite the article:\n\nFAILURES:\n${errors.map((e, i) => `${i+1}. ${e}`).join('\\n')}\n\nOriginal article data:\n- Category: ${article.category}\n- Slug: ${article.slug}\n- Target topic: ${article.heroTitle || article.metaTitle}\n\nRewrite the ENTIRE article JSON fixing all issues above. Return only valid JSON.`;\n\nreturn [{\n  json: {\n    ...item,\n    retry_count: (item.retry_count || 0) + 1,\n    messages: [\n      { role: 'system', content: retrySystemPrompt },\n      { role: 'user', content: retryUserPrompt }\n    ]\n  }\n}];"
+        }
+      },
+      {
+        "id": "mark-failed-qa",
+        "name": "Mark Failed Quality",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          2510,
+          320
+        ],
+        "parameters": {
+          "jsCode": "const item = $input.first().json;\nconsole.log('Article failed QA after retries:', item.qa_errors);\n// Do NOT mark as published — idea stays available for next run\nreturn [{ json: { ...item, status: 'failed_quality', skipped: true } }];"
+        }
+      }
+    ],
+    "connections": {
+      "Schedule - 11:00 Daily": {
+        "main": [
+          [
+            {
+              "node": "Log Run Start",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Log Run Start": {
+        "main": [
+          [
+            {
+              "node": "Fetch Ideas to Publish",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Fetch Ideas to Publish": {
+        "main": [
+          [
+            {
+              "node": "Has Slots?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Has Slots?": {
+        "main": [
+          [
+            {
+              "node": "Split Ideas",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          []
+        ]
+      },
+      "Split Ideas": {
+        "main": [
+          [
+            {
+              "node": "Build Article Prompt",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Build Article Prompt": {
+        "main": [
+          [
+            {
+              "node": "Call OpenAI",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Call OpenAI": {
+        "main": [
+          [
+            {
+              "node": "Parse Article JSON",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Parse Article JSON": {
+        "main": [
+          [
+            {
+              "node": "Quality Gate",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "GitHub - Create File": {
+        "main": [
+          [
+            {
+              "node": "Wait for Deploy",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Mark as Published": {
+        "main": [
+          []
+        ]
+      },
+      "Quality Gate": {
+        "main": [
+          [
+            {
+              "node": "Should Retry?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Gate Switch": {
+        "main": [
+          [
+            {
+              "node": "GitHub - Create File",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Log Gate Failure",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Wait for Deploy": {
+        "main": [
+          [
+            {
+              "node": "Verify Live URL",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Verify Live URL": {
+        "main": [
+          [
+            {
+              "node": "QA Result",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "QA Result": {
+        "main": [
+          [
+            {
+              "node": "Mark as Published",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Should Retry?": {
+        "main": [
+          [
+            {
+              "node": "Build Retry Prompt",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Mark Failed Quality",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "GitHub - Create File",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Build Retry Prompt": {
+        "main": [
+          [
+            {
+              "node": "Call OpenAI",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Mark Failed Quality": {
+        "main": [
+          []
+        ]
+      }
+    },
+    "authors": "Yosi Levi",
+    "name": null,
+    "description": null,
+    "autosaved": false,
+    "workflowPublishHistory": [
+      {
+        "createdAt": "2026-04-26T10:00:51.059Z",
+        "id": 1083,
+        "workflowId": "F33CbVflx4aApT71",
+        "versionId": "72115687-4e4b-4329-a264-ff5e6b1da5e3",
+        "event": "activated",
+        "userId": "2726ec4e-54fd-4211-b551-c99e9eb9eb3d"
+      }
+    ]
+  }
+}

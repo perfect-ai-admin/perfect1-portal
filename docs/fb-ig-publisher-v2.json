@@ -1,0 +1,225 @@
+{
+  "name": "Perfect One - Facebook & Instagram Publisher",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 48
+            }
+          ]
+        }
+      },
+      "id": "7f542b86-d8a8-44ca-8105-1e658832adb3",
+      "name": "Schedule Every 2 Days",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $vars.GOOGLE_SHEET_ID }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Sheet1",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "id": "8aff9f8e-847c-499a-9c27-65aba5efa95d",
+      "name": "Read All Posts",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Find the first row where 'Published' column is empty or 'No'\nconst rows = $input.all();\nlet nextPost = null;\nlet rowIndex = -1;\n\nfor (let i = 0; i < rows.length; i++) {\n  const published = (rows[i].json['Published'] || '').toString().trim().toLowerCase();\n  if (published !== 'yes' && published !== 'true' && published !== 'done') {\n    nextPost = rows[i].json;\n    rowIndex = i + 2;\n    break;\n  }\n}\n\nif (!nextPost) {\n  throw new Error('All posts have been published!');\n}\n\nconst message = `${nextPost['Headline'] || ''}\\n\\n${nextPost['Main Text'] || ''}`;\n\nreturn [{\n  json: {\n    rowIndex,\n    postId: nextPost['Post ID'],\n    topic: nextPost['Topic'],\n    headline: nextPost['Headline'],\n    mainText: nextPost['Main Text'],\n    imagePath: nextPost['Image Path'],\n    message\n  }\n}];"
+      },
+      "id": "node-find-next",
+      "name": "Find Next Unpublished Post",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.imagePath }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "id": "node-download-img",
+      "name": "Download Image from Drive",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v21.0/{{ $vars.FB_PAGE_ID }}/photos",
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "message",
+              "value": "={{ $('Find Next Unpublished Post').first().json.message }}"
+            },
+            {
+              "name": "access_token",
+              "value": "={{ $vars.FB_PAGE_ACCESS_TOKEN }}"
+            },
+            {
+              "name": "published",
+              "value": "true"
+            }
+          ]
+        },
+        "sendBinaryData": true,
+        "binaryPropertyName": "data",
+        "options": {}
+      },
+      "id": "node-post-fb",
+      "name": "Post to Facebook",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1120, 180]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v21.0/{{ $vars.IG_USER_ID }}/media",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "caption",
+              "value": "={{ $('Find Next Unpublished Post').first().json.message }}"
+            },
+            {
+              "name": "image_url",
+              "value": "=https://drive.google.com/uc?export=download&id={{ $('Find Next Unpublished Post').first().json.imagePath }}"
+            },
+            {
+              "name": "access_token",
+              "value": "={{ $vars.FB_PAGE_ACCESS_TOKEN }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "node-ig-create",
+      "name": "Instagram Create Container",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1120, 420]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v21.0/{{ $vars.IG_USER_ID }}/media_publish",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "creation_id",
+              "value": "={{ $json.id }}"
+            },
+            {
+              "name": "access_token",
+              "value": "={{ $vars.FB_PAGE_ACCESS_TOKEN }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "node-ig-publish",
+      "name": "Instagram Publish",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1340, 420]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $vars.GOOGLE_SHEET_ID }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Sheet1",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Published": "Yes",
+            "Published Date": "={{ $now.toISODate() }}"
+          }
+        },
+        "options": {
+          "cellFormat": "USER_ENTERED"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Post ID",
+              "lookupValue": "={{ $('Find Next Unpublished Post').first().json.postId }}"
+            }
+          ]
+        }
+      },
+      "id": "cfb38d97-d5b2-4c69-8df8-27b9062279a7",
+      "name": "Mark as Published",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [1560, 180]
+    }
+  ],
+  "connections": {
+    "Schedule Every 2 Days": {
+      "main": [[{"node": "Read All Posts", "type": "main", "index": 0}]]
+    },
+    "Read All Posts": {
+      "main": [[{"node": "Find Next Unpublished Post", "type": "main", "index": 0}]]
+    },
+    "Find Next Unpublished Post": {
+      "main": [[{"node": "Download Image from Drive", "type": "main", "index": 0}]]
+    },
+    "Download Image from Drive": {
+      "main": [[
+        {"node": "Post to Facebook", "type": "main", "index": 0},
+        {"node": "Instagram Create Container", "type": "main", "index": 0}
+      ]]
+    },
+    "Post to Facebook": {
+      "main": [[{"node": "Mark as Published", "type": "main", "index": 0}]]
+    },
+    "Instagram Create Container": {
+      "main": [[{"node": "Instagram Publish", "type": "main", "index": 0}]]
+    },
+    "Instagram Publish": {
+      "main": [[{"node": "Mark as Published", "type": "main", "index": 0}]]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true
+  },
+  "staticData": null,
+  "pinData": {}
+}

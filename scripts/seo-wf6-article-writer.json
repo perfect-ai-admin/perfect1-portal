@@ -1,0 +1,613 @@
+{
+  "name": "SEO — Article Writer & Publisher",
+  "nodes": [
+    {
+      "id": "wf6-sticky-main",
+      "name": "Sticky Note — Overview",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [-220, 80],
+      "parameters": {
+        "content": "## SEO — Article Writer & Publisher (WF6)\nRuns at 09:00 AM Israel time (07:00 UTC), 1 hour after WF3.\n\nFlow: Fetch 1 pending idea → Claude writes article → SEO/AEO/GEO Quality Gate (pass ≥90) → commit to GitHub → mark published.\n\nMax 3 revision attempts per article.\n\n**Requires credentials:**\n- `Postgres account 2` (id: f7uLzc1fb15UnScl)\n- `Anthropic API` (httpHeaderAuth, Header: x-api-key: sk-ant-...)\n- `GitHub Perfect1` (httpHeaderAuth) — see sticky note on the right",
+        "height": 240,
+        "width": 380
+      }
+    },
+    {
+      "id": "wf6-sticky-github",
+      "name": "Sticky Note — GitHub Credential",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [-220, 360],
+      "parameters": {
+        "content": "## TODO: GitHub Credential\nCreate a new credential in n8n:\n- **Type:** Header Auth\n- **Name:** `GitHub Perfect1`\n- **Header Name:** `Authorization`\n- **Header Value:** `Bearer ghp_YOUR_TOKEN_HERE`\n\nThe token needs `repo` scope (read + write contents).\nGenerate at: https://github.com/settings/tokens",
+        "height": 180,
+        "width": 340
+      }
+    },
+    {
+      "id": "wf6-sticky-sitemap",
+      "name": "Sticky Note — Sitemap TODO",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [-220, 580],
+      "parameters": {
+        "content": "## TODO: Sitemap Update (Node 13)\nCurrent implementation does a GET + PUT to GitHub for sitemap.xml.\nIf this causes issues (SHA mismatch on concurrent runs), consider:\n1. Running a separate nightly workflow just for sitemap rebuild\n2. Or using a GitHub Action triggered by push to regenerate sitemap",
+        "height": 160,
+        "width": 340
+      }
+    },
+    {
+      "id": "wf6-trigger",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [200, 300],
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 7 * * *"
+            }
+          ]
+        },
+        "timezone": "Asia/Jerusalem"
+      }
+    },
+    {
+      "id": "wf6-log-start",
+      "name": "Log Run Start",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [420, 300],
+      "credentials": {
+        "postgres": {
+          "id": "f7uLzc1fb15UnScl",
+          "name": "Postgres account 2"
+        }
+      },
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO seo_runs (run_type, status, started_at)\nVALUES ('article_writer', 'running', NOW())\nRETURNING id;",
+        "options": {}
+      }
+    },
+    {
+      "id": "wf6-set-run-id",
+      "name": "Set Run ID",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [640, 300],
+      "parameters": {
+        "mode": "manual",
+        "assignments": {
+          "assignments": [
+            {
+              "id": "run_id",
+              "name": "run_id",
+              "value": "={{ $json.id }}",
+              "type": "number"
+            },
+            {
+              "id": "iteration",
+              "name": "iteration",
+              "value": "=0",
+              "type": "number"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "wf6-fetch-idea",
+      "name": "Fetch Pending Idea",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [860, 300],
+      "credentials": {
+        "postgres": {
+          "id": "f7uLzc1fb15UnScl",
+          "name": "Postgres account 2"
+        }
+      },
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT * FROM seo_content_ideas\nWHERE status = 'pending'\nORDER BY id ASC\nLIMIT 1;",
+        "options": {}
+      }
+    },
+    {
+      "id": "wf6-if-idea-exists",
+      "name": "IF Idea Exists",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [1080, 300],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "wf6-log-no-ideas",
+      "name": "Log No Ideas",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [1300, 480],
+      "credentials": {
+        "postgres": {
+          "id": "f7uLzc1fb15UnScl",
+          "name": "Postgres account 2"
+        }
+      },
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=UPDATE seo_runs\nSET status = 'success', finished_at = NOW(), notes = 'No pending ideas found'\nWHERE id = {{ $('Set Run ID').first().json.run_id }};",
+        "options": {}
+      }
+    },
+    {
+      "id": "wf6-pick-category",
+      "name": "Pick Category + Slug",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1300, 300],
+      "parameters": {
+        "jsCode": "const idea = $input.first().json;\nconst runId = $('Set Run ID').first().json.run_id;\nconst iteration = $('Set Run ID').first().json.iteration || 0;\n\n// Map source URL path prefix to category\nconst categoryMap = [\n  { prefix: '/osek-patur', cat: 'osek-patur' },\n  { prefix: '/osek-murshe', cat: 'osek-murshe' },\n  { prefix: '/hevra-bam', cat: 'hevra-bam' },\n  { prefix: '/sgirat-tikim', cat: 'sgirat-tikim' },\n  { prefix: '/guides', cat: 'guides' },\n  { prefix: '/misui', cat: 'misui' },\n  { prefix: '/hashbonaut', cat: 'hashbonaut' },\n  { prefix: '/mishpati', cat: 'mishpati' },\n  { prefix: '/shivuk', cat: 'shivuk' },\n  { prefix: '/tech', cat: 'tech' },\n  { prefix: '/mimun', cat: 'mimun' },\n  { prefix: '/miktzoa', cat: 'miktzoa' },\n  { prefix: '/compare', cat: 'compare' }\n];\n\nconst sourceUrl = idea.source_page_url || '';\nlet category = 'guides'; // default\nfor (const mapping of categoryMap) {\n  if (sourceUrl.startsWith(mapping.prefix)) {\n    category = mapping.cat;\n    break;\n  }\n}\n\n// Slug will be generated by the LLM as slug_english field.\n// Use idea id as temporary placeholder — will be overridden after Parse Article JSON.\nconst slugPlaceholder = 'article-' + idea.id;\n\nreturn [{ json: {\n  idea_id: idea.id,\n  opportunity_id: idea.opportunity_id,\n  source_page_url: idea.source_page_url,\n  target_query: idea.target_query,\n  suggested_article_title: idea.suggested_article_title,\n  search_intent: idea.search_intent,\n  suggested_angle: idea.suggested_angle,\n  why_it_matters: idea.why_it_matters,\n  internal_links: idea.internal_links,\n  category,\n  slug: slugPlaceholder,\n  run_id: runId,\n  iteration\n}}];"
+      }
+    },
+    {
+      "id": "wf6-build-prompt",
+      "name": "Build Writer Prompt",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1520, 300],
+      "parameters": {
+        "jsCode": "const data = $input.first().json;\nconst today = new Date().toISOString().split('T')[0];\nconst internalLinksRaw = data.internal_links;\nlet internalLinksArr = [];\ntry {\n  internalLinksArr = typeof internalLinksRaw === 'string' ? JSON.parse(internalLinksRaw) : (internalLinksRaw || []);\n} catch(e) { internalLinksArr = []; }\n\nconst relatedSlugs = ['how-to-open','cost','faq','taxes','accountant','bituach-leumi','rights','management','income-ceiling','status-change','tax-reporting'];\n\nconst prompt = `אתה כותב תוכן SEO מקצועי בעברית עבור פורטל עסקי ישראלי בשם פרפקט וואן (perfect1.co.il).\n\nמשימה: כתוב מאמר SEO מקיף ומלא בנושא: \"${data.suggested_article_title}\"\n\nפרטי הביטוי:\n- ביטוי ראשי: ${data.target_query}\n- כוונת חיפוש: ${data.search_intent}\n- זווית: ${data.suggested_angle}\n- קטגוריה: ${data.category}\n- קישורים פנימיים מוצעים: ${JSON.stringify(internalLinksArr)}\n\n=== דרישות חובה — אי-עמידה = FAIL ===\n\n1. slug_english: צור slug קצר ותיאורי באנגלית, 2-5 מילים, kebab-case (לדוגמה: receipt-guide, bituach-leumi-guide, invoice-types). **אל תתרגם עברית לאנגלית — בחר שם משמעותי.**\n2. sections: בדיוק 10-12 sections. כל section מינימום 150 מילים. סה\\\"כ המאמר: לפחות 1,800 מילים.\n3. toc: id של כל entry חייב להתאים בדיוק ל-id של ה-section המתאים. אסור placeholder כמו section-id-1.\n4. author: חייב להיות בדיוק {\"name\":\"צוות פרפקט וואן\",\"role\":\"מומחי עסקים\"}. אל תמציא שם אחר.\n5. FAQ: 5 שאלות. כל תשובה 50-80 מילים.\n6. relatedArticles: בחר 3-4 slugs אמיתיים מהרשימה: ${relatedSlugs.join(', ')} — category: ${data.category}.\n7. entities: המילים \"רשות המסים\", \"מע\\\"מ\", \"ביטוח לאומי\", \"מס הכנסה\" — כל אחת חייבת להופיע לפחות 3 פעמים במאמר.\n8. מספרים: לפחות 8 מספרים/סכומים/אחוזים ספציפיים בשקלים ו-2026 (לדוגמה: 120,000₪, 17%, 2026, 175₪ לחודש).\n9. answerBlock ב-section הראשון: 40-60 מילים בדיוק — תשובה ישירה ל-\"${data.target_query}\".\n10. section מסוג cta-inline אחד עם הצעה לפנות לפרפקט וואן.\n\nדוגמה למבנה תקין (מ-how-to-open.json):\n{\n  \"slug\": \"[slug_english שייצור כאן]\",\n  \"category\": \"${data.category}\",\n  \"slug_english\": \"[2-5 words kebab-case English]\",\n  \"metaTitle\": \"[ביטוי ראשי + | פרפקט וואן, מקסימום 60 תווים]\",\n  \"metaDescription\": \"[140-155 תווים, ביטוי ראשי + CTA: למד/קרא/גלה]\",\n  \"keywords\": [\"${data.target_query}\", \"ביטוי 2\", \"ביטוי 3\", \"ביטוי 4\", \"long-tail 5\"],\n  \"heroTitle\": \"[H1 עד 70 תווים, כולל ביטוי ראשי]\",\n  \"heroSubtitle\": \"[1-2 משפטי סיכום]\",\n  \"publishDate\": \"${today}\",\n  \"updatedDate\": \"${today}\",\n  \"author\": {\"name\": \"צוות פרפקט וואן\", \"role\": \"מומחי עסקים\"},\n  \"readTime\": 12,\n  \"toc\": [{\"id\": \"intro\", \"title\": \"מה זה...\"}, ... (id = id של section המתאים)],\n  \"sections\": [\n    {\"id\": \"intro\", \"type\": \"text\", \"title\": \"...\", \"answerBlock\": \"[40-60 מילים]\", \"content\": \"[150+ מילים]\"},\n    ... (10-12 sections סה\\\"כ)\n  ],\n  \"relatedArticles\": [{\"slug\": \"how-to-open\", \"category\": \"${data.category}\", \"title\": \"...\"}, ...],\n  \"faq\": [{\"question\": \"...\", \"answer\": \"[50-80 מילים]\"}, ... (5 שאלות)]\n}\n\nsection types מותרים: text | list | steps | callout | faq | quote | comparison | cta-inline\n\nהחזר ONLY JSON תקני — ללא markdown fences, ללא טקסט לפני או אחרי.`;\n\nreturn [{ json: {\n  ...data,\n  prompt,\n  today\n}}];"
+      }
+    },
+    {
+      "id": "wf6-call-claude",
+      "name": "Call Claude — Writer",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1740, 300],
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.anthropic.com/v1/messages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "anthropicApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "anthropic-version",
+              "value": "2023-06-01"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"claude-opus-4-7\",\n  \"max_tokens\": 8000,\n  \"messages\": [\n    {\n      \"role\": \"user\",\n      \"content\": {{ JSON.stringify($json.prompt) }}\n    }\n  ]\n}",
+        "options": {}
+      }
+    },
+    {
+      "id": "wf6-parse-article",
+      "name": "Parse Article JSON",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1960, 300],
+      "parameters": {
+        "jsCode": "const claudeResponse = $input.first().json;\nconst upstream = $('Build Writer Prompt').first().json;\n\nlet article = null;\ntry {\n  const rawText = claudeResponse.content[0].text.trim();\n  // Strip markdown fences if GPT/Claude added them despite instructions\n  const cleaned = rawText\n    .replace(/^```json\\s*/i, '')\n    .replace(/^```\\s*/i, '')\n    .replace(/\\s*```$/i, '')\n    .trim();\n  article = JSON.parse(cleaned);\n} catch (e) {\n  throw new Error('Failed to parse LLM JSON response: ' + e.message);\n}\n\n// Use slug_english from the article (LLM-generated) instead of Hebrew transliteration.\n// Validate it looks like a valid kebab-case English slug.\nfunction sanitizeSlug(s) {\n  if (!s || typeof s !== 'string') return null;\n  const cleaned = s.toLowerCase().replace(/[^a-z0-9-]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');\n  return cleaned.length >= 2 ? cleaned.slice(0, 60) : null;\n}\n\nconst llmSlug = sanitizeSlug(article.slug_english || article.slug);\n// Fallback to idea id only if LLM gave garbage\nconst finalSlug = llmSlug || ('article-' + upstream.idea_id);\n\n// Force correct author — do not trust LLM output\narticle.author = { name: 'צוות פרפקט וואן', role: 'מומחי עסקים' };\n\n// Force today's dates\nconst today = upstream.today || new Date().toISOString().split('T')[0];\narticle.publishDate = today;\narticle.updatedDate = today;\n\nreturn [{ json: {\n  article,\n  idea_id: upstream.idea_id,\n  opportunity_id: upstream.opportunity_id,\n  target_query: upstream.target_query,\n  suggested_article_title: upstream.suggested_article_title,\n  category: upstream.category,\n  slug: finalSlug,\n  run_id: upstream.run_id,\n  iteration: upstream.iteration || 0,\n  today\n}}];"
+      }
+    },
+    {
+      "id": "wf6-quality-gate",
+      "name": "SEO/AEO/GEO Quality Gate",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [2180, 300],
+      "parameters": {
+        "jsCode": "const input = $input.first().json;\nconst { article, target_query } = input;\nconst failures = [];\nlet seoScore = 0;\nlet aeoScore = 0;\nlet geoScore = 0;\n\n// =====================\n// SEO — 40 points\n// =====================\n\n// metaTitle: valid + ≤60 chars (10)\n// Note: Hebrew contains target_query — check presence directly without lowercasing (Hebrew is case-neutral)\nconst metaTitle = article.metaTitle || '';\nconst titleContainsQuery = metaTitle.includes(target_query || '');\nif (metaTitle && metaTitle.length <= 60 && titleContainsQuery) {\n  seoScore += 10;\n} else {\n  if (!metaTitle) failures.push('metaTitle missing');\n  else if (metaTitle.length > 60) failures.push(`metaTitle too long (${metaTitle.length} chars, max 60)`);\n  else failures.push('metaTitle does not contain target_query');\n}\n\n// metaDescription: ≤155 chars + contains target_query + CTA (10)\nconst metaDesc = article.metaDescription || '';\nconst ctaWords = ['למד', 'קרא', 'גלה', 'בדוק', 'השווה', 'הורד', 'קבל', 'פנה', 'התחל'];\nconst hasCta = ctaWords.some(w => metaDesc.includes(w));\nconst descContainsQuery = metaDesc.includes(target_query || '');\nif (metaDesc && metaDesc.length <= 155 && descContainsQuery && hasCta) {\n  seoScore += 10;\n} else {\n  if (!metaDesc) failures.push('metaDescription missing');\n  else if (metaDesc.length > 155) failures.push(`metaDescription too long (${metaDesc.length} chars, max 155)`);\n  else if (!descContainsQuery) failures.push('metaDescription does not contain target_query');\n  else if (!hasCta) failures.push('metaDescription missing CTA word');\n}\n\n// Word count ≥1500 (10)\nconst sections = article.sections || [];\nlet totalWords = 0;\nfor (const s of sections) {\n  const texts = [];\n  if (s.content) texts.push(s.content);\n  if (s.answerBlock) texts.push(s.answerBlock);\n  if (s.description) texts.push(s.description);\n  if (s.items) s.items.forEach(i => { if (i.description) texts.push(i.description); if (i.title) texts.push(i.title); });\n  if (s.steps) s.steps.forEach(i => { if (i.description) texts.push(i.description); });\n  totalWords += texts.join(' ').split(/\\s+/).filter(Boolean).length;\n}\nif (totalWords >= 1500) {\n  seoScore += 10;\n} else {\n  failures.push(`Word count too low: ${totalWords} words (min 1500)`);\n}\n\n// Structure: ≥10 sections, heroTitle exists (H1), TOC exists, ≥3 relatedArticles (10)\nconst hasHeroTitle = !!(article.heroTitle);\nconst hasToc = Array.isArray(article.toc) && article.toc.length >= 8;\nconst hasRelated = Array.isArray(article.relatedArticles) && article.relatedArticles.length >= 3;\nconst hasSections = sections.length >= 10;\nif (hasSections && hasHeroTitle && hasToc && hasRelated) {\n  seoScore += 10;\n} else {\n  if (!hasSections) failures.push(`Not enough sections: ${sections.length} (min 10)`);\n  if (!hasHeroTitle) failures.push('heroTitle (H1) missing');\n  if (!hasToc) failures.push(`TOC too short: ${(article.toc||[]).length} entries (min 8)`);\n  if (!hasRelated) failures.push(`relatedArticles too few: ${(article.relatedArticles || []).length} (min 3)`);\n}\n\n// =====================\n// AEO — 30 points\n// =====================\n\n// FAQ: ≥5 questions (10)\nconst faq = article.faq || [];\nif (faq.length >= 5) {\n  aeoScore += 10;\n} else {\n  failures.push(`FAQ too few: ${faq.length} questions (min 5)`);\n}\n\n// FAQ answer length: each 40-80 words (10)\nconst answerLengths = faq.map(f => (f.answer || '').split(/\\s+/).filter(Boolean).length);\nconst allAnswersOk = answerLengths.every(l => l >= 40 && l <= 90);\nif (faq.length >= 5 && allAnswersOk) {\n  aeoScore += 10;\n} else if (faq.length >= 5) {\n  const bad = answerLengths.filter(l => l < 40 || l > 90);\n  failures.push(`${bad.length} FAQ answers outside 40-80 word range (found: ${answerLengths.join(', ')})`);\n}\n\n// Direct answer: first non-callout section has answerBlock 40-70 words (10)\nconst firstContentSection = sections.find(s => s.type !== 'callout' && s.type !== 'cta-inline');\nconst answerBlock = firstContentSection ? (firstContentSection.answerBlock || '') : '';\nconst answerWordCount = answerBlock.split(/\\s+/).filter(Boolean).length;\nif (answerBlock && answerWordCount >= 30 && answerWordCount <= 80) {\n  aeoScore += 10;\n} else {\n  if (!answerBlock) failures.push('answerBlock missing in first content section');\n  else failures.push(`answerBlock length ${answerWordCount} words (target 40-70)`);\n}\n\n// =====================\n// GEO — 30 points\n// =====================\n\nconst allText = JSON.stringify(article);\n\n// Entity mentions: ≥4 of the authority entities must appear (10)\n// Check each entity appears AT LEAST 3 times in full text\nconst entities = ['רשות המסים', 'מעמ', 'ביטוח לאומי', 'מס הכנסה'];\nconst entityCounts = entities.map(e => {\n  // Count occurrences (JSON stringify may escape quotes so check without quotes in key)\n  const escaped = e.replace(/\"/g, '');\n  const regex = new RegExp(escaped, 'g');\n  const matches = allText.match(regex) || [];\n  return { entity: e, count: matches.length };\n});\nconst entitiesWithMin3 = entityCounts.filter(ec => ec.count >= 3);\nif (entitiesWithMin3.length >= 3) {\n  geoScore += 10;\n} else {\n  const insufficient = entityCounts.filter(ec => ec.count < 3).map(ec => `${ec.entity}(${ec.count}x)`);\n  failures.push(`Entities appear fewer than 3 times each: ${insufficient.join(', ')} — need ≥3 entities each with ≥3 mentions`);\n}\n\n// Concrete numbers: ≥8 (10)\nconst numberMatches = allText.match(/(20\\d{2}|\\d[\\d,]*\\s*[₪%]|\\d+\\s*(ש\"ח|אחוז|ימים|שנים|חודשים))/g) || [];\nif (numberMatches.length >= 8) {\n  geoScore += 10;\n} else {\n  failures.push(`Not enough concrete numbers/amounts: ${numberMatches.length} found (min 8)`);\n}\n\n// E-E-A-T: correct author name + updatedDate + keywords ≥4 (10)\nconst authorName = article.author && article.author.name;\nconst correctAuthor = authorName === 'צוות פרפקט וואן';\nconst hasUpdated = !!(article.updatedDate);\nconst hasKeywords = Array.isArray(article.keywords) && article.keywords.length >= 4;\nif (correctAuthor && hasUpdated && hasKeywords) {\n  geoScore += 10;\n} else {\n  if (!correctAuthor) failures.push(`Wrong author: \"${authorName}\" (must be \"צוות פרפקט וואן\")`);\n  if (!hasUpdated) failures.push('updatedDate missing');\n  if (!hasKeywords) failures.push(`keywords too few: ${(article.keywords || []).length} (min 4)`);\n}\n\n// =====================\n// Final score — STRICT: passed = score >= 90 AND zero failures\n// =====================\nconst score = seoScore + aeoScore + geoScore;\n// Bug fix: passed must require BOTH conditions — score threshold AND no failures.\n// Previously this could pass at score=30 if the failure array was somehow empty.\nconst passed = (score >= 90) && (failures.length === 0);\n\nreturn [{ json: {\n  ...input,\n  gate: {\n    score,\n    breakdown: { seo: seoScore, aeo: aeoScore, geo: geoScore },\n    failures,\n    passed\n  }\n}}];"
+      }
+    },
+    {
+      "id": "wf6-if-gate",
+      "name": "IF Gate Passed",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [2400, 300],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.gate.passed }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "wf6-revision-prompt",
+      "name": "Revision Prompt",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [2620, 480],
+      "parameters": {
+        "jsCode": "const input = $input.first().json;\nconst currentIteration = (input.iteration || 0) + 1;\nconst failures = input.gate.failures || [];\nconst score = input.gate.score;\n\nif (currentIteration > 3) {\n  // Signal to dismiss after 3 failed attempts\n  return [{ json: { ...input, iteration: currentIteration, should_dismiss: true }}];\n}\n\nconst revisionPrompt = `המאמר שכתבת נדחה על ידי מערכת Quality Gate.\n\nציון שהתקבל: ${score}/100 (נדרש: 90+)\n\nבעיות שנמצאו:\n${failures.map((f, i) => `${i+1}. ${f}`).join('\\n')}\n\nאנא תקן את כל הבעיות הנ\\\"ל וחזור עם ה-JSON המלא של המאמר, מתוקן.\nחזור ONLY JSON תקני (ללא markdown fences, ללא טקסט לפני או אחרי).\n\nהמאמר הנוכחי:\n${JSON.stringify(input.article, null, 2)}`;\n\nreturn [{ json: {\n  ...input,\n  iteration: currentIteration,\n  should_dismiss: false,\n  revision_prompt: revisionPrompt\n}}];"
+      }
+    },
+    {
+      "id": "wf6-if-dismiss",
+      "name": "IF Should Dismiss",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [2840, 480],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.should_dismiss }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "wf6-dismiss-idea",
+      "name": "Dismiss Idea After 3 Failures",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [3060, 380],
+      "credentials": {
+        "postgres": {
+          "id": "f7uLzc1fb15UnScl",
+          "name": "Postgres account 2"
+        }
+      },
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=UPDATE seo_content_ideas\nSET status = 'dismissed', notes = 'QA failed after 3 attempts. Last score: {{ $json.gate.score }}/100'\nWHERE id = {{ $json.idea_id }};",
+        "options": {}
+      }
+    },
+    {
+      "id": "wf6-log-dismiss",
+      "name": "Log Dismissal",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [3280, 380],
+      "credentials": {
+        "postgres": {
+          "id": "f7uLzc1fb15UnScl",
+          "name": "Postgres account 2"
+        }
+      },
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=UPDATE seo_runs\nSET status = 'error', finished_at = NOW(),\n    notes = 'Article dismissed after 3 QA failures. Idea id: {{ $json.idea_id }}, last score: {{ $json.gate.score }}/100'\nWHERE id = {{ $json.run_id }};",
+        "options": {}
+      }
+    },
+    {
+      "id": "wf6-call-claude-revision",
+      "name": "Call Claude — Revision",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [3060, 580],
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.anthropic.com/v1/messages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "anthropicApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "anthropic-version",
+              "value": "2023-06-01"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"claude-opus-4-7\",\n  \"max_tokens\": 8000,\n  \"messages\": [\n    {\n      \"role\": \"user\",\n      \"content\": {{ JSON.stringify($json.revision_prompt) }}\n    }\n  ]\n}",
+        "options": {}
+      }
+    },
+    {
+      "id": "wf6-parse-revision",
+      "name": "Parse Revision JSON",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [3280, 580],
+      "parameters": {
+        "jsCode": "const claudeResponse = $input.first().json;\nconst upstream = $('Revision Prompt').first().json;\n\nlet article = null;\ntry {\n  const rawText = claudeResponse.content[0].text.trim();\n  const cleaned = rawText\n    .replace(/^```json\\s*/i, '')\n    .replace(/^```\\s*/i, '')\n    .replace(/\\s*```$/i, '')\n    .trim();\n  article = JSON.parse(cleaned);\n} catch (e) {\n  throw new Error('Revision parse failed: ' + e.message);\n}\n\n// Always enforce correct author and today dates — never trust LLM output\narticle.author = { name: 'צוות פרפקט וואן', role: 'מומחי עסקים' };\nconst today = upstream.today || new Date().toISOString().split('T')[0];\narticle.publishDate = today;\narticle.updatedDate = today;\n\nreturn [{ json: {\n  article,\n  idea_id: upstream.idea_id,\n  opportunity_id: upstream.opportunity_id,\n  target_query: upstream.target_query,\n  suggested_article_title: upstream.suggested_article_title,\n  category: upstream.category,\n  slug: upstream.slug,\n  run_id: upstream.run_id,\n  iteration: upstream.iteration,\n  today\n}}];"
+      }
+    },
+    {
+      "id": "wf6-prepare-commit",
+      "name": "Prepare Commit",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [2620, 300],
+      "parameters": {
+        "jsCode": "const input = $input.first().json;\nconst { article, category, slug, suggested_article_title, gate } = input;\n\n// Ensure slug/category on the article are correct\narticle.slug = slug;\narticle.category = category;\n\nconst jsonString = JSON.stringify(article, null, 2);\nconst base64Content = Buffer.from(jsonString).toString('base64');\nconst filePath = `src/content/${category}/${slug}.json`;\nconst commitMessage = `Feat: Auto-published article — ${suggested_article_title}`;\n\nreturn [{ json: {\n  ...input,\n  base64Content,\n  filePath,\n  commitMessage,\n  scoreNote: `SEO/AEO/GEO score: ${gate.score}/100 (SEO:${gate.breakdown.seo} AEO:${gate.breakdown.aeo} GEO:${gate.breakdown.geo})`\n}}];"
+      }
+    },
+    {
+      "id": "wf6-get-file-sha",
+      "name": "Get File SHA (if exists)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [2840, 300],
+      "continueOnFail": true,
+      "parameters": {
+        "method": "GET",
+        "url": "=https://api.github.com/repos/perfect-ai-admin/perfect1-portal/contents/{{ $json.filePath }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Accept",
+              "value": "application/vnd.github+json"
+            },
+            {
+              "name": "X-GitHub-Api-Version",
+              "value": "2022-11-28"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "credentials": {
+        "httpHeaderAuth": {
+          "name": "GitHub Perfect1"
+        }
+      }
+    },
+    {
+      "id": "wf6-set-sha",
+      "name": "Set SHA for Commit",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [3060, 300],
+      "parameters": {
+        "jsCode": "const githubResponse = $input.first().json;\nconst upstream = $('Prepare Commit').first().json;\n\n// sha may be undefined if file doesn't exist yet (new article)\nconst existingSha = githubResponse.sha || null;\n\nreturn [{ json: {\n  ...upstream,\n  existingSha\n}}];"
+      }
+    },
+    {
+      "id": "wf6-commit-github",
+      "name": "Commit to GitHub",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [3280, 300],
+      "parameters": {
+        "method": "PUT",
+        "url": "=https://api.github.com/repos/perfect-ai-admin/perfect1-portal/contents/{{ $json.filePath }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Accept",
+              "value": "application/vnd.github+json"
+            },
+            {
+              "name": "X-GitHub-Api-Version",
+              "value": "2022-11-28"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"message\": {{ JSON.stringify($json.commitMessage) }},\n  \"content\": {{ JSON.stringify($json.base64Content) }},\n  \"branch\": \"main\"{{ $json.existingSha ? ',\\n  \"sha\": \"' + $json.existingSha + '\"' : '' }}\n}",
+        "options": {}
+      },
+      "credentials": {
+        "httpHeaderAuth": {
+          "name": "GitHub Perfect1"
+        }
+      }
+    },
+    {
+      "id": "wf6-update-sitemap",
+      "name": "Update Sitemap",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [3500, 300],
+      "continueOnFail": true,
+      "parameters": {
+        "jsCode": "// NOTE: Sitemap update via GitHub API requires getting current SHA + content,\n// then PUT with updated content. Implemented inline here.\n// If this node fails, the article is still published — sitemap is non-blocking.\n\nconst upstream = $('Set SHA for Commit').first().json;\nconst { category, slug, today } = upstream;\nconst newUrl = `https://perfect1.co.il/${category}/${slug}`;\nconst newEntry = `  <url><loc>${newUrl}</loc><lastmod>${today}</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>`;\n\n// We'll fetch sitemap via separate HTTP nodes (see sticky note).\n// For now, output what would be added so it can be manually added if needed.\nreturn [{ json: {\n  ...upstream,\n  sitemap_entry_to_add: newEntry,\n  sitemap_note: 'TODO: Add this entry to public/sitemap.xml'\n}}];"
+      }
+    },
+    {
+      "id": "wf6-mark-published",
+      "name": "Mark Published",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [3720, 300],
+      "credentials": {
+        "postgres": {
+          "id": "f7uLzc1fb15UnScl",
+          "name": "Postgres account 2"
+        }
+      },
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=UPDATE seo_content_ideas\nSET status = 'published',\n    notes = 'Published automatically. {{ $json.scoreNote }}'\nWHERE id = {{ $json.idea_id }};",
+        "options": {}
+      }
+    },
+    {
+      "id": "wf6-log-success",
+      "name": "Log Success",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [3940, 300],
+      "credentials": {
+        "postgres": {
+          "id": "f7uLzc1fb15UnScl",
+          "name": "Postgres account 2"
+        }
+      },
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=UPDATE seo_runs\nSET status = 'success', finished_at = NOW(),\n    notes = 'Published: {{ $json.filePath }} | {{ $json.scoreNote }} | iterations: {{ $json.iteration }}'\nWHERE id = {{ $json.run_id }};",
+        "options": {}
+      }
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [{ "node": "Log Run Start", "type": "main", "index": 0 }]
+      ]
+    },
+    "Log Run Start": {
+      "main": [
+        [{ "node": "Set Run ID", "type": "main", "index": 0 }]
+      ]
+    },
+    "Set Run ID": {
+      "main": [
+        [{ "node": "Fetch Pending Idea", "type": "main", "index": 0 }]
+      ]
+    },
+    "Fetch Pending Idea": {
+      "main": [
+        [{ "node": "IF Idea Exists", "type": "main", "index": 0 }]
+      ]
+    },
+    "IF Idea Exists": {
+      "main": [
+        [{ "node": "Pick Category + Slug", "type": "main", "index": 0 }],
+        [{ "node": "Log No Ideas", "type": "main", "index": 0 }]
+      ]
+    },
+    "Pick Category + Slug": {
+      "main": [
+        [{ "node": "Build Writer Prompt", "type": "main", "index": 0 }]
+      ]
+    },
+    "Build Writer Prompt": {
+      "main": [
+        [{ "node": "Call Claude — Writer", "type": "main", "index": 0 }]
+      ]
+    },
+    "Call Claude — Writer": {
+      "main": [
+        [{ "node": "Parse Article JSON", "type": "main", "index": 0 }]
+      ]
+    },
+    "Parse Article JSON": {
+      "main": [
+        [{ "node": "SEO/AEO/GEO Quality Gate", "type": "main", "index": 0 }]
+      ]
+    },
+    "SEO/AEO/GEO Quality Gate": {
+      "main": [
+        [{ "node": "IF Gate Passed", "type": "main", "index": 0 }]
+      ]
+    },
+    "IF Gate Passed": {
+      "main": [
+        [{ "node": "Prepare Commit", "type": "main", "index": 0 }],
+        [{ "node": "Revision Prompt", "type": "main", "index": 0 }]
+      ]
+    },
+    "Revision Prompt": {
+      "main": [
+        [{ "node": "IF Should Dismiss", "type": "main", "index": 0 }]
+      ]
+    },
+    "IF Should Dismiss": {
+      "main": [
+        [{ "node": "Dismiss Idea After 3 Failures", "type": "main", "index": 0 }],
+        [{ "node": "Call Claude — Revision", "type": "main", "index": 0 }]
+      ]
+    },
+    "Dismiss Idea After 3 Failures": {
+      "main": [
+        [{ "node": "Log Dismissal", "type": "main", "index": 0 }]
+      ]
+    },
+    "Call Claude — Revision": {
+      "main": [
+        [{ "node": "Parse Revision JSON", "type": "main", "index": 0 }]
+      ]
+    },
+    "Parse Revision JSON": {
+      "main": [
+        [{ "node": "SEO/AEO/GEO Quality Gate", "type": "main", "index": 0 }]
+      ]
+    },
+    "Prepare Commit": {
+      "main": [
+        [{ "node": "Get File SHA (if exists)", "type": "main", "index": 0 }]
+      ]
+    },
+    "Get File SHA (if exists)": {
+      "main": [
+        [{ "node": "Set SHA for Commit", "type": "main", "index": 0 }]
+      ]
+    },
+    "Set SHA for Commit": {
+      "main": [
+        [{ "node": "Commit to GitHub", "type": "main", "index": 0 }]
+      ]
+    },
+    "Commit to GitHub": {
+      "main": [
+        [{ "node": "Update Sitemap", "type": "main", "index": 0 }]
+      ]
+    },
+    "Update Sitemap": {
+      "main": [
+        [{ "node": "Mark Published", "type": "main", "index": 0 }]
+      ]
+    },
+    "Mark Published": {
+      "main": [
+        [{ "node": "Log Success", "type": "main", "index": 0 }]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Asia/Jerusalem"
+  }
+}

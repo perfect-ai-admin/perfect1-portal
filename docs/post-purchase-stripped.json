@@ -1,0 +1,325 @@
+{
+  "name": "perfect-one-post-purchase",
+  "nodes": [
+    {
+      "id": "webhook-trigger",
+      "name": "Webhook - Payment Confirmed",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        200,
+        300
+      ],
+      "webhookId": "perfect-one-post-purchase",
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "perfect-one-post-purchase",
+        "responseMode": "onReceived",
+        "responseData": "firstEntryJson",
+        "options": {
+          "responseCode": 200
+        }
+      }
+    },
+    {
+      "id": "check-event-type",
+      "name": "IF - payment_confirmed",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        440,
+        300
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "event-type-check",
+              "leftValue": "={{ $json._event_type }}",
+              "rightValue": "payment_confirmed",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      }
+    },
+    {
+      "id": "build-messages",
+      "name": "Build Messages",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        680,
+        200
+      ],
+      "parameters": {
+        "jsCode": "const body = $input.first().json;\nconst name = body.name || 'לקוח יקר';\nconst phone = body.phone || '';\nconst amount = body.amount || '';\nconst serviceType = body.service_type || '';\nconst leadId = body.lead_id || '';\nconst clientId = body.client_id || '';\nconst paymentId = body.payment_id || '';\n\n// Build chatId from phone\nconst rawPhone = String(phone).replace(/[^0-9]/g, '');\nconst chatId = rawPhone.startsWith('972') ? rawPhone + '@c.us' : '972' + rawPhone.replace(/^0/, '') + '@c.us';\n\n// Service type label\nconst serviceLabels = {\n  osek_patur: 'פתיחת עוסק פטור',\n  osek_murshe: 'פתיחת עוסק מורשה',\n  hevra_bam: 'פתיחת חברה בעמ',\n  close_osek: 'סגירת תיק עסק',\n  monthly: 'ליווי שוטף'\n};\nconst serviceLabel = serviceLabels[serviceType] || 'שירות';\n\n// Thank you message (sent immediately)\nconst thankYouMsg = 'שלום ' + name + ' 🎉\\nהתשלום התקבל בהצלחה!\\nסכום: ₪' + amount + '\\nשירות: ' + serviceLabel + '\\n\\nאנחנו מתחילים בתהליך עבורך.\\nבקרוב נשלח לך הוראות לשלב הבא.\\n\\nתודה שבחרת בפרפקט וואן! 🙏';\n\n// Onboarding message (sent after delay)\nconst onboardingMsg = 'היי ' + name + ' 👋\\nהנה מה שצריך לדעת לשלבים הבאים:\\n\\n📋 *מה יקרה עכשיו:*\\n1. נציג מטעמנו יצור איתך קשר תוך 24 שעות\\n2. נאסוף את כל המסמכים הנדרשים\\n3. נטפל ברישום מולך מע״מ ומס הכנסה\\n\\n📎 *מה תצטרך להכין:*\\n• תעודת זהות\\n• פרטי חשבון בנק\\n• תאריך פתיחת העסק הרצוי\\n\\nלכל שאלה — פשוט ענה להודעה זו 📩';\n\n// Owner notification\nconst ownerMsg = '💳 *תשלום התקבל!*\\n\\n👤 שם: ' + name + '\\n📞 טלפון: ' + phone + '\\n💰 סכום: ₪' + amount + '\\n🛎️ שירות: ' + serviceLabel + '\\n🆔 Payment ID: ' + paymentId + '\\n\\n✅ נשלחה הודעת תודה ללקוח.\\nיש ליצור קשר תוך 24 שעות.';\n\nreturn [{ json: {\n  name, phone, chatId, amount,\n  service_type: serviceType,\n  service_label: serviceLabel,\n  lead_id: leadId,\n  client_id: clientId,\n  payment_id: paymentId,\n  thank_you_msg: thankYouMsg,\n  onboarding_msg: onboardingMsg,\n  owner_msg: ownerMsg\n}}];\n"
+      }
+    },
+    {
+      "id": "send-thank-you",
+      "name": "Send Thank You WhatsApp",
+      "type": "@green-api/n8n-nodes-whatsapp-greenapi.greenapi",
+      "typeVersion": 1,
+      "position": [
+        920,
+        200
+      ],
+      "continueOnFail": true,
+      "credentials": {
+        "greenApiAuthApi": {
+          "id": "2gdsusfuyKaYssFU",
+          "name": "Green-API account"
+        }
+      },
+      "parameters": {
+        "chatId": "={{ $json.chatId }}",
+        "message": "={{ $json.thank_you_msg }}",
+        "typingTime": 2
+      }
+    },
+    {
+      "id": "notify-owner",
+      "name": "Notify Owner - Payment",
+      "type": "@green-api/n8n-nodes-whatsapp-greenapi.greenapi",
+      "typeVersion": 1,
+      "position": [
+        920,
+        380
+      ],
+      "continueOnFail": true,
+      "credentials": {
+        "greenApiAuthApi": {
+          "id": "2gdsusfuyKaYssFU",
+          "name": "Green-API account"
+        }
+      },
+      "parameters": {
+        "chatId": "972502277087@c.us",
+        "message": "={{ $json.owner_msg }}",
+        "typingTime": 0
+      }
+    },
+    {
+      "id": "wait-2min",
+      "name": "Wait 2 Minutes",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1160,
+        200
+      ],
+      "parameters": {
+        "unit": "minutes",
+        "amount": 2
+      }
+    },
+    {
+      "id": "send-onboarding",
+      "name": "Send Onboarding Instructions",
+      "type": "@green-api/n8n-nodes-whatsapp-greenapi.greenapi",
+      "typeVersion": 1,
+      "position": [
+        1380,
+        200
+      ],
+      "continueOnFail": true,
+      "credentials": {
+        "greenApiAuthApi": {
+          "id": "2gdsusfuyKaYssFU",
+          "name": "Green-API account"
+        }
+      },
+      "parameters": {
+        "chatId": "={{ $json.chatId }}",
+        "message": "={{ $json.onboarding_msg }}",
+        "typingTime": 3
+      }
+    },
+    {
+      "id": "create-crm-task",
+      "name": "Create CRM Task",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1600,
+        200
+      ],
+      "continueOnFail": true,
+      "parameters": {
+        "method": "POST",
+        "url": "https://fnsnnezhikgqajdbtwoa.supabase.co/rest/v1/tasks",
+        "authentication": "none",
+        "sendHeaders": true,
+        "specifyHeaders": "keypair",
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "SUPABASE_SERVICE_ROLE_KEY_PLACEHOLDER"
+            },
+            {
+              "name": "Authorization",
+              "value": "Bearer SUPABASE_SERVICE_ROLE_KEY_PLACEHOLDER"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Prefer",
+              "value": "return=minimal"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ lead_id: $json.lead_id, client_id: $json.client_id || null, title: 'ליווי לקוח חדש אחרי תשלום - ' + $json.name, description: 'לקוח שילם ₪' + $json.amount + ' עבור ' + $json.service_label + '. ליצור קשר תוך 24 שעות.', status: 'pending', priority: 'high', due_date: new Date(Date.now() + 86400000).toISOString(), task_type: 'post_purchase_followup', payment_id: $json.payment_id, created_at: new Date().toISOString() }) }}"
+      }
+    },
+    {
+      "id": "update-lead-status",
+      "name": "Update Lead to Client",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1820,
+        200
+      ],
+      "continueOnFail": true,
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://fnsnnezhikgqajdbtwoa.supabase.co/rest/v1/leads?id=eq.{{ $json.lead_id }}",
+        "authentication": "none",
+        "sendHeaders": true,
+        "specifyHeaders": "keypair",
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "SUPABASE_SERVICE_ROLE_KEY_PLACEHOLDER"
+            },
+            {
+              "name": "Authorization",
+              "value": "Bearer SUPABASE_SERVICE_ROLE_KEY_PLACEHOLDER"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Prefer",
+              "value": "return=minimal"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ status: 'converted', converted_at: new Date().toISOString(), payment_id: $json.payment_id, updated_at: new Date().toISOString() }) }}"
+      }
+    }
+  ],
+  "connections": {
+    "Webhook - Payment Confirmed": {
+      "main": [
+        [
+          {
+            "node": "IF - payment_confirmed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF - payment_confirmed": {
+      "main": [
+        [
+          {
+            "node": "Build Messages",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Build Messages": {
+      "main": [
+        [
+          {
+            "node": "Send Thank You WhatsApp",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Notify Owner - Payment",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Thank You WhatsApp": {
+      "main": [
+        [
+          {
+            "node": "Wait 2 Minutes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait 2 Minutes": {
+      "main": [
+        [
+          {
+            "node": "Send Onboarding Instructions",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Onboarding Instructions": {
+      "main": [
+        [
+          {
+            "node": "Create CRM Task",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create CRM Task": {
+      "main": [
+        [
+          {
+            "node": "Update Lead to Client",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "staticData": null,
+  "tags": [],
+  "pinData": {}
+}

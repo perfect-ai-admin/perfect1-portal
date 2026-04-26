@@ -1,0 +1,288 @@
+{
+  "name": "SEO — Daily GSC Sync",
+  "active": false,
+  "nodes": [
+    {
+      "id": "seo-wf1-trigger",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [0, 300],
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 7 * * *"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "seo-wf1-sticky1",
+      "name": "Sticky Note — Overview",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [-200, 100],
+      "parameters": {
+        "content": "## SEO — Daily GSC Sync\nRuns every day at 9:00 AM Israel time (07:00 UTC)\n\n**Steps:**\n1. Log run start to seo_runs\n2. Fetch GSC pages data (28d)\n3. Upsert to seo_pages_daily\n4. Fetch GSC queries data (28d)\n5. Upsert to seo_queries_daily\n6. Mark run as success\n\n**On error:** updates seo_runs with failed status",
+        "height": 250,
+        "width": 350
+      }
+    },
+    {
+      "id": "seo-wf1-log-start",
+      "name": "Log Run Start",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [240, 300],
+      "credentials": {
+        "postgres": {
+          "id": "f7uLzc1fb15UnScl",
+          "name": "Postgres account 2"
+        }
+      },
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO seo_runs (run_type, status, started_at, notes)\nVALUES ('daily_sync', 'running', NOW(), 'Triggered by schedule')\nRETURNING id;",
+        "options": {}
+      }
+    },
+    {
+      "id": "seo-wf1-set-run-id",
+      "name": "Set Run ID",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [460, 300],
+      "parameters": {
+        "mode": "manual",
+        "assignments": {
+          "assignments": [
+            {
+              "id": "run_id",
+              "name": "run_id",
+              "value": "={{ $json.id }}",
+              "type": "number"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "seo-wf1-gsc-pages",
+      "name": "GSC — Pages Data",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [680, 300],
+      "parameters": {
+        "method": "POST",
+        "url": "https://searchconsole.googleapis.com/webmasters/v3/sites/https%3A%2F%2Fwww.perfect1.co.il%2F/searchAnalytics/query",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleOAuth2Api",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"startDate\": \"{{ $now.minus({days: 30}).toFormat('yyyy-MM-dd') }}\",\n  \"endDate\": \"{{ $now.minus({days: 2}).toFormat('yyyy-MM-dd') }}\",\n  \"dimensions\": [\"page\"],\n  \"rowLimit\": 1000,\n  \"dataState\": \"final\"\n}",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": false
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "seo-wf1-sticky-gsc-note",
+      "name": "Sticky Note — GSC Auth",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [680, 100],
+      "parameters": {
+        "content": "**GSC Authentication:**\nUses Google OAuth2 credential.\nCreate credential type: Google Search Console OAuth2\nScopes needed: https://www.googleapis.com/auth/webmasters.readonly\n\nService account email:\nperfect1-indexing@paorlnik.iam.gserviceaccount.com",
+        "height": 180,
+        "width": 320
+      }
+    },
+    {
+      "id": "seo-wf1-process-pages",
+      "name": "Process Pages",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [900, 300],
+      "parameters": {
+        "jsCode": "const response = $input.first().json;\nconst rows = response.rows || [];\nconst today = new Date().toISOString().split('T')[0];\n\nif (rows.length === 0) {\n  return [{ json: { pages: [], count: 0 } }];\n}\n\nconst pages = rows.map(row => ({\n  page_url: row.keys[0],\n  date: today,\n  clicks: row.clicks || 0,\n  impressions: row.impressions || 0,\n  ctr: row.ctr || 0,\n  avg_position: row.position || 0\n}));\n\nreturn [{ json: { pages, count: pages.length } }];"
+      }
+    },
+    {
+      "id": "seo-wf1-upsert-pages",
+      "name": "Upsert Pages to DB",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [1120, 300],
+      "credentials": {
+        "postgres": {
+          "id": "f7uLzc1fb15UnScl",
+          "name": "Postgres account 2"
+        }
+      },
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=INSERT INTO seo_pages_daily (page_url, date, clicks, impressions, ctr, avg_position)\nSELECT\n  (value->>'page_url')::text,\n  (value->>'date')::date,\n  (value->>'clicks')::int,\n  (value->>'impressions')::int,\n  (value->>'ctr')::float,\n  (value->>'avg_position')::float\nFROM jsonb_array_elements('{{ JSON.stringify($json.pages) }}'::jsonb)\nON CONFLICT (page_url, date)\nDO UPDATE SET\n  clicks = EXCLUDED.clicks,\n  impressions = EXCLUDED.impressions,\n  ctr = EXCLUDED.ctr,\n  avg_position = EXCLUDED.avg_position,\n  updated_at = NOW();",
+        "options": {}
+      }
+    },
+    {
+      "id": "seo-wf1-gsc-queries",
+      "name": "GSC — Queries Data",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1340, 300],
+      "parameters": {
+        "method": "POST",
+        "url": "https://searchconsole.googleapis.com/webmasters/v3/sites/https%3A%2F%2Fwww.perfect1.co.il%2F/searchAnalytics/query",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleOAuth2Api",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"startDate\": \"{{ $now.minus({days: 30}).toFormat('yyyy-MM-dd') }}\",\n  \"endDate\": \"{{ $now.minus({days: 2}).toFormat('yyyy-MM-dd') }}\",\n  \"dimensions\": [\"page\", \"query\"],\n  \"rowLimit\": 5000,\n  \"dataState\": \"final\"\n}",
+        "options": {}
+      }
+    },
+    {
+      "id": "seo-wf1-process-queries",
+      "name": "Process Queries",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1560, 300],
+      "parameters": {
+        "jsCode": "const response = $input.first().json;\nconst rows = response.rows || [];\nconst today = new Date().toISOString().split('T')[0];\n\nif (rows.length === 0) {\n  return [{ json: { queries: [], count: 0 } }];\n}\n\nconst queries = rows.map(row => ({\n  page_url: row.keys[0],\n  query: row.keys[1],\n  date: today,\n  clicks: row.clicks || 0,\n  impressions: row.impressions || 0,\n  ctr: row.ctr || 0,\n  avg_position: row.position || 0\n}));\n\nreturn [{ json: { queries, count: queries.length } }];"
+      }
+    },
+    {
+      "id": "seo-wf1-upsert-queries",
+      "name": "Upsert Queries to DB",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [1780, 300],
+      "credentials": {
+        "postgres": {
+          "id": "f7uLzc1fb15UnScl",
+          "name": "Postgres account 2"
+        }
+      },
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=INSERT INTO seo_queries_daily (page_url, query, date, clicks, impressions, ctr, avg_position)\nSELECT\n  (value->>'page_url')::text,\n  (value->>'query')::text,\n  (value->>'date')::date,\n  (value->>'clicks')::int,\n  (value->>'impressions')::int,\n  (value->>'ctr')::float,\n  (value->>'avg_position')::float\nFROM jsonb_array_elements('{{ JSON.stringify($json.queries) }}'::jsonb)\nON CONFLICT (page_url, query, date)\nDO UPDATE SET\n  clicks = EXCLUDED.clicks,\n  impressions = EXCLUDED.impressions,\n  ctr = EXCLUDED.ctr,\n  avg_position = EXCLUDED.avg_position,\n  updated_at = NOW();",
+        "options": {}
+      }
+    },
+    {
+      "id": "seo-wf1-log-success",
+      "name": "Log Run Success",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [2000, 300],
+      "credentials": {
+        "postgres": {
+          "id": "f7uLzc1fb15UnScl",
+          "name": "Postgres account 2"
+        }
+      },
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=UPDATE seo_runs\nSET status = 'success',\n    finished_at = NOW(),\n    total_pages_processed = {{ $('Process Queries').first().json.count }}\nWHERE id = {{ $('Set Run ID').first().json.run_id }};",
+        "options": {}
+      }
+    },
+    {
+      "id": "seo-wf1-error-handler",
+      "name": "Log Run Failed",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [1200, 520],
+      "credentials": {
+        "postgres": {
+          "id": "f7uLzc1fb15UnScl",
+          "name": "Postgres account 2"
+        }
+      },
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=UPDATE seo_runs\nSET status = 'failed',\n    finished_at = NOW(),\n    error_log = '{{ $json.error?.message || \"Unknown error\" }}'\nWHERE id = {{ $('Set Run ID').first().json.run_id }};",
+        "options": {}
+      }
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [{ "node": "Log Run Start", "type": "main", "index": 0 }]
+      ]
+    },
+    "Log Run Start": {
+      "main": [
+        [{ "node": "Set Run ID", "type": "main", "index": 0 }]
+      ]
+    },
+    "Set Run ID": {
+      "main": [
+        [{ "node": "GSC — Pages Data", "type": "main", "index": 0 }]
+      ]
+    },
+    "GSC — Pages Data": {
+      "main": [
+        [{ "node": "Process Pages", "type": "main", "index": 0 }]
+      ]
+    },
+    "Process Pages": {
+      "main": [
+        [{ "node": "Upsert Pages to DB", "type": "main", "index": 0 }]
+      ]
+    },
+    "Upsert Pages to DB": {
+      "main": [
+        [{ "node": "GSC — Queries Data", "type": "main", "index": 0 }]
+      ]
+    },
+    "GSC — Queries Data": {
+      "main": [
+        [{ "node": "Process Queries", "type": "main", "index": 0 }]
+      ]
+    },
+    "Process Queries": {
+      "main": [
+        [{ "node": "Upsert Queries to DB", "type": "main", "index": 0 }]
+      ]
+    },
+    "Upsert Queries to DB": {
+      "main": [
+        [{ "node": "Log Run Success", "type": "main", "index": 0 }]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "errorWorkflow": "",
+    "timezone": "Asia/Jerusalem"
+  },
+  "tags": ["seo", "gsc"]
+}

@@ -1,0 +1,287 @@
+{
+  "name": "SEO — Content Ideas Generator",
+  "nodes": [
+    {
+      "id": "seo-wf3-trigger",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [0, 300],
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 8 * * *"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "seo-wf3-sticky",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [-200, 100],
+      "parameters": {
+        "content": "## SEO — Content Ideas Generator\nRuns at 10:00 AM Israel time (08:00 UTC)\n\nFetches top 10 new opportunities, calls Claude API for each to generate 2-3 article ideas.\n\n**Requires:**\n- Anthropic API key in n8n credentials (type: httpHeaderAuth)\n  Name: 'Anthropic API'\n  Header: Authorization: Bearer sk-ant-...",
+        "height": 220,
+        "width": 340
+      }
+    },
+    {
+      "id": "seo-wf3-log-start",
+      "name": "Log Run Start",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [240, 300],
+      "credentials": {
+        "postgres": {
+          "id": "f7uLzc1fb15UnScl",
+          "name": "Postgres account 2"
+        }
+      },
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO seo_runs (run_type, status, started_at)\nVALUES ('content_ideas', 'running', NOW())\nRETURNING id;",
+        "options": {}
+      }
+    },
+    {
+      "id": "seo-wf3-set-run-id",
+      "name": "Set Run ID",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [460, 300],
+      "parameters": {
+        "mode": "manual",
+        "assignments": {
+          "assignments": [
+            {
+              "id": "run_id",
+              "name": "run_id",
+              "value": "={{ $json.id }}",
+              "type": "number"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "seo-wf3-fetch-opportunities",
+      "name": "Fetch Top Opportunities",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [680, 300],
+      "credentials": {
+        "postgres": {
+          "id": "f7uLzc1fb15UnScl",
+          "name": "Postgres account 2"
+        }
+      },
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT id, opportunity_type, page_url, query, avg_position, impressions, priority_score\nFROM seo_opportunities\nWHERE status = 'new'\n  AND detected_at > NOW() - INTERVAL '7 days'\nORDER BY priority_score DESC\nLIMIT 10;",
+        "options": {}
+      }
+    },
+    {
+      "id": "seo-wf3-fetch-page-queries",
+      "name": "Fetch Page Queries",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [900, 300],
+      "credentials": {
+        "postgres": {
+          "id": "f7uLzc1fb15UnScl",
+          "name": "Postgres account 2"
+        }
+      },
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=SELECT query, ROUND(AVG(avg_position)::numeric, 1) AS position, SUM(impressions) AS impressions\nFROM seo_queries_daily\nWHERE page_url = '{{ $json.page_url }}'\n  AND date >= CURRENT_DATE - 28\nGROUP BY query\nORDER BY impressions DESC\nLIMIT 10;",
+        "options": {}
+      }
+    },
+    {
+      "id": "seo-wf3-build-prompt",
+      "name": "Build Claude Prompt",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1120, 300],
+      "parameters": {
+        "jsCode": "const opportunity = $('Fetch Top Opportunities').first().json;\nconst pageQueries = $input.all().map(i => `${i.json.query} (pos: ${i.json.position}, ${i.json.impressions} impressions)`).join('\\n');\n\nconst prompt = `You are an SEO strategist for a Hebrew business portal about Israeli business types (עוסק פטור, עוסק מורשה, חברה בעמ).\n\nParent page: ${opportunity.page_url}\nOpportunity type: ${opportunity.opportunity_type}\nTop ranking queries for this page:\n${pageQueries || 'No data yet'}\n\nSuggest 2-3 NEW Hebrew article ideas that would extend topical authority around this page.\nReturn ONLY a JSON array, no explanation:\n[\n  {\n    \"target_query\": \"ביטוי חיפוש ראשי\",\n    \"suggested_article_title\": \"כותרת מאמר מוצעת\",\n    \"search_intent\": \"informational|commercial|transactional\",\n    \"suggested_angle\": \"זווית ייחודית של המאמר\",\n    \"why_it_matters\": \"למה זה חשוב לאתר\",\n    \"internal_links\": [\"${opportunity.page_url}\"]\n  }\n]\n\nRules:\n- Hebrew content only\n- No generic ideas — be specific to Israeli business context\n- Prefer commercial intent keywords (מחיר, עלות, כדאי, השוואה)\n- Each idea must target a DIFFERENT query`;\n\nreturn [{ json: {\n  opportunity_id: opportunity.id,\n  opportunity_page: opportunity.page_url,\n  prompt,\n  run_id: $('Set Run ID').first().json.run_id\n}}];"
+      }
+    },
+    {
+      "id": "seo-wf3-call-claude",
+      "name": "Call Claude API",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1340, 300],
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.anthropic.com/v1/messages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "anthropicApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "anthropic-version",
+              "value": "2023-06-01"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"claude-sonnet-4-5-20250929\",\n  \"max_tokens\": 1500,\n  \"messages\": [\n    {\n      \"role\": \"user\",\n      \"content\": {{ JSON.stringify($json.prompt) }}\n    }\n  ]\n}",
+        "options": {}
+      }
+    },
+    {
+      "id": "seo-wf3-parse-ideas",
+      "name": "Parse & Save Ideas",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1560, 300],
+      "parameters": {
+        "jsCode": "const claudeResponse = $input.first().json;\nconst opportunity_id = $('Build Claude Prompt').first().json.opportunity_id;\nconst page_url = $('Build Claude Prompt').first().json.opportunity_page;\n\nlet ideas = [];\ntry {\n  const text = claudeResponse.content[0].text;\n  // Extract JSON from response\n  const jsonMatch = text.match(/\\[\\s*\\{[\\s\\S]*\\}\\s*\\]/);\n  if (jsonMatch) {\n    ideas = JSON.parse(jsonMatch[0]);\n  }\n} catch (e) {\n  console.log('Parse error:', e.message);\n  return [{ json: { error: 'parse_failed', opportunity_id } }];\n}\n\nreturn ideas.map(idea => ({\n  json: {\n    opportunity_id,\n    source_page_url: page_url,\n    target_query: idea.target_query || '',\n    suggested_article_title: idea.suggested_article_title || '',\n    search_intent: idea.search_intent || 'informational',\n    suggested_angle: idea.suggested_angle || '',\n    why_it_matters: idea.why_it_matters || '',\n    internal_links: JSON.stringify(idea.internal_links || []),\n    status: 'pending'\n  }\n}));"
+      }
+    },
+    {
+      "id": "seo-wf3-insert-ideas",
+      "name": "Insert Content Ideas",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [1780, 300],
+      "credentials": {
+        "postgres": {
+          "id": "f7uLzc1fb15UnScl",
+          "name": "Postgres account 2"
+        }
+      },
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=INSERT INTO seo_content_ideas\n  (opportunity_id, source_page_url, target_query, suggested_article_title, search_intent, suggested_angle, why_it_matters, internal_links, status, created_at)\nVALUES (\n  {{ $json.opportunity_id }},\n  '{{ $json.source_page_url }}',\n  '{{ $json.target_query.replace(/'/g, \"''\") }}',\n  '{{ $json.suggested_article_title.replace(/'/g, \"''\") }}',\n  '{{ $json.search_intent }}',\n  '{{ $json.suggested_angle.replace(/'/g, \"''\") }}',\n  '{{ $json.why_it_matters.replace(/'/g, \"''\") }}',\n  '{{ $json.internal_links }}'::jsonb,\n  'pending',\n  NOW()\n)\nON CONFLICT DO NOTHING;",
+        "options": {}
+      }
+    },
+    {
+      "id": "seo-wf3-mark-reviewed",
+      "name": "Mark Opportunity Reviewed",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [2000, 300],
+      "credentials": {
+        "postgres": {
+          "id": "f7uLzc1fb15UnScl",
+          "name": "Postgres account 2"
+        }
+      },
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=UPDATE seo_opportunities\nSET status = 'reviewed', updated_at = NOW()\nWHERE id = {{ $('Build Claude Prompt').first().json.opportunity_id }};",
+        "options": {}
+      }
+    },
+    {
+      "id": "seo-wf3-log-success",
+      "name": "Log Run Success",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [2220, 300],
+      "credentials": {
+        "postgres": {
+          "id": "f7uLzc1fb15UnScl",
+          "name": "Postgres account 2"
+        }
+      },
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=UPDATE seo_runs\nSET status = 'success', finished_at = NOW()\nWHERE id = {{ $('Set Run ID').first().json.run_id }};",
+        "options": {}
+      }
+    },
+    {
+      "id": "seo-wf3-trigger-wf6",
+      "name": "Trigger WF6 — Article Writer",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.1,
+      "position": [2440, 300],
+      "parameters": {
+        "source": "database",
+        "workflowId": {
+          "__rl": true,
+          "mode": "name",
+          "value": "SEO — Article Writer & Publisher"
+        },
+        "options": {
+          "waitForSubWorkflow": false
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [{ "node": "Log Run Start", "type": "main", "index": 0 }]
+      ]
+    },
+    "Log Run Start": {
+      "main": [
+        [{ "node": "Set Run ID", "type": "main", "index": 0 }]
+      ]
+    },
+    "Set Run ID": {
+      "main": [
+        [{ "node": "Fetch Top Opportunities", "type": "main", "index": 0 }]
+      ]
+    },
+    "Fetch Top Opportunities": {
+      "main": [
+        [{ "node": "Fetch Page Queries", "type": "main", "index": 0 }]
+      ]
+    },
+    "Fetch Page Queries": {
+      "main": [
+        [{ "node": "Build Claude Prompt", "type": "main", "index": 0 }]
+      ]
+    },
+    "Build Claude Prompt": {
+      "main": [
+        [{ "node": "Call Claude API", "type": "main", "index": 0 }]
+      ]
+    },
+    "Call Claude API": {
+      "main": [
+        [{ "node": "Parse & Save Ideas", "type": "main", "index": 0 }]
+      ]
+    },
+    "Parse & Save Ideas": {
+      "main": [
+        [{ "node": "Insert Content Ideas", "type": "main", "index": 0 }]
+      ]
+    },
+    "Insert Content Ideas": {
+      "main": [
+        [{ "node": "Mark Opportunity Reviewed", "type": "main", "index": 0 }]
+      ]
+    },
+    "Mark Opportunity Reviewed": {
+      "main": [
+        [{ "node": "Log Run Success", "type": "main", "index": 0 }]
+      ]
+    },
+    "Log Run Success": {
+      "main": [
+        [{ "node": "Trigger WF6 — Article Writer", "type": "main", "index": 0 }]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Asia/Jerusalem"
+  }
+}

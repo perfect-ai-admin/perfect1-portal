@@ -1,0 +1,229 @@
+{
+  "name": "SEO — Opportunity Detection",
+  "nodes": [
+    {
+      "id": "seo-wf2-trigger",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [0, 300],
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "30 7 * * *"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "seo-wf2-sticky",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [-200, 100],
+      "parameters": {
+        "content": "## SEO — Opportunity Detection\nRuns at 9:30 AM Israel time (07:30 UTC), 30 min after sync.\n\n**Detects:**\n- Rising pages (impressions +20% in 7 days)\n- Near page one (position 5-20, impressions >= 5)\n- High impression low CTR (CTR < 2%, impressions >= 20)\n- Commercial intent queries",
+        "height": 200,
+        "width": 340
+      }
+    },
+    {
+      "id": "seo-wf2-log-start",
+      "name": "Log Run Start",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [240, 300],
+      "credentials": {
+        "postgres": {
+          "id": "f7uLzc1fb15UnScl",
+          "name": "Postgres account 2"
+        }
+      },
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO seo_runs (run_type, status, started_at)\nVALUES ('opportunity_detection', 'running', NOW())\nRETURNING id;",
+        "options": {}
+      }
+    },
+    {
+      "id": "seo-wf2-set-run-id",
+      "name": "Set Run ID",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [460, 300],
+      "parameters": {
+        "mode": "manual",
+        "assignments": {
+          "assignments": [
+            {
+              "id": "run_id",
+              "name": "run_id",
+              "value": "={{ $json.id }}",
+              "type": "number"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "seo-wf2-rising-pages",
+      "name": "Query — Rising Pages",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [680, 160],
+      "credentials": {
+        "postgres": {
+          "id": "f7uLzc1fb15UnScl",
+          "name": "Postgres account 2"
+        }
+      },
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT\n  page_url,\n  SUM(impressions) FILTER (WHERE date >= CURRENT_DATE - 7) AS impressions_last7,\n  SUM(impressions) FILTER (WHERE date >= CURRENT_DATE - 14 AND date < CURRENT_DATE - 7) AS impressions_prev7,\n  ROUND(AVG(avg_position) FILTER (WHERE date >= CURRENT_DATE - 7)::numeric, 1) AS avg_pos_last7\nFROM seo_pages_daily\nWHERE date >= CURRENT_DATE - 14\nGROUP BY page_url\nHAVING\n  SUM(impressions) FILTER (WHERE date >= CURRENT_DATE - 14 AND date < CURRENT_DATE - 7) > 0\n  AND SUM(impressions) FILTER (WHERE date >= CURRENT_DATE - 7) >\n      SUM(impressions) FILTER (WHERE date >= CURRENT_DATE - 14 AND date < CURRENT_DATE - 7) * 1.2\nORDER BY impressions_last7 DESC\nLIMIT 50;",
+        "options": {}
+      }
+    },
+    {
+      "id": "seo-wf2-near-page-one",
+      "name": "Query — Near Page One",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [680, 300],
+      "credentials": {
+        "postgres": {
+          "id": "f7uLzc1fb15UnScl",
+          "name": "Postgres account 2"
+        }
+      },
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT\n  page_url,\n  query,\n  ROUND(AVG(avg_position)::numeric, 1) AS avg_position,\n  SUM(impressions) AS total_impressions,\n  SUM(clicks) AS total_clicks,\n  ROUND(AVG(ctr)::numeric, 4) AS avg_ctr\nFROM seo_queries_daily\nWHERE date >= CURRENT_DATE - 28\nGROUP BY page_url, query\nHAVING\n  AVG(avg_position) BETWEEN 5 AND 20\n  AND SUM(impressions) >= 5\nORDER BY (SUM(impressions) * (20 - AVG(avg_position))) DESC\nLIMIT 100;",
+        "options": {}
+      }
+    },
+    {
+      "id": "seo-wf2-low-ctr",
+      "name": "Query — High Imp Low CTR",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [680, 440],
+      "credentials": {
+        "postgres": {
+          "id": "f7uLzc1fb15UnScl",
+          "name": "Postgres account 2"
+        }
+      },
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT\n  page_url,\n  query,\n  ROUND(AVG(avg_position)::numeric, 1) AS avg_position,\n  SUM(impressions) AS total_impressions,\n  SUM(clicks) AS total_clicks,\n  ROUND(AVG(ctr)::numeric, 4) AS avg_ctr\nFROM seo_queries_daily\nWHERE date >= CURRENT_DATE - 28\nGROUP BY page_url, query\nHAVING\n  AVG(ctr) < 0.02\n  AND SUM(impressions) >= 20\nORDER BY SUM(impressions) DESC\nLIMIT 100;",
+        "options": {}
+      }
+    },
+    {
+      "id": "seo-wf2-detect-opportunities",
+      "name": "Detect & Score Opportunities",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [940, 300],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "const items = $input.all();\n\n// Get data from previous nodes\nconst risingPages = $('Query — Rising Pages').all().map(i => i.json);\nconst nearPageOne = $('Query — Near Page One').all().map(i => i.json);\nconst lowCtr = $('Query — High Imp Low CTR').all().map(i => i.json);\n\nconst commercialKeywords = ['עולה', 'מחיר', 'כמה', 'כדאי', 'השוואה', 'פתיחת', 'איך', 'מתי', 'עלות', 'כדאיות', 'מה זה', 'הגדרה', 'קנס', 'חובה'];\n\nconst opportunities = [];\n\n// Rising pages\nrisingPages.forEach(page => {\n  const growth = page.impressions_prev7 > 0\n    ? (page.impressions_last7 - page.impressions_prev7) / page.impressions_prev7\n    : 1;\n  opportunities.push({\n    opportunity_type: 'rising_page',\n    page_url: page.page_url,\n    query: null,\n    avg_position: page.avg_pos_last7,\n    impressions: page.impressions_last7,\n    ctr: null,\n    priority_score: Math.round(page.impressions_last7 * growth * 10),\n    details: JSON.stringify({ growth_pct: Math.round(growth * 100), impressions_last7: page.impressions_last7 })\n  });\n});\n\n// Near page one\nnearPageOne.forEach(row => {\n  const closeness = 20 - row.avg_position;\n  const priority = Math.round(row.total_impressions * closeness);\n  const hasCommercial = commercialKeywords.some(kw => row.query.includes(kw));\n  opportunities.push({\n    opportunity_type: hasCommercial ? 'commercial_intent' : 'near_page_one',\n    page_url: row.page_url,\n    query: row.query,\n    avg_position: row.avg_position,\n    impressions: row.total_impressions,\n    ctr: row.avg_ctr,\n    priority_score: hasCommercial ? priority * 2 : priority,\n    details: JSON.stringify({ closeness_to_p1: closeness })\n  });\n});\n\n// High impression low CTR\nlowCtr.forEach(row => {\n  // Avoid duplicating near_page_one\n  const alreadyAdded = opportunities.find(o => o.query === row.query && o.page_url === row.page_url);\n  if (!alreadyAdded) {\n    opportunities.push({\n      opportunity_type: 'high_imp_low_ctr',\n      page_url: row.page_url,\n      query: row.query,\n      avg_position: row.avg_position,\n      impressions: row.total_impressions,\n      ctr: row.avg_ctr,\n      priority_score: Math.round(row.total_impressions * 0.5),\n      details: JSON.stringify({ expected_ctr_improvement: '2-5%' })\n    });\n  }\n});\n\n// Sort by priority\nopportunities.sort((a, b) => b.priority_score - a.priority_score);\n\nreturn opportunities.map(o => ({ json: o }));"
+      }
+    },
+    {
+      "id": "seo-wf2-insert-opportunities",
+      "name": "Insert Opportunities",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [1160, 300],
+      "credentials": {
+        "postgres": {
+          "id": "f7uLzc1fb15UnScl",
+          "name": "Postgres account 2"
+        }
+      },
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=INSERT INTO seo_opportunities (opportunity_type, page_url, query, avg_position, impressions, ctr, priority_score, details, status, detected_at)\nVALUES (\n  '{{ $json.opportunity_type }}',\n  '{{ $json.page_url }}',\n  {{ $json.query ? \"'\" + $json.query.replace(/'/g, \"''\") + \"'\" : 'NULL' }},\n  {{ $json.avg_position || 'NULL' }},\n  {{ $json.impressions || 0 }},\n  {{ $json.ctr || 'NULL' }},\n  {{ $json.priority_score || 0 }},\n  '{{ $json.details }}'::jsonb,\n  'new',\n  NOW()\n)\nON CONFLICT DO NOTHING;",
+        "options": {}
+      }
+    },
+    {
+      "id": "seo-wf2-aggregate",
+      "name": "Aggregate Count",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1380, 300],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "const all = $input.all();\nreturn [{ json: { total_opportunities: all.length } }];"
+      }
+    },
+    {
+      "id": "seo-wf2-log-success",
+      "name": "Log Run Success",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [1600, 300],
+      "credentials": {
+        "postgres": {
+          "id": "f7uLzc1fb15UnScl",
+          "name": "Postgres account 2"
+        }
+      },
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=UPDATE seo_runs\nSET status = 'success',\n    finished_at = NOW(),\n    total_opportunities_found = {{ $json.total_opportunities }}\nWHERE id = {{ $('Set Run ID').first().json.run_id }};",
+        "options": {}
+      }
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [{ "node": "Log Run Start", "type": "main", "index": 0 }]
+      ]
+    },
+    "Log Run Start": {
+      "main": [
+        [{ "node": "Set Run ID", "type": "main", "index": 0 }]
+      ]
+    },
+    "Set Run ID": {
+      "main": [
+        [
+          { "node": "Query — Rising Pages", "type": "main", "index": 0 },
+          { "node": "Query — Near Page One", "type": "main", "index": 0 },
+          { "node": "Query — High Imp Low CTR", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Query — High Imp Low CTR": {
+      "main": [
+        [{ "node": "Detect & Score Opportunities", "type": "main", "index": 0 }]
+      ]
+    },
+    "Detect & Score Opportunities": {
+      "main": [
+        [{ "node": "Insert Opportunities", "type": "main", "index": 0 }]
+      ]
+    },
+    "Insert Opportunities": {
+      "main": [
+        [{ "node": "Aggregate Count", "type": "main", "index": 0 }]
+      ]
+    },
+    "Aggregate Count": {
+      "main": [
+        [{ "node": "Log Run Success", "type": "main", "index": 0 }]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Asia/Jerusalem"
+  }
+}

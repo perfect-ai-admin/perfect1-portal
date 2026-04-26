@@ -1,0 +1,137 @@
+{
+  "name": "FillFaster Agreement Bridge",
+  "nodes": [
+    {
+      "id": "ff-webhook",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [220, 300],
+      "webhookId": "fillfaster-agreement-bridge",
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "fillfaster-agreement-bridge",
+        "responseMode": "responseNode",
+        "options": {}
+      }
+    },
+    {
+      "id": "ff-create-link",
+      "name": "FillFaster - Create Submission Link",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [440, 300],
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.fillfaster.com/v1/submissions",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ form_id: $json.body.fid, prefill_data: $json.body.prefill_data, user_data: $json.body.user_data }) }}",
+        "options": {
+          "response": {
+            "response": {
+              "neverError": true,
+              "responseFormat": "json"
+            }
+          },
+          "timeout": 15000
+        }
+      },
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "FILL_FASTER_CRED_ID",
+          "name": "FillFaster API Key"
+        }
+      }
+    },
+    {
+      "id": "ff-check-error",
+      "name": "Check FillFaster Error",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [660, 300],
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": false, "leftValue": "", "typeValidation": "loose" },
+          "conditions": [
+            {
+              "id": "check-status",
+              "leftValue": "={{ $json.statusCode }}",
+              "rightValue": 299,
+              "operator": { "type": "number", "operation": "lte" }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "ff-respond-success",
+      "name": "Respond - Success",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [880, 200],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ success: true, submission_id: $json.submission_id || $json.id, submission_link: $json.submission_link || $json.link || $json.url }) }}",
+        "options": {
+          "responseCode": 200,
+          "responseHeaders": {
+            "entries": [{ "name": "Content-Type", "value": "application/json" }]
+          }
+        }
+      }
+    },
+    {
+      "id": "ff-respond-error",
+      "name": "Respond - Error",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [880, 420],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ success: false, error: $json.message || $json.error || 'FillFaster API error', statusCode: $json.statusCode }) }}",
+        "options": {
+          "responseCode": 502,
+          "responseHeaders": {
+            "entries": [{ "name": "Content-Type", "value": "application/json" }]
+          }
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [{ "node": "FillFaster - Create Submission Link", "type": "main", "index": 0 }]
+      ]
+    },
+    "FillFaster - Create Submission Link": {
+      "main": [
+        [{ "node": "Check FillFaster Error", "type": "main", "index": 0 }]
+      ]
+    },
+    "Check FillFaster Error": {
+      "main": [
+        [{ "node": "Respond - Success", "type": "main", "index": 0 }],
+        [{ "node": "Respond - Error", "type": "main", "index": 0 }]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "staticData": null,
+  "tags": []
+}

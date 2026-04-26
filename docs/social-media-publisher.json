@@ -1,0 +1,304 @@
+{
+  "name": "Social Media Publisher — Facebook & Instagram",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 48
+            }
+          ]
+        }
+      },
+      "id": "node-schedule",
+      "name": "Schedule Trigger (48h)",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Read current post index from static file (or start at 0)\n// In production: use n8n Variables or a Google Sheet cell as counter\nconst fs = require('fs');\nconst counterFile = '/tmp/perfect1_post_counter.json';\n\nlet counter = { index: 0 };\ntry {\n  counter = JSON.parse(fs.readFileSync(counterFile, 'utf8'));\n} catch(e) {\n  // first run — start at 0\n}\n\nconst index = counter.index;\nconsole.log('Current post index:', index);\n\nreturn [{ json: { postIndex: index } }];"
+      },
+      "id": "node-read-counter",
+      "name": "Read Post Counter",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "operation": "readRows",
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $vars.GOOGLE_SHEET_ID }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Sheet1",
+          "mode": "name"
+        },
+        "filtersUI": {
+          "values": []
+        },
+        "options": {
+          "returnAllMatches": false
+        }
+      },
+      "id": "node-read-sheet",
+      "name": "Read Google Sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [680, 300],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "google-sheets-cred",
+          "name": "Google Sheets OAuth2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extract the current row based on postIndex\nconst postIndex = $('Read Post Counter').first().json.postIndex;\nconst allRows = $input.all();\n\nif (postIndex >= allRows.length) {\n  throw new Error('All 50 posts published — reset counter or stop.');\n}\n\nconst row = allRows[postIndex].json;\n\n// Build the full post message: Headline + newline + Main Text\nconst message = `${row['Headline']}\\n\\n${row['Main Text']}`;\n\nreturn [{\n  json: {\n    postIndex,\n    postId: row['Post ID'],\n    topic: row['Topic'],\n    headline: row['Headline'],\n    mainText: row['Main Text'],\n    imagePath: row['Image Path'],   // Google Drive file ID or full path\n    message\n  }\n}];"
+      },
+      "id": "node-extract-row",
+      "name": "Extract Current Post",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.imagePath }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "id": "node-download-image",
+      "name": "Download Image from Drive",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [1120, 300],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "google-drive-cred",
+          "name": "Google Drive OAuth2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v20.0/{{ $vars.FB_PAGE_ID }}/photos",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "facebookGraphApi",
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "message",
+              "value": "={{ $('Extract Current Post').first().json.message }}"
+            },
+            {
+              "name": "published",
+              "value": "true"
+            }
+          ]
+        },
+        "sendBinaryData": true,
+        "binaryPropertyName": "data",
+        "options": {}
+      },
+      "id": "node-post-facebook",
+      "name": "Post to Facebook Page",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1340, 180],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "fb-page-token-cred",
+          "name": "Facebook Page Token"
+        }
+      },
+      "notes": "Uses Facebook Graph API v20.0. Credential: HTTP Header Auth with name=Authorization value=Bearer {PAGE_ACCESS_TOKEN}"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v20.0/{{ $vars.IG_USER_ID }}/media",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "facebookGraphApi",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "caption",
+              "value": "={{ $('Extract Current Post').first().json.message }}"
+            },
+            {
+              "name": "image_url",
+              "value": "={{ $vars.DRIVE_PUBLIC_BASE_URL }}{{ $('Extract Current Post').first().json.imagePath }}"
+            },
+            {
+              "name": "access_token",
+              "value": "={{ $vars.FB_PAGE_ACCESS_TOKEN }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "node-ig-create-container",
+      "name": "Instagram: Create Media Container",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1340, 420],
+      "notes": "Step 1 of 2 for Instagram. Returns creation_id."
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v20.0/{{ $vars.IG_USER_ID }}/media_publish",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "creation_id",
+              "value": "={{ $json.id }}"
+            },
+            {
+              "name": "access_token",
+              "value": "={{ $vars.FB_PAGE_ACCESS_TOKEN }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "node-ig-publish",
+      "name": "Instagram: Publish Post",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1560, 420],
+      "notes": "Step 2 of 2 for Instagram. Publishes the container created above."
+    },
+    {
+      "parameters": {
+        "jsCode": "// Advance counter after both platforms published successfully\nconst fs = require('fs');\nconst counterFile = '/tmp/perfect1_post_counter.json';\n\nconst currentIndex = $('Extract Current Post').first().json.postIndex;\nconst nextIndex = currentIndex + 1;\nconst TOTAL_POSTS = 50;\n\nif (nextIndex >= TOTAL_POSTS) {\n  // Option A: Stop — write a flag\n  fs.writeFileSync(counterFile, JSON.stringify({ index: 0, done: true }));\n  return [{ json: { status: 'DONE', message: 'All 50 posts published. Counter reset to 0.' } }];\n} else {\n  fs.writeFileSync(counterFile, JSON.stringify({ index: nextIndex }));\n  return [{ json: { status: 'OK', nextIndex, message: `Next post will be #${nextIndex + 1}` } }];\n}"
+      },
+      "id": "node-advance-counter",
+      "name": "Advance Counter",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1780, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "done-check",
+              "leftValue": "={{ $json.status }}",
+              "rightValue": "DONE",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "node-check-done",
+      "name": "All Posts Done?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [2000, 300]
+    },
+    {
+      "parameters": {
+        "content": "## כל 50 הפוסטים פורסמו!\nה-counter אופס לאפס.",
+        "height": 80,
+        "width": 300
+      },
+      "id": "node-done-note",
+      "name": "Done Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [2220, 200]
+    }
+  ],
+  "connections": {
+    "Schedule Trigger (48h)": {
+      "main": [
+        [{ "node": "Read Post Counter", "type": "main", "index": 0 }]
+      ]
+    },
+    "Read Post Counter": {
+      "main": [
+        [{ "node": "Read Google Sheet", "type": "main", "index": 0 }]
+      ]
+    },
+    "Read Google Sheet": {
+      "main": [
+        [{ "node": "Extract Current Post", "type": "main", "index": 0 }]
+      ]
+    },
+    "Extract Current Post": {
+      "main": [
+        [{ "node": "Download Image from Drive", "type": "main", "index": 0 }]
+      ]
+    },
+    "Download Image from Drive": {
+      "main": [
+        [
+          { "node": "Post to Facebook Page", "type": "main", "index": 0 },
+          { "node": "Instagram: Create Media Container", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Post to Facebook Page": {
+      "main": [
+        [{ "node": "Advance Counter", "type": "main", "index": 0 }]
+      ]
+    },
+    "Instagram: Create Media Container": {
+      "main": [
+        [{ "node": "Instagram: Publish Post", "type": "main", "index": 0 }]
+      ]
+    },
+    "Instagram: Publish Post": {
+      "main": [
+        [{ "node": "Advance Counter", "type": "main", "index": 0 }]
+      ]
+    },
+    "Advance Counter": {
+      "main": [
+        [{ "node": "All Posts Done?", "type": "main", "index": 0 }]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": ""
+  },
+  "staticData": null,
+  "tags": ["social-media", "facebook", "instagram", "automation"],
+  "triggerCount": 1,
+  "updatedAt": "2026-04-18T00:00:00.000Z",
+  "versionId": "1"
+}

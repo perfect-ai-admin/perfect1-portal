@@ -1,0 +1,11 @@
+name = "perfect1-inbound-email"
+main = "worker.js"
+compatibility_date = "2024-01-01"
+
+[vars]
+# Override with secrets via: wrangler secret put SUPABASE_URL
+# wrangler secret put SUPABASE_ANON_KEY
+
+[[email]]
+# This worker handles inbound email via Cloudflare Email Routing
+# No additional config needed here — set up routing rules in Cloudflare dashboard

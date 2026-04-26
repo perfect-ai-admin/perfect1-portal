@@ -1,0 +1,212 @@
+{
+  "name": "SEO — Internal Linking Suggestions",
+  "nodes": [
+    {
+      "id": "seo-wf4-trigger",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [0, 300],
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "30 8 * * *"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "seo-wf4-sticky",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [-200, 100],
+      "parameters": {
+        "content": "## SEO — Internal Linking Suggestions\nRuns at 10:30 AM Israel time (08:30 UTC)\n\nFor each new content idea, finds strong existing pages that should link to the planned article.\n\nInserts into seo_internal_link_suggestions with:\n- source_page_url (existing page that should add a link)\n- target_page_url (the new article URL)\n- anchor_text (based on target_query)\n- reason",
+        "height": 220,
+        "width": 340
+      }
+    },
+    {
+      "id": "seo-wf4-log-start",
+      "name": "Log Run Start",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [240, 300],
+      "credentials": {
+        "postgres": {
+          "id": "f7uLzc1fb15UnScl",
+          "name": "Postgres account 2"
+        }
+      },
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO seo_runs (run_type, status, started_at)\nVALUES ('internal_linking', 'running', NOW())\nRETURNING id;",
+        "options": {}
+      }
+    },
+    {
+      "id": "seo-wf4-set-run-id",
+      "name": "Set Run ID",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [460, 300],
+      "parameters": {
+        "mode": "manual",
+        "assignments": {
+          "assignments": [
+            {
+              "id": "run_id",
+              "name": "run_id",
+              "value": "={{ $json.id }}",
+              "type": "number"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "seo-wf4-fetch-new-ideas",
+      "name": "Fetch New Content Ideas",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [680, 300],
+      "credentials": {
+        "postgres": {
+          "id": "f7uLzc1fb15UnScl",
+          "name": "Postgres account 2"
+        }
+      },
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT id, source_page_url, target_query, suggested_article_title, internal_links\nFROM seo_content_ideas\nWHERE status = 'pending'\n  AND created_at > NOW() - INTERVAL '7 days'\nORDER BY created_at DESC\nLIMIT 20;",
+        "options": {}
+      }
+    },
+    {
+      "id": "seo-wf4-find-strong-pages",
+      "name": "Find Strong Source Pages",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [900, 300],
+      "credentials": {
+        "postgres": {
+          "id": "f7uLzc1fb15UnScl",
+          "name": "Postgres account 2"
+        }
+      },
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=SELECT DISTINCT ON (page_url)\n  page_url,\n  SUM(clicks) OVER (PARTITION BY page_url) AS total_clicks,\n  AVG(avg_position) OVER (PARTITION BY page_url) AS avg_pos\nFROM seo_pages_daily\nWHERE date >= CURRENT_DATE - 28\n  AND page_url LIKE '%perfect1.co.il%'\n  AND page_url NOT LIKE '{{ $json.source_page_url }}'\nORDER BY page_url, total_clicks DESC\nLIMIT 30;",
+        "options": {}
+      }
+    },
+    {
+      "id": "seo-wf4-build-suggestions",
+      "name": "Build Link Suggestions",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1120, 300],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "const ideas = $('Fetch New Content Ideas').all().map(i => i.json);\nconst strongPages = $('Find Strong Source Pages').all().map(i => i.json);\n\n// Sort strong pages by clicks DESC\nstrongPages.sort((a, b) => (b.total_clicks || 0) - (a.total_clicks || 0));\n\nconst suggestions = [];\n\nideas.forEach(idea => {\n  // Build a pseudo-slug for the target URL from query\n  const slug = (idea.target_query || '')\n    .replace(/\\s+/g, '-')\n    .replace(/[^\\w\\u0590-\\u05FF-]/g, '')\n    .substring(0, 60);\n  \n  // Determine category from source page URL\n  const sourceUrl = idea.source_page_url || '';\n  let category = 'guides';\n  if (sourceUrl.includes('osek-patur')) category = 'osek-patur';\n  else if (sourceUrl.includes('osek-murshe')) category = 'osek-murshe';\n  else if (sourceUrl.includes('hevra')) category = 'hevra-bam';\n  else if (sourceUrl.includes('compare')) category = 'compare';\n  \n  const targetUrl = `https://www.perfect1.co.il/${category}/${slug}`;\n  \n  // Pick top 3 strong pages as sources (excluding the idea's own source page)\n  const candidatePages = strongPages\n    .filter(p => p.page_url !== idea.source_page_url)\n    .slice(0, 3);\n  \n  // Always include the source page itself as a linker\n  candidatePages.unshift({ page_url: idea.source_page_url, total_clicks: 999 });\n  \n  candidatePages.slice(0, 3).forEach(sourcePage => {\n    suggestions.push({\n      content_idea_id: idea.id,\n      source_page_url: sourcePage.page_url,\n      target_page_url: targetUrl,\n      anchor_text: idea.target_query || idea.suggested_article_title,\n      reason: `Strong page (${Math.round(sourcePage.total_clicks || 0)} clicks) should link to new article about \"${idea.target_query}\" for topical authority`\n    });\n  });\n});\n\nreturn suggestions.map(s => ({ json: s }));"
+      }
+    },
+    {
+      "id": "seo-wf4-insert-suggestions",
+      "name": "Insert Link Suggestions",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [1340, 300],
+      "credentials": {
+        "postgres": {
+          "id": "f7uLzc1fb15UnScl",
+          "name": "Postgres account 2"
+        }
+      },
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=INSERT INTO seo_internal_link_suggestions\n  (content_idea_id, source_page_url, target_page_url, anchor_text, reason, created_at)\nVALUES (\n  {{ $json.content_idea_id }},\n  '{{ $json.source_page_url }}',\n  '{{ $json.target_page_url }}',\n  '{{ $json.anchor_text.replace(/'/g, \"''\") }}',\n  '{{ $json.reason.replace(/'/g, \"''\") }}',\n  NOW()\n)\nON CONFLICT (source_page_url, target_page_url, anchor_text) DO NOTHING;",
+        "options": {}
+      }
+    },
+    {
+      "id": "seo-wf4-count",
+      "name": "Count Suggestions",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1560, 300],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "return [{ json: { total: $input.all().length } }];"
+      }
+    },
+    {
+      "id": "seo-wf4-log-success",
+      "name": "Log Run Success",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [1780, 300],
+      "credentials": {
+        "postgres": {
+          "id": "f7uLzc1fb15UnScl",
+          "name": "Postgres account 2"
+        }
+      },
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=UPDATE seo_runs\nSET status = 'success', finished_at = NOW(),\n    notes = 'Created {{ $json.total }} link suggestions'\nWHERE id = {{ $('Set Run ID').first().json.run_id }};",
+        "options": {}
+      }
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [{ "node": "Log Run Start", "type": "main", "index": 0 }]
+      ]
+    },
+    "Log Run Start": {
+      "main": [
+        [{ "node": "Set Run ID", "type": "main", "index": 0 }]
+      ]
+    },
+    "Set Run ID": {
+      "main": [
+        [{ "node": "Fetch New Content Ideas", "type": "main", "index": 0 }]
+      ]
+    },
+    "Fetch New Content Ideas": {
+      "main": [
+        [{ "node": "Find Strong Source Pages", "type": "main", "index": 0 }]
+      ]
+    },
+    "Find Strong Source Pages": {
+      "main": [
+        [{ "node": "Build Link Suggestions", "type": "main", "index": 0 }]
+      ]
+    },
+    "Build Link Suggestions": {
+      "main": [
+        [{ "node": "Insert Link Suggestions", "type": "main", "index": 0 }]
+      ]
+    },
+    "Insert Link Suggestions": {
+      "main": [
+        [{ "node": "Count Suggestions", "type": "main", "index": 0 }]
+      ]
+    },
+    "Count Suggestions": {
+      "main": [
+        [{ "node": "Log Run Success", "type": "main", "index": 0 }]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Asia/Jerusalem"
+  }
+}

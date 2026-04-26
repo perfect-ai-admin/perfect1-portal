@@ -1,0 +1,363 @@
+{
+  "name": "SEO — Competitor Monitor",
+  "nodes": [
+    {
+      "id": "schedule-trigger",
+      "name": "Schedule - Monday 12:00",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [0, 0],
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "triggerAtDay": [1],
+              "triggerAtHour": 12,
+              "triggerAtMinute": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "log-run-start",
+      "name": "Log Run Start",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [220, 0],
+      "parameters": {
+        "method": "POST",
+        "url": "https://rtlpqjqdmomyptcdkmrq.supabase.co/rest/v1/seo_runs",
+        "sendHeaders": true,
+        "specifyHeaders": "keypair",
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ0bHBxanFkbW9teXB0Y2RrbXJxIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NDg2NzQ2MywiZXhwIjoyMDkwNDQzNDYzfQ.nKtIxxVr2xQgAVMJkCaipzEIaO5LFT3ChU2mAIyxOzo" },
+            { "name": "apikey", "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ0bHBxanFkbW9teXB0Y2RrbXJxIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NDg2NzQ2MywiZXhwIjoyMDkwNDQzNDYzfQ.nKtIxxVr2xQgAVMJkCaipzEIaO5LFT3ChU2mAIyxOzo" },
+            { "name": "Content-Type", "value": "application/json" },
+            { "name": "Prefer", "value": "return=representation" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\"run_type\": \"competitor_monitor\", \"status\": \"running\", \"started_at\": \"{{ $now.toISO() }}\"}"
+      }
+    },
+    {
+      "id": "set-run-id",
+      "name": "Set Run ID",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [440, 0],
+      "parameters": {
+        "mode": "manual",
+        "assignments": {
+          "assignments": [
+            { "id": "run_id", "name": "run_id", "value": "={{ $json.id }}", "type": "number" }
+          ]
+        }
+      }
+    },
+    {
+      "id": "set-competitors",
+      "name": "Set Competitors List",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [660, 0],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "const competitors = [\n  'invoice4u.co.il',\n  'greeninvoice.co.il',\n  'ucan2.co.il',\n  'tax-advisor.co.il'\n];\nreturn competitors.map(c => ({ json: { competitor: c } }));"
+      }
+    },
+    {
+      "id": "fetch-sitemap",
+      "name": "Fetch Competitor Sitemap",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [880, 0],
+      "parameters": {
+        "method": "GET",
+        "url": "=https://{{ $json.competitor }}/sitemap.xml",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": false,
+              "responseFormat": "text"
+            }
+          },
+          "timeout": 10000
+        }
+      },
+      "continueOnFail": true
+    },
+    {
+      "id": "extract-urls",
+      "name": "Extract URLs from Sitemap",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1100, 0],
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const competitor = $input.item.json.competitor || '';\nconst body = $input.item.json.data || $input.item.json.body || $input.item.json || '';\nconst bodyStr = typeof body === 'string' ? body : JSON.stringify(body);\n\n// Extract URLs from XML\nconst urlMatches = bodyStr.match(/<loc>([^<]+)<\\/loc>/g) || [];\nconst urls = urlMatches\n  .map(m => m.replace('<loc>', '').replace('</loc>', '').trim())\n  .filter(u => u.includes(competitor))\n  .filter(u => !u.endsWith('.xml') && !u.endsWith('/'))\n  .slice(0, 200);\n\n// Extract slugs/topics from URLs\nconst topics = urls.map(u => {\n  try {\n    const path = new URL(u).pathname;\n    return path.replace(/\\//g, ' ').trim().replace(/-/g, ' ');\n  } catch(e) { return u; }\n}).filter(Boolean);\n\nreturn [{ json: { competitor, url_count: urls.length, urls: urls.slice(0, 50), topics: topics.slice(0, 50) } }];"
+      }
+    },
+    {
+      "id": "aggregate-competitors",
+      "name": "Aggregate All Competitors",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1320, 0],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "const allItems = $input.all();\nconst competitorData = allItems.map(i => i.json).filter(d => d.competitor);\n\nconst allTopics = [];\nconst competitorSummary = [];\n\nfor (const cd of competitorData) {\n  allTopics.push(...(cd.topics || []));\n  competitorSummary.push(`${cd.competitor}: ${cd.url_count} pages`);\n}\n\n// Deduplicate topics\nconst uniqueTopics = [...new Set(allTopics)].slice(0, 100);\n\nreturn [{ json: {\n  competitor_summary: competitorSummary.join('\\n'),\n  all_topics: uniqueTopics,\n  competitor_data: competitorData\n} }];"
+      }
+    },
+    {
+      "id": "our-content",
+      "name": "Get Our Content List",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1320, 160],
+      "parameters": {
+        "method": "GET",
+        "url": "https://rtlpqjqdmomyptcdkmrq.supabase.co/rest/v1/seo_opportunities?select=page_url,title&limit=200",
+        "sendHeaders": true,
+        "specifyHeaders": "keypair",
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ0bHBxanFkbW9teXB0Y2RrbXJxIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NDg2NzQ2MywiZXhwIjoyMDkwNDQzNDYzfQ.nKtIxxVr2xQgAVMJkCaipzEIaO5LFT3ChU2mAIyxOzo" },
+            { "name": "apikey", "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ0bHBxanFkbW9teXB0Y2RrbXJxIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NDg2NzQ2MywiZXhwIjoyMDkwNDQzNDYzfQ.nKtIxxVr2xQgAVMJkCaipzEIaO5LFT3ChU2mAIyxOzo" }
+          ]
+        }
+      }
+    },
+    {
+      "id": "merge-data",
+      "name": "Merge Competitor + Our Data",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [1540, 80],
+      "parameters": {
+        "mode": "combine",
+        "combinationMode": "mergeByPosition"
+      }
+    },
+    {
+      "id": "prepare-ai-prompt",
+      "name": "Prepare AI Prompt",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1760, 80],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "const allItems = $input.all();\n\n// Find competitor data item\nlet competitorTopics = [];\nlet competitorSummary = '';\nlet ourPages = [];\n\nfor (const item of allItems) {\n  if (item.json.all_topics) {\n    competitorTopics = item.json.all_topics || [];\n    competitorSummary = item.json.competitor_summary || '';\n  }\n  if (Array.isArray(item.json)) {\n    ourPages = item.json.map(p => p.page_url || p.title || '').filter(Boolean);\n  } else if (item.json.page_url) {\n    ourPages.push(item.json.page_url);\n  }\n}\n\nconst topicsStr = competitorTopics.slice(0, 60).join('\\n');\nconst ourStr = ourPages.slice(0, 50).join('\\n');\n\nconst prompt = `You are an Israeli SEO expert for perfect1.co.il, a business portal for Israeli small businesses and freelancers.\n\nCompetitor sites and their page counts:\n${competitorSummary}\n\nCompetitor topics/pages (sample):\n${topicsStr}\n\nOur existing content pages:\n${ourStr}\n\nIdentify 5 article gaps — topics competitors cover that we DON'T have yet, and that are relevant for Israeli small business owners (עוסק פטור, עוסק מורשה, חברה בע\"מ, מיסים, חשבוניות, ביטוח לאומי).\n\nReturn ONLY a JSON array with exactly 5 objects:\n[\n  {\n    \"title\": \"Hebrew article title\",\n    \"topic\": \"main keyword in Hebrew\",\n    \"competitor\": \"which competitor has this\",\n    \"why\": \"why it matters for our audience\"\n  }\n]`;\n\nreturn [{ json: { prompt, competitor_summary: competitorSummary, topic_count: competitorTopics.length } }];"
+      }
+    },
+    {
+      "id": "openai-gap-analysis",
+      "name": "OpenAI - Gap Analysis",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1980, 80],
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/chat/completions",
+        "sendHeaders": true,
+        "specifyHeaders": "keypair",
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "Bearer {{ $credentials.openAiApi.apiKey }}" },
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"gpt-4o-mini\",\n  \"messages\": [\n    {\n      \"role\": \"user\",\n      \"content\": {{ JSON.stringify($json.prompt) }}\n    }\n  ],\n  \"temperature\": 0.7,\n  \"max_tokens\": 1000,\n  \"response_format\": { \"type\": \"json_object\" }\n}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi"
+      },
+      "credentials": {
+        "openAiApi": {
+          "id": "enLroXreMPFDnrNF",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "id": "parse-ai-response",
+      "name": "Parse AI Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [2200, 80],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "const allItems = $input.all();\nconst response = allItems[0]?.json;\n\nlet ideas = [];\ntry {\n  const content = response.choices?.[0]?.message?.content || '{}';\n  const parsed = JSON.parse(content);\n  // Handle both array and object with array property\n  ideas = Array.isArray(parsed) ? parsed : (parsed.ideas || parsed.articles || Object.values(parsed)[0] || []);\n} catch(e) {\n  console.log('Parse error:', e.message);\n  ideas = [];\n}\n\nif (!Array.isArray(ideas) || ideas.length === 0) {\n  return [{ json: { title: 'No gaps found', topic: '', competitor: '', why: '' } }];\n}\n\nreturn ideas.slice(0, 5).map(idea => ({ json: idea }));"
+      }
+    },
+    {
+      "id": "insert-content-ideas",
+      "name": "Insert to seo_content_ideas",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [2420, 0],
+      "parameters": {
+        "method": "POST",
+        "url": "https://rtlpqjqdmomyptcdkmrq.supabase.co/rest/v1/seo_content_ideas",
+        "sendHeaders": true,
+        "specifyHeaders": "keypair",
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ0bHBxanFkbW9teXB0Y2RrbXJxIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NDg2NzQ2MywiZXhwIjoyMDkwNDQzNDYzfQ.nKtIxxVr2xQgAVMJkCaipzEIaO5LFT3ChU2mAIyxOzo" },
+            { "name": "apikey", "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ0bHBxanFkbW9teXB0Y2RrbXJxIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NDg2NzQ2MywiZXhwIjoyMDkwNDQzNDYzfQ.nKtIxxVr2xQgAVMJkCaipzEIaO5LFT3ChU2mAIyxOzo" },
+            { "name": "Content-Type", "value": "application/json" },
+            { "name": "Prefer", "value": "resolution=ignore-duplicates" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"source_page_url\": \"competitor_monitor\",\n  \"target_query\": {{ JSON.stringify($json.topic || $json.title || '') }},\n  \"suggested_article_title\": {{ JSON.stringify($json.title || '') }},\n  \"search_intent\": \"informational\",\n  \"suggested_angle\": {{ JSON.stringify('From competitor: ' + ($json.competitor || 'unknown') + '. ' + ($json.why || '')) }},\n  \"why_it_matters\": {{ JSON.stringify($json.why || '') }},\n  \"internal_links\": \"[]\",\n  \"status\": \"new\",\n  \"created_at\": \"{{ $now.toISO() }}\"\n}"
+      },
+      "continueOnFail": true
+    },
+    {
+      "id": "insert-opportunity",
+      "name": "Insert to seo_opportunities",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [2420, 160],
+      "parameters": {
+        "method": "POST",
+        "url": "https://rtlpqjqdmomyptcdkmrq.supabase.co/rest/v1/seo_opportunities",
+        "sendHeaders": true,
+        "specifyHeaders": "keypair",
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ0bHBxanFkbW9teXB0Y2RrbXJxIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NDg2NzQ2MywiZXhwIjoyMDkwNDQzNDYzfQ.nKtIxxVr2xQgAVMJkCaipzEIaO5LFT3ChU2mAIyxOzo" },
+            { "name": "apikey", "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ0bHBxanFkbW9teXB0Y2RrbXJxIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NDg2NzQ2MywiZXhwIjoyMDkwNDQzNDYzfQ.nKtIxxVr2xQgAVMJkCaipzEIaO5LFT3ChU2mAIyxOzo" },
+            { "name": "Content-Type", "value": "application/json" },
+            { "name": "Prefer", "value": "resolution=ignore-duplicates" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"opportunity_type\": \"commercial_intent\",\n  \"page_url\": \"https://www.perfect1.co.il/\",\n  \"title\": {{ JSON.stringify('Competitor Gap: ' + ($json.title || '')) }},\n  \"summary\": {{ JSON.stringify(($json.why || '') + ' | From: ' + ($json.competitor || '')) }},\n  \"priority_score\": 60,\n  \"status\": \"new\",\n  \"metadata\": {{ JSON.stringify({ source: 'competitor_monitor', competitor: $json.competitor, topic: $json.topic, why: $json.why }) }}\n}"
+      },
+      "continueOnFail": true
+    },
+    {
+      "id": "build-whatsapp-message",
+      "name": "Build WhatsApp Summary",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [2640, 80],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "const allItems = $input.all();\nconst ideas = allItems.map(i => i.json).filter(i => i.title && i.title !== 'No gaps found');\n\nconst today = new Date().toLocaleDateString('he-IL');\nlet msg = `*SEO - Competitor Monitor ${today}*\\n`;\nmsg += `נמצאו ${ideas.length} פערים מול המתחרים:\\n\\n`;\n\nideas.forEach((idea, i) => {\n  msg += `${i+1}. *${idea.title || ''}*\\n`;\n  if (idea.competitor) msg += `   מקור: ${idea.competitor}\\n`;\n  if (idea.why) msg += `   ${idea.why}\\n`;\n  msg += '\\n';\n});\n\nmsg += `_נוסף ל-seo_content_ideas וסו_opportunities_`;\n\nreturn [{ json: { message: msg, ideas_count: ideas.length } }];"
+      }
+    },
+    {
+      "id": "send-whatsapp",
+      "name": "Send WhatsApp",
+      "type": "@green-api/n8n-nodes-whatsapp-greenapi.greenapi",
+      "typeVersion": 1,
+      "position": [2860, 80],
+      "parameters": {
+        "chatId": "972502277087@c.us",
+        "message": "={{ $json.message }}",
+        "typingTime": 0
+      },
+      "credentials": {
+        "greenApiAuthApi": {
+          "id": "2gdsusfuyKaYssFU",
+          "name": "Green-API account"
+        }
+      },
+      "continueOnFail": true
+    },
+    {
+      "id": "log-run-success",
+      "name": "Log Run Success",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [3080, 80],
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://rtlpqjqdmomyptcdkmrq.supabase.co/rest/v1/seo_runs?id=eq.{{ $('Set Run ID').first().json.run_id }}",
+        "sendHeaders": true,
+        "specifyHeaders": "keypair",
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ0bHBxanFkbW9teXB0Y2RrbXJxIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NDg2NzQ2MywiZXhwIjoyMDkwNDQzNDYzfQ.nKtIxxVr2xQgAVMJkCaipzEIaO5LFT3ChU2mAIyxOzo" },
+            { "name": "apikey", "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ0bHBxanFkbW9teXB0Y2RrbXJxIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NDg2NzQ2MywiZXhwIjoyMDkwNDQzNDYzfQ.nKtIxxVr2xQgAVMJkCaipzEIaO5LFT3ChU2mAIyxOzo" },
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\"status\": \"success\", \"completed_at\": \"{{ $now.toISO() }}\"}"
+      }
+    }
+  ],
+  "connections": {
+    "Schedule - Monday 12:00": {
+      "main": [[{ "node": "Log Run Start", "type": "main", "index": 0 }]]
+    },
+    "Log Run Start": {
+      "main": [[{ "node": "Set Run ID", "type": "main", "index": 0 }]]
+    },
+    "Set Run ID": {
+      "main": [[{ "node": "Set Competitors List", "type": "main", "index": 0 }]]
+    },
+    "Set Competitors List": {
+      "main": [[{ "node": "Fetch Competitor Sitemap", "type": "main", "index": 0 }]]
+    },
+    "Fetch Competitor Sitemap": {
+      "main": [[{ "node": "Extract URLs from Sitemap", "type": "main", "index": 0 }]]
+    },
+    "Extract URLs from Sitemap": {
+      "main": [[{ "node": "Aggregate All Competitors", "type": "main", "index": 0 }]]
+    },
+    "Aggregate All Competitors": {
+      "main": [[{ "node": "Merge Competitor + Our Data", "type": "main", "index": 0 }]]
+    },
+    "Get Our Content List": {
+      "main": [[{ "node": "Merge Competitor + Our Data", "type": "main", "index": 1 }]]
+    },
+    "Merge Competitor + Our Data": {
+      "main": [[{ "node": "Prepare AI Prompt", "type": "main", "index": 0 }]]
+    },
+    "Prepare AI Prompt": {
+      "main": [[{ "node": "OpenAI - Gap Analysis", "type": "main", "index": 0 }]]
+    },
+    "OpenAI - Gap Analysis": {
+      "main": [[{ "node": "Parse AI Response", "type": "main", "index": 0 }]]
+    },
+    "Parse AI Response": {
+      "main": [
+        [
+          { "node": "Insert to seo_content_ideas", "type": "main", "index": 0 },
+          { "node": "Insert to seo_opportunities", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Insert to seo_content_ideas": {
+      "main": [[{ "node": "Build WhatsApp Summary", "type": "main", "index": 0 }]]
+    },
+    "Insert to seo_opportunities": {
+      "main": [[{ "node": "Build WhatsApp Summary", "type": "main", "index": 0 }]]
+    },
+    "Build WhatsApp Summary": {
+      "main": [[{ "node": "Send WhatsApp", "type": "main", "index": 0 }]]
+    },
+    "Send WhatsApp": {
+      "main": [[{ "node": "Log Run Success", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "errorWorkflow": ""
+  },
+  "staticData": null,
+  "tags": []
+}

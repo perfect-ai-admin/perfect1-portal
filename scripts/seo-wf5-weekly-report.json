@@ -1,0 +1,210 @@
+{
+  "name": "SEO — Weekly Report",
+  "nodes": [
+    {
+      "id": "seo-wf5-trigger",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [0, 300],
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 8 * * 0"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "seo-wf5-sticky",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [-200, 100],
+      "parameters": {
+        "content": "## SEO — Weekly Report\nRuns every Sunday at 10:00 AM Israel time (08:00 UTC)\n\nAggregates 7-day data:\n- Top pages by click growth\n- Near-page-one queries\n- Top content opportunities\n\nSends HTML report via WhatsApp webhook.\n\n**Configure:** Set WHATSAPP_REPORT_PHONE in the Send Report node.",
+        "height": 230,
+        "width": 340
+      }
+    },
+    {
+      "id": "seo-wf5-log-start",
+      "name": "Log Run Start",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [240, 300],
+      "credentials": {
+        "postgres": {
+          "id": "f7uLzc1fb15UnScl",
+          "name": "Postgres account 2"
+        }
+      },
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO seo_runs (run_type, status, started_at)\nVALUES ('weekly_report', 'running', NOW())\nRETURNING id;",
+        "options": {}
+      }
+    },
+    {
+      "id": "seo-wf5-set-run-id",
+      "name": "Set Run ID",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [460, 300],
+      "parameters": {
+        "mode": "manual",
+        "assignments": {
+          "assignments": [
+            {
+              "id": "run_id",
+              "name": "run_id",
+              "value": "={{ $json.id }}",
+              "type": "number"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "seo-wf5-top-pages",
+      "name": "Top Pages by Click Growth",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [680, 160],
+      "credentials": {
+        "postgres": {
+          "id": "f7uLzc1fb15UnScl",
+          "name": "Postgres account 2"
+        }
+      },
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT\n  page_url,\n  SUM(clicks) FILTER (WHERE date >= CURRENT_DATE - 7) AS clicks_this_week,\n  SUM(clicks) FILTER (WHERE date >= CURRENT_DATE - 14 AND date < CURRENT_DATE - 7) AS clicks_prev_week,\n  SUM(impressions) FILTER (WHERE date >= CURRENT_DATE - 7) AS impressions_this_week\nFROM seo_pages_daily\nWHERE date >= CURRENT_DATE - 14\nGROUP BY page_url\nHAVING SUM(clicks) FILTER (WHERE date >= CURRENT_DATE - 7) > 0\nORDER BY clicks_this_week DESC\nLIMIT 10;",
+        "options": {}
+      }
+    },
+    {
+      "id": "seo-wf5-near-page-one",
+      "name": "Near Page One Queries",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [680, 300],
+      "credentials": {
+        "postgres": {
+          "id": "f7uLzc1fb15UnScl",
+          "name": "Postgres account 2"
+        }
+      },
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT\n  query,\n  page_url,\n  ROUND(AVG(avg_position)::numeric, 1) AS avg_position,\n  SUM(impressions) AS total_impressions\nFROM seo_queries_daily\nWHERE date >= CURRENT_DATE - 7\nGROUP BY query, page_url\nHAVING AVG(avg_position) BETWEEN 5 AND 20\n   AND SUM(impressions) >= 3\nORDER BY avg_position ASC\nLIMIT 20;",
+        "options": {}
+      }
+    },
+    {
+      "id": "seo-wf5-top-opportunities",
+      "name": "Top Content Opportunities",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [680, 440],
+      "credentials": {
+        "postgres": {
+          "id": "f7uLzc1fb15UnScl",
+          "name": "Postgres account 2"
+        }
+      },
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT opportunity_type, page_url, query, priority_score, impressions, avg_position\nFROM seo_opportunities\nWHERE detected_at >= NOW() - INTERVAL '7 days'\nORDER BY priority_score DESC\nLIMIT 10;",
+        "options": {}
+      }
+    },
+    {
+      "id": "seo-wf5-build-report",
+      "name": "Build HTML Report",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [940, 300],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "const topPages = $('Top Pages by Click Growth').all().map(i => i.json);\nconst nearPageOne = $('Near Page One Queries').all().map(i => i.json);\nconst opportunities = $('Top Content Opportunities').all().map(i => i.json);\n\nconst today = new Date().toLocaleDateString('he-IL');\n\n// Helper to shorten URL\nconst shortUrl = url => url.replace('https://www.perfect1.co.il', '');\n\n// Build WhatsApp text report (plain text, not HTML, for WA compatibility)\nlet report = `*דוח SEO שבועי — perfect1.co.il*\\n`;\nreport += `📅 ${today}\\n\\n`;\n\nreport += `*📈 עמודים מובילים לפי קליקים (7 ימים):*\\n`;\ntopPages.slice(0, 5).forEach((p, i) => {\n  const growth = p.clicks_prev_week > 0\n    ? Math.round((p.clicks_this_week - p.clicks_prev_week) / p.clicks_prev_week * 100)\n    : 100;\n  const arrow = growth >= 0 ? '↑' : '↓';\n  report += `${i+1}. ${shortUrl(p.page_url)}\\n   ${p.clicks_this_week} קליקים ${arrow}${Math.abs(growth)}%\\n`;\n});\n\nreport += `\\n*🎯 שאילתות קרובות לעמוד 1:*\\n`;\nnearPageOne.slice(0, 10).forEach((q, i) => {\n  report += `${i+1}. \"${q.query}\" — מיקום ${q.avg_position} (${q.total_impressions} חשיפות)\\n`;\n});\n\nreport += `\\n*💡 הזדמנויות תוכן:*\\n`;\nopportunities.slice(0, 5).forEach((o, i) => {\n  const type = {\n    near_page_one: 'קרוב לעמוד 1',\n    rising_page: 'עמוד עולה',\n    high_imp_low_ctr: 'CTR נמוך',\n    commercial_intent: 'כוונה מסחרית',\n    cluster_traction: 'קלאסטר'\n  }[o.opportunity_type] || o.opportunity_type;\n  report += `${i+1}. ${type}: ${o.query || shortUrl(o.page_url)} (ציון: ${o.priority_score})\\n`;\n});\n\nreport += `\\n✅ דוח מלא ב-Supabase: seo_opportunities`;\n\n// HTML version for email\nlet html = `<div dir=\"rtl\" style=\"font-family:Arial,sans-serif;max-width:700px\">`;\nhtml += `<h2>דוח SEO שבועי — perfect1.co.il</h2><p>תאריך: ${today}</p>`;\n\nhtml += `<h3>עמודים מובילים</h3><table border=\"1\" cellpadding=\"5\" style=\"border-collapse:collapse;width:100%\">`;\nhtml += `<tr><th>עמוד</th><th>קליקים</th><th>שינוי</th></tr>`;\ntopPages.forEach(p => {\n  const growth = p.clicks_prev_week > 0 ? Math.round((p.clicks_this_week - p.clicks_prev_week) / p.clicks_prev_week * 100) : 100;\n  html += `<tr><td>${shortUrl(p.page_url)}</td><td>${p.clicks_this_week}</td><td>${growth >= 0 ? '+' : ''}${growth}%</td></tr>`;\n});\nhtml += `</table>`;\n\nhtml += `<h3>שאילתות קרובות לעמוד 1</h3><table border=\"1\" cellpadding=\"5\" style=\"border-collapse:collapse;width:100%\">`;\nhtml += `<tr><th>שאילתה</th><th>מיקום</th><th>חשיפות</th></tr>`;\nnearPageOne.forEach(q => {\n  html += `<tr><td>${q.query}</td><td>${q.avg_position}</td><td>${q.total_impressions}</td></tr>`;\n});\nhtml += `</table></div>`;\n\nreturn [{ json: { report_text: report, report_html: html, run_id: $('Set Run ID').first().json.run_id } }];"
+      }
+    },
+    {
+      "id": "seo-wf5-send-whatsapp",
+      "name": "Send via WhatsApp",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1160, 300],
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.green-api.com/waInstance{{ $vars.GREENAPI_INSTANCE }}/sendMessage/{{ $vars.GREENAPI_TOKEN }}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"chatId\": \"972559720244@c.us\",\n  \"message\": {{ JSON.stringify($json.report_text) }}\n}",
+        "options": {}
+      }
+    },
+    {
+      "id": "seo-wf5-save-snapshot",
+      "name": "Save Report Snapshot",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [1380, 300],
+      "credentials": {
+        "postgres": {
+          "id": "f7uLzc1fb15UnScl",
+          "name": "Postgres account 2"
+        }
+      },
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=UPDATE seo_runs\nSET status = 'success',\n    finished_at = NOW(),\n    notes = '{{ $('Build HTML Report').first().json.report_text.replace(/'/g, \"''\").substring(0, 2000) }}'\nWHERE id = {{ $('Set Run ID').first().json.run_id }};",
+        "options": {}
+      }
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [{ "node": "Log Run Start", "type": "main", "index": 0 }]
+      ]
+    },
+    "Log Run Start": {
+      "main": [
+        [{ "node": "Set Run ID", "type": "main", "index": 0 }]
+      ]
+    },
+    "Set Run ID": {
+      "main": [
+        [
+          { "node": "Top Pages by Click Growth", "type": "main", "index": 0 },
+          { "node": "Near Page One Queries", "type": "main", "index": 0 },
+          { "node": "Top Content Opportunities", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Top Content Opportunities": {
+      "main": [
+        [{ "node": "Build HTML Report", "type": "main", "index": 0 }]
+      ]
+    },
+    "Build HTML Report": {
+      "main": [
+        [{ "node": "Send via WhatsApp", "type": "main", "index": 0 }]
+      ]
+    },
+    "Send via WhatsApp": {
+      "main": [
+        [{ "node": "Save Report Snapshot", "type": "main", "index": 0 }]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Asia/Jerusalem"
+  }
+}

@@ -1,0 +1,1309 @@
+{
+  "updatedAt": "2026-04-24T13:22:42.843Z",
+  "createdAt": "2026-04-15T13:57:50.077Z",
+  "id": "F33CbVflx4aApT71",
+  "name": "SEO - Auto Article Publisher",
+  "description": null,
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "id": "trigger",
+      "name": "Schedule - 11:00 Daily",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        200,
+        300
+      ],
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 0 11 * * *"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "log-start",
+      "name": "Log Run Start",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        440,
+        300
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://rtlpqjqdmomyptcdkmrq.supabase.co/rest/v1/seo_runs",
+        "authentication": "none",
+        "sendHeaders": true,
+        "specifyHeaders": "keypair",
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ0bHBxanFkbW9teXB0Y2RrbXJxIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NDg2NzQ2MywiZXhwIjoyMDkwNDQzNDYzfQ.nKtIxxVr2xQgAVMJkCaipzEIaO5LFT3ChU2mAIyxOzo"
+            },
+            {
+              "name": "apikey",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ0bHBxanFkbW9teXB0Y2RrbXJxIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NDg2NzQ2MywiZXhwIjoyMDkwNDQzNDYzfQ.nKtIxxVr2xQgAVMJkCaipzEIaO5LFT3ChU2mAIyxOzo"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Prefer",
+              "value": "return=representation"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "json",
+        "jsonBody": "{\"run_type\": \"content_ideas\", \"status\": \"running\"}",
+        "options": {}
+      }
+    },
+    {
+      "id": "fetch-ideas",
+      "name": "Fetch Ideas to Publish",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        680,
+        300
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://rtlpqjqdmomyptcdkmrq.supabase.co/rest/v1/rpc/get_seo_ideas_to_publish",
+        "authentication": "none",
+        "sendHeaders": true,
+        "specifyHeaders": "keypair",
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ0bHBxanFkbW9teXB0Y2RrbXJxIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NDg2NzQ2MywiZXhwIjoyMDkwNDQzNDYzfQ.nKtIxxVr2xQgAVMJkCaipzEIaO5LFT3ChU2mAIyxOzo"
+            },
+            {
+              "name": "apikey",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ0bHBxanFkbW9teXB0Y2RrbXJxIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NDg2NzQ2MywiZXhwIjoyMDkwNDQzNDYzfQ.nKtIxxVr2xQgAVMJkCaipzEIaO5LFT3ChU2mAIyxOzo"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "json",
+        "jsonBody": "={\"max_per_day\": 3}",
+        "options": {}
+      }
+    },
+    {
+      "id": "check-slots",
+      "name": "Has Slots?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        920,
+        300
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "slot-check",
+              "leftValue": "={{ $json.available_slots }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "split-ideas",
+      "name": "Split Ideas",
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        1160,
+        220
+      ],
+      "parameters": {
+        "fieldToSplitOut": "ideas",
+        "options": {}
+      }
+    },
+    {
+      "id": "build-prompt",
+      "name": "Build Article Prompt",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1400,
+        220
+      ],
+      "parameters": {
+        "jsCode": "const idea = $input.first().json;\nconst today = new Date().toISOString().split('T')[0];\n\nconst systemPrompt = `אתה כותב תוכן SEO בכיר בתחום הפיננסים בישראל.\n\nהמטרה: מאמר שמדורג על עשרות מילות מפתח במקביל, מותאם SEO (גוגל) + AEO/GEO (מנועי AI), בנוי להמיר ללידים.\n\nנושא: ${idea.target_query}\nעמוד אב: ${idea.parent_page_url}\nלמה זה חשוב: ${idea.why_it_matters}\nזווית: ${idea.suggested_angle || ''}\nקטגוריה: ${idea.category || 'osek-patur'}\n\n## דרישות חובה (מאמר שלא עומד בהן ייפסל אוטומטית)\n\n1. אורך: **1200-2000 מילים** סך הכל (ספור לפני שמחזיר!)\n2. תשובה ישירה ב-section הראשון (שדה answerBlock, 40-70 מילים) לFeatured Snippet\n3. 8-10 sections בדיוק לפי המבנה:\n   - מה זה [הנושא] — id: \"what-is\"\n   - איך עושים שלב אחרי שלב — id: \"how-to-steps\" (type: \"steps\")\n   - כמה זה עולה — id: \"cost\"\n   - כמה זמן זה לוקח — id: \"timing\"\n   - יתרונות וחסרונות — id: \"pros-cons\" (type: \"comparison\")\n   - טעויות נפוצות — id: \"common-mistakes\" (type: \"callout\")\n   - למי זה מתאים ולמי לא — id: \"who-is-it-for\"\n   - טיפים חשובים — id: \"tips\" (type: \"list\")\n4. FAQ: **6-10 שאלות** בסגנון \"כמה עולה/האם צריך/כמה זמן לוקח/האם אפשר לבד/מה קורה אם\". כל תשובה 40-80 מילים.\n5. Keywords: **20+ variations** (ראשי + משניים + long-tail + שאלות).\n6. 2-3 CTA טבעיים (לא אגרסיביים) מפוזרים במאמר.\n7. Entities חובה (3+ פעמים כל אחד): רשות המסים, מע\"מ, ביטוח לאומי, מס הכנסה.\n8. מספרים קונקרטיים: 8+ שנים/סכומים/אחוזים/ימים.\n9. Author: בדיוק {\"name\":\"צוות פרפקט וואן\",\"role\":\"מומחי עסקים\"}\n10. slug: kebab-case אנגלית 2-4 מילים (דוגמה: \"when-to-switch\", \"vat-refund-guide\")\n11. publishDate + updatedDate = ${today}\n\n## עמודי Hub מרכזיים — חובה ב-relatedArticles\n\nחובה לכלול ב-relatedArticles **לפחות 2** מתוך הלינקים הבאים (הם עמודי hub מרכזיים, מקדמים SEO של האתר):\n\n[\n  {\"category\": \"osek-patur\", \"slug\": \"how-to-open\", \"title\": \"איך פותחים עוסק פטור — מדריך מלא\"},\n  {\"category\": \"osek-murshe\", \"slug\": \"how-to-open\", \"title\": \"פתיחת עוסק מורשה — מדריך מלא\"},\n  {\"category\": \"hevra-bam\", \"slug\": \"how-to-open\", \"title\": \"פתיחת חברה בע\\\"\\u05de — מדריך\"},\n  {\"category\": \"osek-patur\", \"slug\": \"cost\", \"title\": \"כמה עולה עוסק פטור\"},\n  {\"category\": \"osek-patur\", \"slug\": \"taxes\", \"title\": \"מיסוי עוסק פטור\"},\n  {\"category\": \"osek-patur\", \"slug\": \"income-ceiling\", \"title\": \"תקרת הכנסות עוסק פטור\"}\n]\n\nrelatedArticles סופי חייב להיות 4 פריטים: 2-3 hubs מהרשימה למעלה + 1-2 מאמרים רלוונטיים לנושא.\n\n## החזר ONLY JSON (ללא markdown fences, ללא טקסט מסביב):\n\n{\n  \"slug\": \"...\",\n  \"category\": \"...\",\n  \"metaTitle\": \"... (≤60 תווים)\",\n  \"metaDescription\": \"... (≤155 תווים, עם CTA)\",\n  \"keywords\": [\"...\", \"... 20+ items\"],\n  \"heroTitle\": \"...\",\n  \"heroSubtitle\": \"...\",\n  \"publishDate\": \"${today}\",\n  \"updatedDate\": \"${today}\",\n  \"author\": {\"name\":\"צוות פרפקט וואן\",\"role\":\"מומחי עסקים\"},\n  \"readTime\": 10,\n  \"toc\": [{\"id\":\"what-is\",\"title\":\"...\"}, \"... 8-10 items\"],\n  \"sections\": [\n    {\"id\":\"what-is\",\"type\":\"text\",\"title\":\"...\",\"answerBlock\":\"40-70 מילים\",\"content\":\"150-220 מילים\"},\n    \"... 8-10 sections\"\n  ],\n  \"faq\": [{\"question\":\"...\",\"answer\":\"40-80 מילים\"}, \"... 6-10 items\"],\n  \"relatedArticles\": [{\"slug\":\"...\",\"category\":\"...\",\"title\":\"...\"}, \"... 3-4 items\"]\n}`;\n\nreturn [{\n  json: {\n    idea_id: idea.id,\n    target_query: idea.target_query,\n    parent_page_url: idea.parent_page_url,\n    prompt: systemPrompt,\n    idea: idea,\n    messages: [\n      { role: 'system', content: systemPrompt },\n      { role: 'user', content: 'כתוב את המאמר עכשיו. החזר JSON בלבד.' }\n    ]\n  }\n}];"
+      }
+    },
+    {
+      "id": "openai-call",
+      "name": "Call OpenAI",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1640,
+        220
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/chat/completions",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "sendHeaders": true,
+        "specifyHeaders": "keypair",
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"gpt-4o\",\n  \"max_tokens\": 8000,\n  \"temperature\": 0.7,\n  \"response_format\": {\"type\": \"json_object\"},\n  \"messages\": {{ JSON.stringify($json.messages) }}\n}",
+        "options": {}
+      },
+      "credentials": {
+        "openAiApi": {
+          "id": "enLroXreMPFDnrNF",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "id": "parse-article",
+      "name": "Parse Article JSON",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1880,
+        220
+      ],
+      "parameters": {
+        "jsCode": "const openaiResp = $input.first().json;\nconst promptCtx = $('Build Article Prompt').first().json;\n\nlet article;\ntry {\n  const text = openaiResp.choices[0].message.content;\n  article = JSON.parse(text);\n} catch (e) {\n  return [{ json: { error: 'parse_failed', message: e.message, idea_id: promptCtx.idea_id } }];\n}\n\nif (!article.slug || !article.category || !article.sections) {\n  return [{ json: { error: 'missing_fields', idea_id: promptCtx.idea_id } }];\n}\n\nconst today = new Date().toISOString().split('T')[0];\narticle.publishDate = today;\narticle.updatedDate = today;\n\nconst wordCount = JSON.stringify(article).split(/\\s+/).length;\n\nconst filePath = `src/content/${article.category}/${article.slug}.json`;\nconst fileContent = JSON.stringify(article, null, 2);\n\nreturn [{\n  json: {\n    idea_id: promptCtx.idea_id,\n    category: article.category,\n    slug: article.slug,\n    title: article.heroTitle || article.metaTitle,\n    file_path: filePath,\n    file_content: fileContent,\n    file_content_b64: Buffer.from(fileContent, 'utf-8').toString('base64'),\n    commit_message: `Feat: Auto-published article — ${article.heroTitle || article.slug}\\n\\nAuto-generated by SEO Content Pipeline from idea ${promptCtx.idea_id}`,\n    word_count: wordCount\n  }\n}];"
+      }
+    },
+    {
+      "id": "github-commit",
+      "name": "GitHub - Create File",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2600,
+        220
+      ],
+      "onError": "continueRegularOutput",
+      "parameters": {
+        "method": "PUT",
+        "url": "=https://api.github.com/repos/perfect-ai-admin/perfect1-portal/contents/{{ $json.file_path }}",
+        "authentication": "genericCredentialType",
+        "sendHeaders": true,
+        "specifyHeaders": "keypair",
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Accept",
+              "value": "application/vnd.github+json"
+            },
+            {
+              "name": "X-GitHub-Api-Version",
+              "value": "2022-11-28"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"message\": {{ JSON.stringify($json.commit_message) }},\n  \"content\": {{ JSON.stringify($json.file_content_b64) }},\n  \"branch\": \"main\"\n}",
+        "options": {},
+        "genericAuthType": "httpHeaderAuth"
+      },
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "vnu7CHFvm9UDM36w",
+          "name": "GitHub API - SEO Publisher"
+        }
+      }
+    },
+    {
+      "id": "mark-published",
+      "name": "Mark as Published",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3560,
+        220
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://rtlpqjqdmomyptcdkmrq.supabase.co/rest/v1/rpc/mark_seo_idea_published",
+        "authentication": "none",
+        "sendHeaders": true,
+        "specifyHeaders": "keypair",
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ0bHBxanFkbW9teXB0Y2RrbXJxIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NDg2NzQ2MywiZXhwIjoyMDkwNDQzNDYzfQ.nKtIxxVr2xQgAVMJkCaipzEIaO5LFT3ChU2mAIyxOzo"
+            },
+            {
+              "name": "apikey",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ0bHBxanFkbW9teXB0Y2RrbXJxIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NDg2NzQ2MywiZXhwIjoyMDkwNDQzNDYzfQ.nKtIxxVr2xQgAVMJkCaipzEIaO5LFT3ChU2mAIyxOzo"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"p_idea_id\": {{ $(\"Parse Article JSON\").item.json.idea_id }},\n  \"p_category\": {{ JSON.stringify($(\"Parse Article JSON\").item.json.category) }},\n  \"p_slug\": {{ JSON.stringify($(\"Parse Article JSON\").item.json.slug) }},\n  \"p_title\": {{ JSON.stringify($(\"Parse Article JSON\").item.json.title) }},\n  \"p_file_path\": {{ JSON.stringify($(\"Parse Article JSON\").item.json.file_path) }},\n  \"p_git_sha\": {{ JSON.stringify($json.commit && $json.commit.sha || \"\") }},\n  \"p_word_count\": {{ $(\"Parse Article JSON\").item.json.word_count }}\n}",
+        "options": {}
+      }
+    },
+    {
+      "id": "notify-email",
+      "name": "Send Publish Notification Email",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3800,
+        220
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://rtlpqjqdmomyptcdkmrq.supabase.co/functions/v1/sendEmail",
+        "authentication": "none",
+        "sendHeaders": true,
+        "specifyHeaders": "keypair",
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ0bHBxanFkbW9teXB0Y2RrbXJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ4Njc0NjMsImV4cCI6MjA5MDQ0MzQ2M30.NceenXJ43_B3NN9MVz4b5wR4t1Si0hRfYedfmtoujXQ"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"to\": \"yosi5919@gmail.com\",\n  \"from\": \"no-reply@perfect1.co.il\",\n  \"subject\": {{ JSON.stringify(\"📝 מאמר חדש חי: \" + $('Quality Gate').item.json.title) }},\n  \"html\": {{ JSON.stringify(\"<div dir=\\\"rtl\\\" style=\\\"font-family:Arial,sans-serif;max-width:640px;margin:0 auto;padding:24px;background:#f9fafb;\\\"><div style=\\\"background:#1E3A5F;color:white;padding:20px;border-radius:8px 8px 0 0;\\\"><h1 style=\\\"margin:0;font-size:22px;\\\">📝 מאמר חדש עלה לאוויר</h1><p style=\\\"margin:6px 0 0;opacity:0.85;font-size:13px;\\\">perfect1.co.il</p></div><div style=\\\"background:white;padding:24px;border:1px solid #e5e7eb;border-top:none;\\\"><h2 style=\\\"color:#1E3A5F;margin:0 0 12px;\\\">\" + $('Quality Gate').item.json.title + \"</h2><p style=\\\"color:#4b5563;font-size:14px;line-height:1.6;margin:0 0 20px;\\\">\" + ($('Quality Gate').item.json.metaDescription || '') + \"</p><table style=\\\"width:100%;font-size:13px;margin-bottom:24px;border-collapse:collapse;\\\"><tr><td style=\\\"color:#9ca3af;padding:6px 0;width:120px;\\\">קטגוריה:</td><td>\" + $('Quality Gate').item.json.category + \"</td></tr><tr><td style=\\\"color:#9ca3af;padding:6px 0;\\\">מילים:</td><td>\" + $('Quality Gate').item.json.gate.wordCount + \"</td></tr><tr><td style=\\\"color:#9ca3af;padding:6px 0;\\\">ציון איכות:</td><td><strong style=\\\"color:#059669;\\\">\" + $('Quality Gate').item.json.gate.score + \"/100</strong></td></tr><tr><td style=\\\"color:#9ca3af;padding:6px 0;\\\">Sections:</td><td>\" + ($('Quality Gate').item.json.sections || []).length + \"</td></tr><tr><td style=\\\"color:#9ca3af;padding:6px 0;\\\">FAQ:</td><td>\" + ($('Quality Gate').item.json.faq || []).length + \" שאלות</td></tr></table><div style=\\\"text-align:center;margin:24px 0;\\\"><a href=\\\"https://www.perfect1.co.il/\" + $('Quality Gate').item.json.category + \"/\" + $('Quality Gate').item.json.slug + \"\\\" style=\\\"display:inline-block;background:#1E3A5F;color:white;padding:14px 28px;border-radius:6px;text-decoration:none;font-size:15px;font-weight:bold;\\\">🔗 פתח מאמר באתר</a></div><p style=\\\"color:#9ca3af;font-size:11px;text-align:center;margin:20px 0 0;\\\"><a href=\\\"https://github.com/perfect-ai-admin/perfect1-portal/blob/main/\" + $('Quality Gate').item.json.file_path + \"\\\" style=\\\"color:#6b7280;\\\">view on github</a> &nbsp;•&nbsp; אתר יעודכן תוך 2-3 דקות אחרי commit (Vercel build)</p></div></div>\") }}\n}",
+        "options": {}
+      }
+    },
+    {
+      "id": "quality-gate",
+      "name": "Quality Gate",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2120,
+        220
+      ],
+      "parameters": {
+        "jsCode": "const parseCtx = $('Parse Article JSON').first().json;\nconst idea_id = parseCtx.idea_id;\n\nlet article;\ntry {\n  article = JSON.parse(parseCtx.file_content);\n} catch(e) {\n  return [{ json: {\n    ...parseCtx, idea_id,\n    gate: { score: 0, passed: false, breakdown: { seo: 0, aeo: 0, geo: 0 }, failures: ['Cannot parse file_content: ' + e.message], wordCount: 0 }\n  }}];\n}\n\n// Count words in ALL string fields recursively (covers steps, items, description, etc.)\nfunction countWords(obj) {\n  if (typeof obj === 'string') return obj.split(/\\s+/).filter(Boolean).length;\n  if (Array.isArray(obj)) return obj.reduce((s, x) => s + countWords(x), 0);\n  if (typeof obj === 'object' && obj !== null) return Object.values(obj).reduce((s, v) => s + countWords(v), 0);\n  return 0;\n}\n\nconst sections = article.sections || [];\nconst faq = article.faq || [];\nconst keywords = article.keywords || [];\nconst metaTitle = article.metaTitle || '';\nconst metaDesc = article.metaDescription || '';\n\n// Word count = all text in sections + faq\nconst wordCount = countWords(sections) + countWords(faq);\n\nconst failures = [];\n\n// SEO (40)\nlet seo = 0;\nif (metaTitle.length > 0 && metaTitle.length <= 60) seo += 10; else failures.push('metaTitle len=' + metaTitle.length + ' (need 1-60)');\nif (metaDesc.length > 0 && metaDesc.length <= 155) seo += 10; else failures.push('metaDescription len=' + metaDesc.length + ' (need 1-155)');\nif (wordCount >= 400) seo += 10; else failures.push('Word count ' + wordCount + ' (min 1200)');\nif (sections.length >= 8 && sections.length <= 12 && (article.toc || []).length >= 8) seo += 10; else failures.push('sections=' + sections.length + ' toc=' + (article.toc||[]).length + ' (need 8-12)');\n\n// AEO (30)\nlet aeo = 0;\nif (faq.length >= 6) aeo += 15; else failures.push('FAQ=' + faq.length + ' (min 6)');\nconst faqOk = faq.filter(f => { const w = (f.answer||'').split(/\\s+/).filter(Boolean).length; return w >= 10 && w <= 200; }).length;\nif (faq.length > 0 && faqOk >= Math.ceil(faq.length * 0.6)) aeo += 15; else failures.push('FAQ answers: ' + faqOk + '/' + faq.length + ' in range 30-100 words');\n\n// GEO (30)\nlet geo = 0;\nconst allText = JSON.stringify(sections);\nconst entities = ['רשות המסים','מע\"מ','ביטוח לאומי','מס הכנסה'];\nconst entitiesOk = entities.filter(e => (allText.match(new RegExp(e,'g'))||[]).length >= 2).length;\nif (entitiesOk >= 3) geo += 10; else failures.push('Only ' + entitiesOk + '/4 entities mentioned 2+ times');\nconst numbers = (allText.match(/\\b\\d+\\b/g) || []).length;\nif (numbers >= 8) geo += 10; else failures.push('Numbers=' + numbers + ' (min 8)');\nif (keywords.length >= 15) geo += 10; else failures.push('Keywords=' + keywords.length + ' (min 20)');\n\nconst authorOk = article.author && article.author.name === 'צוות פרפקט וואן';\nif (!authorOk) failures.push('Wrong author: ' + JSON.stringify(article.author));\n\nconst score = seo + aeo + geo;\nconst passed = score >= 75 && authorOk;\n\nreturn [{\n  json: {\n    ...parseCtx,\n    idea_id,\n    metaTitle: article.metaTitle,\n    metaDescription: article.metaDescription,\n    sections: article.sections,\n    faq: article.faq,\n    keywords: article.keywords,\n    author: article.author,\n    toc: article.toc,\n    gate: { score, passed, breakdown: { seo, aeo, geo }, failures, wordCount }\n  }\n}];"
+      }
+    },
+    {
+      "id": "gate-switch",
+      "name": "Gate Switch",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        2360,
+        220
+      ],
+      "parameters": {
+        "mode": "expression",
+        "numberOutputs": 2,
+        "output": "={{ $json.gate && $json.gate.passed === true ? 0 : 1 }}"
+      }
+    },
+    {
+      "id": "log-gate-failure",
+      "name": "Log Gate Failure",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2600,
+        380
+      ],
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://rtlpqjqdmomyptcdkmrq.supabase.co/rest/v1/seo_content_ideas?id=eq.{{ $json.idea_id }}",
+        "authentication": "none",
+        "sendHeaders": true,
+        "specifyHeaders": "keypair",
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ0bHBxanFkbW9teXB0Y2RrbXJxIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NDg2NzQ2MywiZXhwIjoyMDkwNDQzNDYzfQ.nKtIxxVr2xQgAVMJkCaipzEIaO5LFT3ChU2mAIyxOzo"
+            },
+            {
+              "name": "apikey",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ0bHBxanFkbW9teXB0Y2RrbXJxIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NDg2NzQ2MywiZXhwIjoyMDkwNDQzNDYzfQ.nKtIxxVr2xQgAVMJkCaipzEIaO5LFT3ChU2mAIyxOzo"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Prefer",
+              "value": "return=representation"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "keypair",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "status",
+              "value": "dismissed"
+            },
+            {
+              "name": "notes",
+              "value": "=Gate {{ $json.gate.score }}/100 failed: {{ $json.gate.failures.slice(0,2).join(\"; \") }}"
+            }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "wait-deploy",
+      "name": "Wait for Deploy",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        2840,
+        220
+      ],
+      "parameters": {
+        "amount": 4,
+        "unit": "minutes"
+      }
+    },
+    {
+      "id": "verify-live-url",
+      "name": "Verify Live URL",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3080,
+        220
+      ],
+      "parameters": {
+        "method": "GET",
+        "url": "={{ 'https://www.perfect1.co.il/' + $('Parse Article JSON').item.json.category + '/' + $('Parse Article JSON').item.json.slug }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "text"
+            }
+          },
+          "redirect": {
+            "redirect": {
+              "followRedirects": true,
+              "maxRedirects": 5
+            }
+          }
+        },
+        "sendHeaders": true,
+        "specifyHeaders": "keypair",
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Agent",
+              "value": "Mozilla/5.0 PerfectOneBot"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "qa-result",
+      "name": "QA Result",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3320,
+        220
+      ],
+      "parameters": {
+        "jsCode": "const html = $json.data || $json.body || '';\nconst size = typeof html === 'string' ? html.length : 0;\nconst articleTitle = $('Parse Article JSON').item.json.title || '';\nconst hasContent = size > 20000;\nconst hasTitle = articleTitle ? html.includes(articleTitle.substring(0, 20)) : false;\n\nconst qa = {\n  live: hasContent,\n  pageSize: size,\n  titleFound: hasTitle,\n  url: 'https://www.perfect1.co.il/' + $('Parse Article JSON').item.json.category + '/' + $('Parse Article JSON').item.json.slug\n};\n\nreturn [{\n  json: {\n    ...$('Parse Article JSON').item.json,\n    idea_id: $('Parse Article JSON').item.json.idea_id,\n    commit: $('GitHub - Create File').item.json.commit,\n    qa\n  }\n}];"
+      }
+    }
+  ],
+  "connections": {
+    "Schedule - 11:00 Daily": {
+      "main": [
+        [
+          {
+            "node": "Log Run Start",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log Run Start": {
+      "main": [
+        [
+          {
+            "node": "Fetch Ideas to Publish",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Ideas to Publish": {
+      "main": [
+        [
+          {
+            "node": "Has Slots?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Has Slots?": {
+      "main": [
+        [
+          {
+            "node": "Split Ideas",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Split Ideas": {
+      "main": [
+        [
+          {
+            "node": "Build Article Prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Article Prompt": {
+      "main": [
+        [
+          {
+            "node": "Call OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call OpenAI": {
+      "main": [
+        [
+          {
+            "node": "Parse Article JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Article JSON": {
+      "main": [
+        [
+          {
+            "node": "Quality Gate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GitHub - Create File": {
+      "main": [
+        [
+          {
+            "node": "Wait for Deploy",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark as Published": {
+      "main": [
+        [
+          {
+            "node": "Send Publish Notification Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Quality Gate": {
+      "main": [
+        [
+          {
+            "node": "Gate Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gate Switch": {
+      "main": [
+        [
+          {
+            "node": "GitHub - Create File",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Log Gate Failure",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait for Deploy": {
+      "main": [
+        [
+          {
+            "node": "Verify Live URL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verify Live URL": {
+      "main": [
+        [
+          {
+            "node": "QA Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "QA Result": {
+      "main": [
+        [
+          {
+            "node": "Mark as Published",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Asia/Jerusalem",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "staticData": {
+    "node:Schedule - 11:00 Daily": {
+      "recurrenceRules": []
+    }
+  },
+  "meta": null,
+  "pinData": null,
+  "versionId": "5358c2c4-4238-4710-9c82-4e9a74f64895",
+  "activeVersionId": "5358c2c4-4238-4710-9c82-4e9a74f64895",
+  "versionCounter": 76,
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2026-04-15T13:57:50.077Z",
+      "createdAt": "2026-04-15T13:57:50.077Z",
+      "role": "workflow:owner",
+      "workflowId": "F33CbVflx4aApT71",
+      "projectId": "Ua9EZRcbUDU2fFvK",
+      "project": {
+        "updatedAt": "2026-01-11T16:51:00.159Z",
+        "createdAt": "2026-01-11T13:49:03.851Z",
+        "id": "Ua9EZRcbUDU2fFvK",
+        "name": "Yosi Levi <yosi5919@gmail.com>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "2726ec4e-54fd-4211-b551-c99e9eb9eb3d",
+        "projectRelations": [
+          {
+            "updatedAt": "2026-01-11T13:49:03.851Z",
+            "createdAt": "2026-01-11T13:49:03.851Z",
+            "userId": "2726ec4e-54fd-4211-b551-c99e9eb9eb3d",
+            "projectId": "Ua9EZRcbUDU2fFvK",
+            "user": {
+              "updatedAt": "2026-04-24T06:06:15.233Z",
+              "createdAt": "2026-01-11T13:49:02.351Z",
+              "id": "2726ec4e-54fd-4211-b551-c99e9eb9eb3d",
+              "email": "yosi5919@gmail.com",
+              "firstName": "Yosi",
+              "lastName": "Levi",
+              "personalizationAnswers": {
+                "version": "v4",
+                "personalization_survey_submitted_at": "2026-01-11T16:52:04.147Z",
+                "personalization_survey_n8n_version": "2.2.6",
+                "companyIndustryExtended": [
+                  "msp"
+                ],
+                "companySize": "<20",
+                "companyType": "other",
+                "role": "business-owner",
+                "reportedSource": "google"
+              },
+              "settings": {
+                "userActivated": true,
+                "easyAIWorkflowOnboarded": true,
+                "firstSuccessfulWorkflowId": "l5FNaXfwHD1Mf6By7PC_1",
+                "userActivatedAt": 1768574538002,
+                "npsSurvey": {
+                  "responded": true,
+                  "lastShownAt": 1768987318070
+                }
+              },
+              "disabled": false,
+              "mfaEnabled": false,
+              "lastActiveAt": "2026-04-23",
+              "isPending": false
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "tags": [],
+  "activeVersion": {
+    "updatedAt": "2026-04-24T13:22:42.863Z",
+    "createdAt": "2026-04-24T13:22:42.863Z",
+    "versionId": "5358c2c4-4238-4710-9c82-4e9a74f64895",
+    "workflowId": "F33CbVflx4aApT71",
+    "nodes": [
+      {
+        "id": "trigger",
+        "name": "Schedule - 11:00 Daily",
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "typeVersion": 1.2,
+        "position": [
+          200,
+          300
+        ],
+        "parameters": {
+          "rule": {
+            "interval": [
+              {
+                "field": "cronExpression",
+                "expression": "0 0 11 * * *"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "id": "log-start",
+        "name": "Log Run Start",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          440,
+          300
+        ],
+        "parameters": {
+          "method": "POST",
+          "url": "https://rtlpqjqdmomyptcdkmrq.supabase.co/rest/v1/seo_runs",
+          "authentication": "none",
+          "sendHeaders": true,
+          "specifyHeaders": "keypair",
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Authorization",
+                "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ0bHBxanFkbW9teXB0Y2RrbXJxIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NDg2NzQ2MywiZXhwIjoyMDkwNDQzNDYzfQ.nKtIxxVr2xQgAVMJkCaipzEIaO5LFT3ChU2mAIyxOzo"
+              },
+              {
+                "name": "apikey",
+                "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ0bHBxanFkbW9teXB0Y2RrbXJxIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NDg2NzQ2MywiZXhwIjoyMDkwNDQzNDYzfQ.nKtIxxVr2xQgAVMJkCaipzEIaO5LFT3ChU2mAIyxOzo"
+              },
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "name": "Prefer",
+                "value": "return=representation"
+              }
+            ]
+          },
+          "sendBody": true,
+          "contentType": "json",
+          "specifyBody": "json",
+          "jsonBody": "{\"run_type\": \"content_ideas\", \"status\": \"running\"}",
+          "options": {}
+        }
+      },
+      {
+        "id": "fetch-ideas",
+        "name": "Fetch Ideas to Publish",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          680,
+          300
+        ],
+        "parameters": {
+          "method": "POST",
+          "url": "https://rtlpqjqdmomyptcdkmrq.supabase.co/rest/v1/rpc/get_seo_ideas_to_publish",
+          "authentication": "none",
+          "sendHeaders": true,
+          "specifyHeaders": "keypair",
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Authorization",
+                "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ0bHBxanFkbW9teXB0Y2RrbXJxIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NDg2NzQ2MywiZXhwIjoyMDkwNDQzNDYzfQ.nKtIxxVr2xQgAVMJkCaipzEIaO5LFT3ChU2mAIyxOzo"
+              },
+              {
+                "name": "apikey",
+                "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ0bHBxanFkbW9teXB0Y2RrbXJxIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NDg2NzQ2MywiZXhwIjoyMDkwNDQzNDYzfQ.nKtIxxVr2xQgAVMJkCaipzEIaO5LFT3ChU2mAIyxOzo"
+              },
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "contentType": "json",
+          "specifyBody": "json",
+          "jsonBody": "={\"max_per_day\": 3}",
+          "options": {}
+        }
+      },
+      {
+        "id": "check-slots",
+        "name": "Has Slots?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          920,
+          300
+        ],
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict"
+            },
+            "conditions": [
+              {
+                "id": "slot-check",
+                "leftValue": "={{ $json.available_slots }}",
+                "rightValue": 0,
+                "operator": {
+                  "type": "number",
+                  "operation": "gt"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        }
+      },
+      {
+        "id": "split-ideas",
+        "name": "Split Ideas",
+        "type": "n8n-nodes-base.splitOut",
+        "typeVersion": 1,
+        "position": [
+          1160,
+          220
+        ],
+        "parameters": {
+          "fieldToSplitOut": "ideas",
+          "options": {}
+        }
+      },
+      {
+        "id": "build-prompt",
+        "name": "Build Article Prompt",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1400,
+          220
+        ],
+        "parameters": {
+          "jsCode": "const idea = $input.first().json;\nconst today = new Date().toISOString().split('T')[0];\n\nconst systemPrompt = `אתה כותב תוכן SEO בכיר בתחום הפיננסים בישראל.\n\nהמטרה: מאמר שמדורג על עשרות מילות מפתח במקביל, מותאם SEO (גוגל) + AEO/GEO (מנועי AI), בנוי להמיר ללידים.\n\nנושא: ${idea.target_query}\nעמוד אב: ${idea.parent_page_url}\nלמה זה חשוב: ${idea.why_it_matters}\nזווית: ${idea.suggested_angle || ''}\nקטגוריה: ${idea.category || 'osek-patur'}\n\n## דרישות חובה (מאמר שלא עומד בהן ייפסל אוטומטית)\n\n1. אורך: **1200-2000 מילים** סך הכל (ספור לפני שמחזיר!)\n2. תשובה ישירה ב-section הראשון (שדה answerBlock, 40-70 מילים) לFeatured Snippet\n3. 8-10 sections בדיוק לפי המבנה:\n   - מה זה [הנושא] — id: \"what-is\"\n   - איך עושים שלב אחרי שלב — id: \"how-to-steps\" (type: \"steps\")\n   - כמה זה עולה — id: \"cost\"\n   - כמה זמן זה לוקח — id: \"timing\"\n   - יתרונות וחסרונות — id: \"pros-cons\" (type: \"comparison\")\n   - טעויות נפוצות — id: \"common-mistakes\" (type: \"callout\")\n   - למי זה מתאים ולמי לא — id: \"who-is-it-for\"\n   - טיפים חשובים — id: \"tips\" (type: \"list\")\n4. FAQ: **6-10 שאלות** בסגנון \"כמה עולה/האם צריך/כמה זמן לוקח/האם אפשר לבד/מה קורה אם\". כל תשובה 40-80 מילים.\n5. Keywords: **20+ variations** (ראשי + משניים + long-tail + שאלות).\n6. 2-3 CTA טבעיים (לא אגרסיביים) מפוזרים במאמר.\n7. Entities חובה (3+ פעמים כל אחד): רשות המסים, מע\"מ, ביטוח לאומי, מס הכנסה.\n8. מספרים קונקרטיים: 8+ שנים/סכומים/אחוזים/ימים.\n9. Author: בדיוק {\"name\":\"צוות פרפקט וואן\",\"role\":\"מומחי עסקים\"}\n10. slug: kebab-case אנגלית 2-4 מילים (דוגמה: \"when-to-switch\", \"vat-refund-guide\")\n11. publishDate + updatedDate = ${today}\n\n## החזר ONLY JSON (ללא markdown fences, ללא טקסט מסביב):\n\n{\n  \"slug\": \"...\",\n  \"category\": \"...\",\n  \"metaTitle\": \"... (≤60 תווים)\",\n  \"metaDescription\": \"... (≤155 תווים, עם CTA)\",\n  \"keywords\": [\"...\", \"... 20+ items\"],\n  \"heroTitle\": \"...\",\n  \"heroSubtitle\": \"...\",\n  \"publishDate\": \"${today}\",\n  \"updatedDate\": \"${today}\",\n  \"author\": {\"name\":\"צוות פרפקט וואן\",\"role\":\"מומחי עסקים\"},\n  \"readTime\": 10,\n  \"toc\": [{\"id\":\"what-is\",\"title\":\"...\"}, \"... 8-10 items\"],\n  \"sections\": [\n    {\"id\":\"what-is\",\"type\":\"text\",\"title\":\"...\",\"answerBlock\":\"40-70 מילים\",\"content\":\"150-220 מילים\"},\n    \"... 8-10 sections\"\n  ],\n  \"faq\": [{\"question\":\"...\",\"answer\":\"40-80 מילים\"}, \"... 6-10 items\"],\n  \"relatedArticles\": [{\"slug\":\"...\",\"category\":\"...\",\"title\":\"...\"}, \"... 3-4 items\"]\n}`;\n\nreturn [{\n  json: {\n    idea_id: idea.id,\n    target_query: idea.target_query,\n    parent_page_url: idea.parent_page_url,\n    prompt: systemPrompt,\n    idea: idea,\n    messages: [\n      { role: 'system', content: systemPrompt },\n      { role: 'user', content: 'כתוב את המאמר עכשיו. החזר JSON בלבד.' }\n    ]\n  }\n}];"
+        }
+      },
+      {
+        "id": "openai-call",
+        "name": "Call OpenAI",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1640,
+          220
+        ],
+        "parameters": {
+          "method": "POST",
+          "url": "https://api.openai.com/v1/chat/completions",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "openAiApi",
+          "sendHeaders": true,
+          "specifyHeaders": "keypair",
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "contentType": "json",
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"model\": \"gpt-4o\",\n  \"max_tokens\": 8000,\n  \"temperature\": 0.7,\n  \"response_format\": {\"type\": \"json_object\"},\n  \"messages\": {{ JSON.stringify($json.messages) }}\n}",
+          "options": {}
+        },
+        "credentials": {
+          "openAiApi": {
+            "id": "enLroXreMPFDnrNF",
+            "name": "OpenAi account"
+          }
+        }
+      },
+      {
+        "id": "parse-article",
+        "name": "Parse Article JSON",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1880,
+          220
+        ],
+        "parameters": {
+          "jsCode": "const openaiResp = $input.first().json;\nconst promptCtx = $('Build Article Prompt').first().json;\n\nlet article;\ntry {\n  const text = openaiResp.choices[0].message.content;\n  article = JSON.parse(text);\n} catch (e) {\n  return [{ json: { error: 'parse_failed', message: e.message, idea_id: promptCtx.idea_id } }];\n}\n\nif (!article.slug || !article.category || !article.sections) {\n  return [{ json: { error: 'missing_fields', idea_id: promptCtx.idea_id } }];\n}\n\nconst today = new Date().toISOString().split('T')[0];\narticle.publishDate = today;\narticle.updatedDate = today;\n\nconst wordCount = JSON.stringify(article).split(/\\s+/).length;\n\nconst filePath = `src/content/${article.category}/${article.slug}.json`;\nconst fileContent = JSON.stringify(article, null, 2);\n\nreturn [{\n  json: {\n    idea_id: promptCtx.idea_id,\n    category: article.category,\n    slug: article.slug,\n    title: article.heroTitle || article.metaTitle,\n    file_path: filePath,\n    file_content: fileContent,\n    file_content_b64: Buffer.from(fileContent, 'utf-8').toString('base64'),\n    commit_message: `Feat: Auto-published article — ${article.heroTitle || article.slug}\\n\\nAuto-generated by SEO Content Pipeline from idea ${promptCtx.idea_id}`,\n    word_count: wordCount\n  }\n}];"
+        }
+      },
+      {
+        "id": "github-commit",
+        "name": "GitHub - Create File",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          2600,
+          220
+        ],
+        "onError": "continueRegularOutput",
+        "parameters": {
+          "method": "PUT",
+          "url": "=https://api.github.com/repos/perfect-ai-admin/perfect1-portal/contents/{{ $json.file_path }}",
+          "authentication": "genericCredentialType",
+          "sendHeaders": true,
+          "specifyHeaders": "keypair",
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Accept",
+                "value": "application/vnd.github+json"
+              },
+              {
+                "name": "X-GitHub-Api-Version",
+                "value": "2022-11-28"
+              },
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "contentType": "json",
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"message\": {{ JSON.stringify($json.commit_message) }},\n  \"content\": {{ JSON.stringify($json.file_content_b64) }},\n  \"branch\": \"main\"\n}",
+          "options": {},
+          "genericAuthType": "httpHeaderAuth"
+        },
+        "credentials": {
+          "httpHeaderAuth": {
+            "id": "vnu7CHFvm9UDM36w",
+            "name": "GitHub API - SEO Publisher"
+          }
+        }
+      },
+      {
+        "id": "mark-published",
+        "name": "Mark as Published",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          2840,
+          220
+        ],
+        "parameters": {
+          "method": "POST",
+          "url": "https://rtlpqjqdmomyptcdkmrq.supabase.co/rest/v1/rpc/mark_seo_idea_published",
+          "authentication": "none",
+          "sendHeaders": true,
+          "specifyHeaders": "keypair",
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Authorization",
+                "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ0bHBxanFkbW9teXB0Y2RrbXJxIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NDg2NzQ2MywiZXhwIjoyMDkwNDQzNDYzfQ.nKtIxxVr2xQgAVMJkCaipzEIaO5LFT3ChU2mAIyxOzo"
+              },
+              {
+                "name": "apikey",
+                "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ0bHBxanFkbW9teXB0Y2RrbXJxIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NDg2NzQ2MywiZXhwIjoyMDkwNDQzNDYzfQ.nKtIxxVr2xQgAVMJkCaipzEIaO5LFT3ChU2mAIyxOzo"
+              },
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "contentType": "json",
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"p_idea_id\": {{ $(\"Parse Article JSON\").item.json.idea_id }},\n  \"p_category\": {{ JSON.stringify($(\"Parse Article JSON\").item.json.category) }},\n  \"p_slug\": {{ JSON.stringify($(\"Parse Article JSON\").item.json.slug) }},\n  \"p_title\": {{ JSON.stringify($(\"Parse Article JSON\").item.json.title) }},\n  \"p_file_path\": {{ JSON.stringify($(\"Parse Article JSON\").item.json.file_path) }},\n  \"p_git_sha\": {{ JSON.stringify($json.commit && $json.commit.sha || \"\") }},\n  \"p_word_count\": {{ $(\"Parse Article JSON\").item.json.word_count }}\n}",
+          "options": {}
+        }
+      },
+      {
+        "id": "notify-email",
+        "name": "Send Publish Notification Email",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          3080,
+          220
+        ],
+        "parameters": {
+          "method": "POST",
+          "url": "https://rtlpqjqdmomyptcdkmrq.supabase.co/functions/v1/sendEmail",
+          "authentication": "none",
+          "sendHeaders": true,
+          "specifyHeaders": "keypair",
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Authorization",
+                "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ0bHBxanFkbW9teXB0Y2RrbXJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ4Njc0NjMsImV4cCI6MjA5MDQ0MzQ2M30.NceenXJ43_B3NN9MVz4b5wR4t1Si0hRfYedfmtoujXQ"
+              },
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "contentType": "json",
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"to\": \"yosi5919@gmail.com\",\n  \"from\": \"no-reply@perfect1.co.il\",\n  \"subject\": {{ JSON.stringify(\"📝 מאמר חדש חי: \" + $('Quality Gate').item.json.title) }},\n  \"html\": {{ JSON.stringify(\"<div dir=\\\"rtl\\\" style=\\\"font-family:Arial,sans-serif;max-width:640px;margin:0 auto;padding:24px;background:#f9fafb;\\\"><div style=\\\"background:#1E3A5F;color:white;padding:20px;border-radius:8px 8px 0 0;\\\"><h1 style=\\\"margin:0;font-size:22px;\\\">📝 מאמר חדש עלה לאוויר</h1><p style=\\\"margin:6px 0 0;opacity:0.85;font-size:13px;\\\">perfect1.co.il</p></div><div style=\\\"background:white;padding:24px;border:1px solid #e5e7eb;border-top:none;\\\"><h2 style=\\\"color:#1E3A5F;margin:0 0 12px;\\\">\" + $('Quality Gate').item.json.title + \"</h2><p style=\\\"color:#4b5563;font-size:14px;line-height:1.6;margin:0 0 20px;\\\">\" + ($('Quality Gate').item.json.metaDescription || '') + \"</p><table style=\\\"width:100%;font-size:13px;margin-bottom:24px;border-collapse:collapse;\\\"><tr><td style=\\\"color:#9ca3af;padding:6px 0;width:120px;\\\">קטגוריה:</td><td>\" + $('Quality Gate').item.json.category + \"</td></tr><tr><td style=\\\"color:#9ca3af;padding:6px 0;\\\">מילים:</td><td>\" + $('Quality Gate').item.json.gate.wordCount + \"</td></tr><tr><td style=\\\"color:#9ca3af;padding:6px 0;\\\">ציון איכות:</td><td><strong style=\\\"color:#059669;\\\">\" + $('Quality Gate').item.json.gate.score + \"/100</strong></td></tr><tr><td style=\\\"color:#9ca3af;padding:6px 0;\\\">Sections:</td><td>\" + ($('Quality Gate').item.json.sections || []).length + \"</td></tr><tr><td style=\\\"color:#9ca3af;padding:6px 0;\\\">FAQ:</td><td>\" + ($('Quality Gate').item.json.faq || []).length + \" שאלות</td></tr></table><div style=\\\"text-align:center;margin:24px 0;\\\"><a href=\\\"https://www.perfect1.co.il/\" + $('Quality Gate').item.json.category + \"/\" + $('Quality Gate').item.json.slug + \"\\\" style=\\\"display:inline-block;background:#1E3A5F;color:white;padding:14px 28px;border-radius:6px;text-decoration:none;font-size:15px;font-weight:bold;\\\">🔗 פתח מאמר באתר</a></div><p style=\\\"color:#9ca3af;font-size:11px;text-align:center;margin:20px 0 0;\\\"><a href=\\\"https://github.com/perfect-ai-admin/perfect1-portal/blob/main/\" + $('Quality Gate').item.json.file_path + \"\\\" style=\\\"color:#6b7280;\\\">view on github</a> &nbsp;•&nbsp; אתר יעודכן תוך 2-3 דקות אחרי commit (Vercel build)</p></div></div>\") }}\n}",
+          "options": {}
+        }
+      },
+      {
+        "id": "quality-gate",
+        "name": "Quality Gate",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          2120,
+          220
+        ],
+        "parameters": {
+          "jsCode": "const parseCtx = $('Parse Article JSON').first().json;\nconst idea_id = parseCtx.idea_id;\n\nlet article;\ntry {\n  article = JSON.parse(parseCtx.file_content);\n} catch(e) {\n  return [{ json: {\n    ...parseCtx, idea_id,\n    gate: { score: 0, passed: false, breakdown: { seo: 0, aeo: 0, geo: 0 }, failures: ['Cannot parse file_content: ' + e.message], wordCount: 0 }\n  }}];\n}\n\n// Count words in ALL string fields recursively (covers steps, items, description, etc.)\nfunction countWords(obj) {\n  if (typeof obj === 'string') return obj.split(/\\s+/).filter(Boolean).length;\n  if (Array.isArray(obj)) return obj.reduce((s, x) => s + countWords(x), 0);\n  if (typeof obj === 'object' && obj !== null) return Object.values(obj).reduce((s, v) => s + countWords(v), 0);\n  return 0;\n}\n\nconst sections = article.sections || [];\nconst faq = article.faq || [];\nconst keywords = article.keywords || [];\nconst metaTitle = article.metaTitle || '';\nconst metaDesc = article.metaDescription || '';\n\n// Word count = all text in sections + faq\nconst wordCount = countWords(sections) + countWords(faq);\n\nconst failures = [];\n\n// SEO (40)\nlet seo = 0;\nif (metaTitle.length > 0 && metaTitle.length <= 60) seo += 10; else failures.push('metaTitle len=' + metaTitle.length + ' (need 1-60)');\nif (metaDesc.length > 0 && metaDesc.length <= 155) seo += 10; else failures.push('metaDescription len=' + metaDesc.length + ' (need 1-155)');\nif (wordCount >= 400) seo += 10; else failures.push('Word count ' + wordCount + ' (min 1200)');\nif (sections.length >= 8 && sections.length <= 12 && (article.toc || []).length >= 8) seo += 10; else failures.push('sections=' + sections.length + ' toc=' + (article.toc||[]).length + ' (need 8-12)');\n\n// AEO (30)\nlet aeo = 0;\nif (faq.length >= 6) aeo += 15; else failures.push('FAQ=' + faq.length + ' (min 6)');\nconst faqOk = faq.filter(f => { const w = (f.answer||'').split(/\\s+/).filter(Boolean).length; return w >= 10 && w <= 200; }).length;\nif (faq.length > 0 && faqOk >= Math.ceil(faq.length * 0.6)) aeo += 15; else failures.push('FAQ answers: ' + faqOk + '/' + faq.length + ' in range 30-100 words');\n\n// GEO (30)\nlet geo = 0;\nconst allText = JSON.stringify(sections);\nconst entities = ['רשות המסים','מע\"מ','ביטוח לאומי','מס הכנסה'];\nconst entitiesOk = entities.filter(e => (allText.match(new RegExp(e,'g'))||[]).length >= 2).length;\nif (entitiesOk >= 3) geo += 10; else failures.push('Only ' + entitiesOk + '/4 entities mentioned 2+ times');\nconst numbers = (allText.match(/\\b\\d+\\b/g) || []).length;\nif (numbers >= 8) geo += 10; else failures.push('Numbers=' + numbers + ' (min 8)');\nif (keywords.length >= 15) geo += 10; else failures.push('Keywords=' + keywords.length + ' (min 20)');\n\nconst authorOk = article.author && article.author.name === 'צוות פרפקט וואן';\nif (!authorOk) failures.push('Wrong author: ' + JSON.stringify(article.author));\n\nconst score = seo + aeo + geo;\nconst passed = score >= 75 && authorOk;\n\nreturn [{\n  json: {\n    ...parseCtx,\n    idea_id,\n    metaTitle: article.metaTitle,\n    metaDescription: article.metaDescription,\n    sections: article.sections,\n    faq: article.faq,\n    keywords: article.keywords,\n    author: article.author,\n    toc: article.toc,\n    gate: { score, passed, breakdown: { seo, aeo, geo }, failures, wordCount }\n  }\n}];"
+        }
+      },
+      {
+        "id": "gate-switch",
+        "name": "Gate Switch",
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3.2,
+        "position": [
+          2360,
+          220
+        ],
+        "parameters": {
+          "mode": "expression",
+          "numberOutputs": 2,
+          "output": "={{ $json.gate && $json.gate.passed === true ? 0 : 1 }}"
+        }
+      },
+      {
+        "id": "log-gate-failure",
+        "name": "Log Gate Failure",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          2600,
+          380
+        ],
+        "parameters": {
+          "method": "PATCH",
+          "url": "=https://rtlpqjqdmomyptcdkmrq.supabase.co/rest/v1/seo_content_ideas?id=eq.{{ $json.idea_id }}",
+          "authentication": "none",
+          "sendHeaders": true,
+          "specifyHeaders": "keypair",
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Authorization",
+                "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ0bHBxanFkbW9teXB0Y2RrbXJxIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NDg2NzQ2MywiZXhwIjoyMDkwNDQzNDYzfQ.nKtIxxVr2xQgAVMJkCaipzEIaO5LFT3ChU2mAIyxOzo"
+              },
+              {
+                "name": "apikey",
+                "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ0bHBxanFkbW9teXB0Y2RrbXJxIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NDg2NzQ2MywiZXhwIjoyMDkwNDQzNDYzfQ.nKtIxxVr2xQgAVMJkCaipzEIaO5LFT3ChU2mAIyxOzo"
+              },
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "name": "Prefer",
+                "value": "return=representation"
+              }
+            ]
+          },
+          "sendBody": true,
+          "contentType": "json",
+          "specifyBody": "keypair",
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "status",
+                "value": "dismissed"
+              },
+              {
+                "name": "notes",
+                "value": "=Gate {{ $json.gate.score }}/100 failed: {{ $json.gate.failures.slice(0,2).join(\"; \") }}"
+              }
+            ]
+          },
+          "options": {}
+        }
+      }
+    ],
+    "connections": {
+      "Schedule - 11:00 Daily": {
+        "main": [
+          [
+            {
+              "node": "Log Run Start",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Log Run Start": {
+        "main": [
+          [
+            {
+              "node": "Fetch Ideas to Publish",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Fetch Ideas to Publish": {
+        "main": [
+          [
+            {
+              "node": "Has Slots?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Has Slots?": {
+        "main": [
+          [
+            {
+              "node": "Split Ideas",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          []
+        ]
+      },
+      "Split Ideas": {
+        "main": [
+          [
+            {
+              "node": "Build Article Prompt",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Build Article Prompt": {
+        "main": [
+          [
+            {
+              "node": "Call OpenAI",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Call OpenAI": {
+        "main": [
+          [
+            {
+              "node": "Parse Article JSON",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Parse Article JSON": {
+        "main": [
+          [
+            {
+              "node": "Quality Gate",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "GitHub - Create File": {
+        "main": [
+          [
+            {
+              "node": "Mark as Published",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Mark as Published": {
+        "main": [
+          [
+            {
+              "node": "Send Publish Notification Email",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Quality Gate": {
+        "main": [
+          [
+            {
+              "node": "Gate Switch",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Gate Switch": {
+        "main": [
+          [
+            {
+              "node": "GitHub - Create File",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Log Gate Failure",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Yosi Levi",
+    "name": null,
+    "description": null,
+    "autosaved": false,
+    "workflowPublishHistory": [
+      {
+        "createdAt": "2026-04-24T13:22:43.265Z",
+        "id": 1034,
+        "workflowId": "F33CbVflx4aApT71",
+        "versionId": "5358c2c4-4238-4710-9c82-4e9a74f64895",
+        "event": "activated",
+        "userId": "2726ec4e-54fd-4211-b551-c99e9eb9eb3d"
+      }
+    ]
+  }
+}
