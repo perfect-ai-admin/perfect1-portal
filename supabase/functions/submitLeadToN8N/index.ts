@@ -127,9 +127,10 @@ Deno.serve(async (req) => {
       email: email || '',
       notes: notesField,
       source_page: pageSlug || businessName || 'landing-page',
-      page_intent: intent.page_intent,
-      flow_type: intent.flow_type,
-      service_type: intent.service_type,
+      // page_intent / flow_type / service_type intentionally omitted —
+      // botStartFlow sets these AFTER successful WhatsApp send. Leaving them
+      // NULL here ensures scan_and_trigger_catchup_bot can retry if the
+      // direct fire-and-forget call fails for any reason (auth, network, Green API).
       source: 'sales_portal',
       interaction_type: 'form',
       status: 'new',
