@@ -47,6 +47,76 @@
       "permanent": true
     },
     {
+      "source": "/osek-murshe/accountant",
+      "destination": "/osek-patur/accountant",
+      "permanent": true
+    },
+    {
+      "source": "/osek-murshe/why-open",
+      "destination": "/osek-murshe/why-choose",
+      "permanent": true
+    },
+    {
+      "source": "/osek-murshe/benefits",
+      "destination": "/osek-murshe/why-choose",
+      "permanent": true
+    },
+    {
+      "source": "/osek-murshe/vat",
+      "destination": "/osek-murshe/vat-guide",
+      "permanent": true
+    },
+    {
+      "source": "/osek-murshe/expense-management",
+      "destination": "/osek-murshe/tax-deductions",
+      "permanent": true
+    },
+    {
+      "source": "/osek-murshe/vat-reporting",
+      "destination": "/osek-murshe/vat-guide",
+      "permanent": true
+    },
+    {
+      "source": "/osek-murshe/national-insurance",
+      "destination": "/osek-murshe/bituach-leumi",
+      "permanent": true
+    },
+    {
+      "source": "/osek-patur/advantages",
+      "destination": "/osek-patur/rights",
+      "permanent": true
+    },
+    {
+      "source": "/osek-patur/tax-benefits",
+      "destination": "/osek-patur/taxes",
+      "permanent": true
+    },
+    {
+      "source": "/hevra-bam/benefits",
+      "destination": "/hevra-bam/management",
+      "permanent": true
+    },
+    {
+      "source": "/miktzoa/business-loans",
+      "destination": "/guides/freelancers",
+      "permanent": true
+    },
+    {
+      "source": "/miktzoa/small-business-guide",
+      "destination": "/guides/opening-business",
+      "permanent": true
+    },
+    {
+      "source": "/misui/tax-reliefs",
+      "destination": "/misui/tax-brackets",
+      "permanent": true
+    },
+    {
+      "source": "/OsekZeirLanding",
+      "destination": "/osek-zeir",
+      "permanent": true
+    },
+    {
       "source": "/:path*",
       "has": [{ "type": "host", "value": "perfect1.co.il" }],
       "destination": "https://www.perfect1.co.il/:path*",

@@ -655,15 +655,49 @@ function generateSPAFallbacks() {
   const baseHtml = getBaseHtml();
   let count = 0;
 
+  // SPA fallback routes that ARE meant to be indexed get a canonical
+  // injected at build time so first-paint SEO works even before JS hydration.
+  // Admin/CRM/login/checkout routes are deliberately excluded — they're
+  // noindex via robots.txt and shouldn't carry a canonical at all.
+  const INDEXABLE_FALLBACKS = new Set([
+    '/authors/perfect1-team',
+    '/open-osek-patur',
+    '/atzmaim-berega',
+    '/atzmaim-berega-final',
+    '/calculators',
+    '/calculators/net-income',
+    '/calculators/credit-points',
+    '/calculators/income-tax',
+    '/calculators/national-insurance',
+    '/calculators/company-tax',
+    '/privacy',
+    '/terms',
+    '/about',
+    '/accessibility',
+    '/osek-zair-landing',
+    '/open-osek-zair-online',
+    '/patur-vs-murshe',
+    '/patur-vs-murshe-quiz',
+    '/opening-business-israel',
+  ]);
+
   for (const route of spaRoutes) {
     const outputDir = join(DIST_DIR, ...route.split('/').filter(Boolean));
     // Skip if already has a pre-rendered file
     if (existsSync(join(outputDir, 'index.html'))) continue;
 
     mkdirSync(outputDir, { recursive: true });
-    writeFileSync(join(outputDir, 'index.html'), baseHtml, 'utf-8');
+    let html = baseHtml;
+    if (INDEXABLE_FALLBACKS.has(route)) {
+      const canonicalUrl = `${BASE_URL}${route}`;
+      // Insert just before </head>. If a canonical is later added by
+      // react-helmet at runtime, both will point to the same URL and
+      // Google de-duplicates.
+      html = html.replace(/<\/head>/i, `    <link rel="canonical" href="${canonicalUrl}" />\n  </head>`);
+    }
+    writeFileSync(join(outputDir, 'index.html'), html, 'utf-8');
     count++;
-    console.log(`  📋 ${route} (SPA fallback)`);
+    console.log(`  📋 ${route} (SPA fallback${INDEXABLE_FALLBACKS.has(route) ? ' + canonical' : ''})`);
   }
 
   if (count > 0) {
