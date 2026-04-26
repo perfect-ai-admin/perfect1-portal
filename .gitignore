@@ -34,3 +34,25 @@ supabase/.temp/
 # Credentials & temporary scripts
 .mcp.json
 try_connect*.cjs
+
+# Hoarding prevention — these patterns produced 100+ untracked files in 2026-04
+# If you genuinely need to track one of these, force-add it (`git add -f`) and add an exception above.
+data/                       # ad-hoc SQL dumps, CSV exports, scraping output
+null                        # accidental "null" filename
+*.png                       # screenshots/exports at repo root (not /public, /src)
+*.pdf                       # generated PDFs at repo root
+/perfect-one-services*      # legacy export artifacts
+/run-migration.html         # one-shot debug page
+/debug-*.{mjs,cjs,js,ts}    # one-shot debug scripts
+/send-test-lead.*           # test-lead one-shots
+/test-e2e-*.{cjs,mjs,js,ts} # use /tests/ instead
+/e2e-*-test.{cjs,mjs,js,ts} # same — belong under /tests/
+/build_financial_model.py
+/wfa.json
+audit-*.json                # generated audit reports (regenerable)
+broken-*.json               # generated broken-link reports
+sitemap-live.xml            # ad-hoc downloads of the live sitemap
+*.tmp.json                  # temporary JSON dumps
+scripts/tmp-*.json          # workflow-payload scratchpads
+scripts/*_temp.json
+docs/*-v[0-9]*.json         # versioned n8n payload snapshots — use git history
