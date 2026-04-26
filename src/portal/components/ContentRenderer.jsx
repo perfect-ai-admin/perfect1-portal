@@ -85,17 +85,48 @@ const SectionSteps = ({ section }) => {
         </p>
       )}
       <div className="space-y-4 sm:space-y-6">
-        {steps.map((step, i) => (
-          <div key={i} className="flex gap-3 sm:gap-4">
-            <div className="flex-shrink-0 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-portal-teal text-white flex items-center justify-center font-bold text-base sm:text-lg">
-              {step.number || i + 1}
+        {steps.map((step, i) => {
+          // Defensive: support legacy/F33-broken format where step is a plain string
+          if (typeof step === 'string') {
+            // Try to split on " — " or first ":" to separate title from description
+            const dashIdx = step.indexOf(' — ');
+            const colonIdx = step.indexOf(': ');
+            let title = `שלב ${i + 1}`;
+            let description = step;
+            if (dashIdx > 0 && dashIdx < 80) {
+              title = step.slice(0, dashIdx).trim();
+              description = step.slice(dashIdx + 3).trim();
+            } else if (colonIdx > 0 && colonIdx < 80) {
+              title = step.slice(0, colonIdx).trim();
+              description = step.slice(colonIdx + 2).trim();
+            }
+            if (typeof console !== 'undefined') {
+              console.warn(`[ContentRenderer] steps section "${section.id}": step ${i} is a string — F33 schema violation. Using fallback rendering.`);
+            }
+            return (
+              <div key={i} className="flex gap-3 sm:gap-4">
+                <div className="flex-shrink-0 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-portal-teal text-white flex items-center justify-center font-bold text-base sm:text-lg">
+                  {i + 1}
+                </div>
+                <div className="flex-1 pt-1">
+                  <h3 className="font-bold text-lg text-portal-navy mb-1">{title}</h3>
+                  <p className="portal-body">{description}</p>
+                </div>
+              </div>
+            );
+          }
+          return (
+            <div key={i} className="flex gap-3 sm:gap-4">
+              <div className="flex-shrink-0 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-portal-teal text-white flex items-center justify-center font-bold text-base sm:text-lg">
+                {step.number || i + 1}
+              </div>
+              <div className="flex-1 pt-1">
+                <h3 className="font-bold text-lg text-portal-navy mb-1">{step.title}</h3>
+                <p className="portal-body">{step.description}</p>
+              </div>
             </div>
-            <div className="flex-1 pt-1">
-              <h3 className="font-bold text-lg text-portal-navy mb-1">{step.title}</h3>
-              <p className="portal-body">{step.description}</p>
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
@@ -238,6 +269,20 @@ const SectionComparison = ({ section }) => {
             </div>
           ))}
         </div>
+      )}
+
+      {/* Fallback: comparison without headers/rows/items — render content as text */}
+      {!hasSimpleTable && !hasLabeledTable && !hasCards && section.content && (
+        (() => {
+          if (typeof console !== 'undefined') {
+            console.warn(`[ContentRenderer] comparison section "${section.id}" missing headers/rows — rendering content as plain text.`);
+          }
+          return (
+            <div className="portal-body">
+              <ReactMarkdown components={markdownComponents}>{section.content}</ReactMarkdown>
+            </div>
+          );
+        })()
       )}
     </div>
   );
