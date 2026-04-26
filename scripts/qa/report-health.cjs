@@ -20,6 +20,8 @@ const CONTENT = path.join(ROOT, 'src/content');
 const SITEMAP = path.join(ROOT, 'public/sitemap.xml');
 const PKG = path.join(ROOT, 'package.json');
 const VERCEL = path.join(ROOT, 'vercel.json');
+const SUPABASE_MIGRATIONS = path.join(ROOT, 'supabase/migrations');
+const SUPABASE_FUNCTIONS = path.join(ROOT, 'supabase/functions');
 
 function safeRead(p) { try { return fs.readFileSync(p, 'utf-8'); } catch { return null; } }
 function safeReadJson(p) { try { return JSON.parse(fs.readFileSync(p, 'utf-8')); } catch { return null; } }
@@ -174,6 +176,34 @@ async function supabaseFacts() {
   };
 }
 
+function supabaseDriftFacts() {
+  // Local-vs-tracked drift in supabase/. Doesn't query the live DB —
+  // just compares the working tree to git. Useful as a flag for
+  // "you have local changes that haven't been committed".
+  function listDir(p) {
+    try { return fs.readdirSync(p); } catch { return []; }
+  }
+  const localMigrations = listDir(SUPABASE_MIGRATIONS).filter((f) => f.endsWith('.sql'));
+  const trackedMigrations = (safeExec(`git ls-files supabase/migrations/`) || '')
+    .split('\n').filter(Boolean).map((p) => p.split('/').pop());
+  const localFunctions = listDir(SUPABASE_FUNCTIONS)
+    .filter((f) => { try { return fs.statSync(path.join(SUPABASE_FUNCTIONS, f)).isDirectory(); } catch { return false; } });
+  const trackedFunctions = new Set(((safeExec(`git ls-files supabase/functions/`) || '')
+    .split('\n').filter(Boolean).map((p) => p.split('/')[2]).filter(Boolean)));
+  const untrackedMigrations = localMigrations.filter((m) => !trackedMigrations.includes(m));
+  const untrackedFunctions = localFunctions.filter((f) => !trackedFunctions.has(f));
+  return {
+    localMigrations: localMigrations.length,
+    trackedMigrations: trackedMigrations.length,
+    untrackedMigrations: untrackedMigrations.length,
+    untrackedMigrationNames: untrackedMigrations.slice(0, 5),
+    localFunctions: localFunctions.length,
+    trackedFunctions: trackedFunctions.size,
+    untrackedFunctions: untrackedFunctions.length,
+    untrackedFunctionNames: untrackedFunctions,
+  };
+}
+
 async function main() {
   const args = new Set(process.argv.slice(2));
 
@@ -185,6 +215,7 @@ async function main() {
     related: relatedLinkFacts(),
     ghActions: ghActionsFacts(),
     supabase: await supabaseFacts(),
+    supabaseDrift: supabaseDriftFacts(),
   };
 
   if (args.has('--json')) {
@@ -229,12 +260,22 @@ async function main() {
     out.push('not available (gh CLI not authenticated or not installed)');
   }
   out.push('');
-  out.push('--- supabase ---');
+  out.push('--- supabase (live) ---');
   if (facts.supabase.available) {
     out.push(`tracked published articles: ${facts.supabase.publishedTracked}`);
     out.push(`indexed=true:               ${facts.supabase.indexedCount}`);
   } else {
     out.push(`not available (${facts.supabase.reason || 'no creds'})`);
+  }
+  out.push('');
+  out.push('--- supabase (local vs git drift) ---');
+  out.push(`migrations:   ${facts.supabaseDrift.localMigrations} local, ${facts.supabaseDrift.trackedMigrations} tracked, ${facts.supabaseDrift.untrackedMigrations} untracked`);
+  if (facts.supabaseDrift.untrackedMigrations > 0) {
+    out.push(`              first untracked: ${facts.supabaseDrift.untrackedMigrationNames.join(', ')}${facts.supabaseDrift.untrackedMigrations > 5 ? ' …' : ''}`);
+  }
+  out.push(`functions:    ${facts.supabaseDrift.localFunctions} local, ${facts.supabaseDrift.trackedFunctions} tracked, ${facts.supabaseDrift.untrackedFunctions} untracked`);
+  if (facts.supabaseDrift.untrackedFunctions > 0) {
+    out.push(`              untracked: ${facts.supabaseDrift.untrackedFunctionNames.join(', ')}`);
   }
   out.push('');
 
@@ -246,6 +287,8 @@ async function main() {
   if (facts.git.untracked > 50) flags.push(`${facts.git.untracked} untracked files (cleanup drift)`);
   if (facts.content.thinCount > facts.content.totalArticles * 0.6) flags.push(`>${Math.round(facts.content.thinCount / facts.content.totalArticles * 100)}% of articles are thin`);
   if (facts.ghActions.available && facts.ghActions.failedRecent >= 2) flags.push(`${facts.ghActions.failedRecent} of last 5 GH Actions runs failed`);
+  if (facts.supabaseDrift.untrackedMigrations > 0) flags.push(`${facts.supabaseDrift.untrackedMigrations} supabase migrations untracked (verify applied state)`);
+  if (facts.supabaseDrift.untrackedFunctions > 0) flags.push(`${facts.supabaseDrift.untrackedFunctions} supabase edge functions untracked`);
 
   if (flags.length === 0) {
     out.push('🟢 no flags — project state looks healthy.');
