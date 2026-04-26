@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "prebuild": "node scripts/generate-sitemap.js",
+    "prebuild:no-prerender": "node scripts/generate-sitemap.js && npm test && node scripts/qa-content-scan.cjs && node scripts/qa-sitemap-audit.cjs",
     "build": "vite build && node scripts/generate-static.js",
     "build:no-prerender": "vite build",
     "build:full-prerender": "vite build && node scripts/prerender.js",
@@ -15,6 +16,7 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
+    "qa:full": "npm run prebuild:no-prerender",
     "qa:content": "node scripts/qa-content-scan.cjs",
     "qa:sitemap": "node scripts/qa-sitemap-audit.cjs"
   },
