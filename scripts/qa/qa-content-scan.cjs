@@ -147,7 +147,13 @@ function analyzeArticle(a, ctx) {
   const wc = articleWordCount(data);
   if (wc < MIN_WORD_COUNT) softWarnings.push(`thin:${wc}w`);
 
-  if (!Array.isArray(data.faq) || data.faq.length < 3) softWarnings.push(`faq:${(data.faq || []).length}`);
+  // FAQ count: SPA renders FAQ schema from sections of type "faq" (see
+  // src/portal/templates/SEOArticlePage.jsx). The legacy top-level
+  // data.faq field is presentational only and not part of schema. Count
+  // both, but treat section-level as the canonical source.
+  const sectionFaq = (data.sections || []).find((s) => s.type === 'faq');
+  const totalFaq = (data.faq || []).length + (sectionFaq ? (sectionFaq.items || []).length : 0);
+  if (totalFaq < 3) softWarnings.push(`faq:${totalFaq}`);
 
   const titleLen = (data.metaTitle || '').length;
   if (titleLen === 0 || titleLen > 60) softWarnings.push(`metaTitle:${titleLen}c`);

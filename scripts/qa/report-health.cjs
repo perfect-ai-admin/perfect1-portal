@@ -86,7 +86,11 @@ function contentFacts() {
       }
       for (const fa of d.faq || []) text += ' ' + (fa.question || '') + ' ' + (fa.answer || '');
       const wc = (text.trim().match(/\S+/g) || []).length;
-      articles.push({ cat, slug: f.replace(/\.json$/, ''), wc, faq: (d.faq || []).length });
+      // FAQ count: SPA generates FAQ schema from sections of type "faq"
+      // (see src/portal/templates/SEOArticlePage.jsx). Count both forms.
+      const sectionFaq = (d.sections || []).find((s) => s.type === 'faq');
+      const totalFaq = (d.faq || []).length + (sectionFaq ? (sectionFaq.items || []).length : 0);
+      articles.push({ cat, slug: f.replace(/\.json$/, ''), wc, faq: totalFaq });
     }
   }
   const thinThreshold = 1200;

@@ -8,17 +8,17 @@
     },
     {
       "source": "/osek-murshe/hamadrikh-hamaleh-leryishui-osek-murshe-beyisrael",
-      "destination": "/osek-murshe/complete-guide",
+      "destination": "/osek-murshe/how-to-open",
       "permanent": true
     },
     {
       "source": "/osek-murshe/why-choose-osek-murshe-advantages-and-disadvantages",
-      "destination": "/osek-murshe/why-choose",
+      "destination": "/osek-murshe/advantages-of-osek-murshe",
       "permanent": true
     },
     {
       "source": "/osek-murshe/taxes-for-osek-murshe-all-you-need-to-know",
-      "destination": "/osek-murshe/full-tax-guide",
+      "destination": "/osek-murshe/taxes",
       "permanent": true
     },
     {
@@ -53,12 +53,47 @@
     },
     {
       "source": "/osek-murshe/why-open",
-      "destination": "/osek-murshe/why-choose",
+      "destination": "/osek-murshe/advantages-of-osek-murshe",
       "permanent": true
     },
     {
       "source": "/osek-murshe/benefits",
-      "destination": "/osek-murshe/why-choose",
+      "destination": "/osek-murshe/advantages-of-osek-murshe",
+      "permanent": true
+    },
+    {
+      "source": "/osek-murshe/full-tax-guide",
+      "destination": "/osek-murshe/taxes",
+      "permanent": true
+    },
+    {
+      "source": "/osek-murshe/complete-guide",
+      "destination": "/osek-murshe/how-to-open",
+      "permanent": true
+    },
+    {
+      "source": "/osek-murshe/why-choose",
+      "destination": "/osek-murshe/advantages-of-osek-murshe",
+      "permanent": true
+    },
+    {
+      "source": "/guides/osek-morshe-requirements",
+      "destination": "/osek-murshe/requirements",
+      "permanent": true
+    },
+    {
+      "source": "/guides/business-opening-guide",
+      "destination": "/guides/opening-business",
+      "permanent": true
+    },
+    {
+      "source": "/guides/taxes-guide",
+      "destination": "/osek-murshe/taxes",
+      "permanent": true
+    },
+    {
+      "source": "/guides/patur-to-murshe-guide",
+      "destination": "/osek-murshe/status-change",
       "permanent": true
     },
     {
