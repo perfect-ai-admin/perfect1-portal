@@ -436,7 +436,7 @@ export default function OsekPaturLandingB() {
                 <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white leading-tight mb-5">
                   פתיחת עוסק פטור
                   <br />
-                  <span style={{ color: '#F59E0B' }}>בליווי רואה חשבון</span>
+                  <span style={{ color: '#F59E0B' }}>בליווי מקצועי</span>
                 </h1>
 
                 <p className="text-lg md:text-xl text-white/85 mb-6 leading-relaxed max-w-lg">
@@ -609,7 +609,7 @@ export default function OsekPaturLandingB() {
               {[
                 { icon: Clock, title: 'חיסכון בזמן מול הרשויות', desc: 'אנחנו מטפלים בבירוקרטיה — אתם מתרכזים בעסק' },
                 { icon: Shield, title: 'מניעת טעויות בתהליך', desc: 'עושים הכל נכון מההתחלה, בלי תיקונים יקרים אחר כך' },
-                { icon: Headphones, title: 'ליווי מקצועי בהתחלה', desc: 'רואה חשבון זמין לכל שאלה בדרך' },
+                { icon: Headphones, title: 'ליווי מקצועי בהתחלה', desc: 'מומחה זמין לכל שאלה בדרך' },
                 { icon: BadgeCheck, title: 'התחלה מסודרת של העסק', desc: 'הכל רשום כמו שצריך — מוכנים לעבוד' },
               ].map((item, i) => (
                 <div key={i} className="flex items-start gap-4 p-5 rounded-2xl bg-gray-50 hover:bg-portal-teal/5 transition-colors border border-gray-100 hover:border-portal-teal/20">
