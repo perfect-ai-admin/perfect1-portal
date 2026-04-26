@@ -18,7 +18,8 @@
     "test:watch": "vitest",
     "qa:full": "npm run prebuild:no-prerender",
     "qa:content": "node scripts/qa-content-scan.cjs",
-    "qa:sitemap": "node scripts/qa-sitemap-audit.cjs"
+    "qa:sitemap": "node scripts/qa-sitemap-audit.cjs",
+    "health": "node scripts/report-health.cjs"
   },
   "dependencies": {
     "@base44/sdk": "^0.8.24",
