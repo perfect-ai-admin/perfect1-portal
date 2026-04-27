@@ -9,8 +9,9 @@ import { Badge } from '@/components/ui/badge';
 import {
   ArrowRight, Phone, MessageCircle, StickyNote, ListTodo,
   User, Clock, Tag, MapPin, Briefcase, Calendar, Trash2, Send, X as XIcon,
-  ExternalLink, Mail, Globe, Target, FileText
+  ExternalLink, Mail, Globe, Target, FileText, Megaphone
 } from 'lucide-react';
+import { invokeFunction } from '@/api/supabaseClient';
 import { format, parseISO, isToday, isBefore, startOfDay } from 'date-fns';
 import { he } from 'date-fns/locale';
 import { toast } from 'sonner';
@@ -54,6 +55,7 @@ export default function CRMLeadDetail() {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showWhatsAppDialog, setShowWhatsAppDialog] = useState(false);
   const [waMessage, setWaMessage] = useState('');
+  const [referralLoading, setReferralLoading] = useState(false);
   const [pendingStage, setPendingStage] = useState(null);
   const [newNote, setNewNote] = useState('');
   const [editingFollowup, setEditingFollowup] = useState(false);
@@ -130,6 +132,33 @@ export default function CRMLeadDetail() {
   };
 
   const handleEmail = () => window.open(`mailto:${lead.email}`, '_self');
+
+  // Refer this lead to Omri (digital marketing partner) via WhatsApp.
+  // The partner number + service label are hard-coded by design — operators
+  // shouldn't have to retype them every time. To add more partners later,
+  // turn this into a small dropdown with a config table.
+  const handleReferToOmri = async () => {
+    if (referralLoading) return;
+    if (!confirm('לשלוח את הליד לעומרי במייל ווצאפ — שיווק דיגיטלי?')) return;
+    setReferralLoading(true);
+    try {
+      const res = await invokeFunction('crmReferLeadToPartner', {
+        lead_id: lead.id,
+        partner_phone: '972525704092',
+        partner_name: 'עומרי',
+        service_label: 'שיווק דיגיטלי',
+      });
+      if (res?.success) {
+        toast.success(`נשלח לעומרי ✓`);
+      } else {
+        toast.error('השליחה נכשלה');
+      }
+    } catch (e) {
+      toast.error(e?.message || 'שגיאה בשליחה');
+    } finally {
+      setReferralLoading(false);
+    }
+  };
 
   const getIntlPhone = () => {
     const phone = (lead.phone || '').replace(/\D/g, '');
@@ -235,6 +264,15 @@ export default function CRMLeadDetail() {
               <Mail size={14} /> מייל
             </Button>
           )}
+          <Button
+            size="sm"
+            onClick={handleReferToOmri}
+            disabled={referralLoading || !lead.phone}
+            className="bg-orange-600 hover:bg-orange-700 text-white gap-1.5"
+            title="שלח לעומרי בוואצאפ עם פרטי הליד — לסגירת שיווק דיגיטלי"
+          >
+            <Megaphone size={14} /> {referralLoading ? 'שולח...' : 'שלח לעומרי - שיווק'}
+          </Button>
           <Button size="sm" variant="outline" onClick={() => setShowCommLogger(!showCommLogger)} className="gap-1.5">
             <StickyNote size={14} /> תקשורת
           </Button>
