@@ -388,49 +388,56 @@ export function useOutreachUnreadReplies() {
   });
 }
 
-// Returns threads grouped by website_id, sorted by latest_message_at desc
+// Returns threads grouped by website_id — only websites with at least 1 inbound reply
 export function useOutreachThreads() {
   return useQuery({
     queryKey: ['outreach-threads'],
     queryFn: async () => {
-      const [messagesRes, repliesRes, websitesRes] = await Promise.all([
+      // Step 1: get website_ids that have inbound replies
+      const { data: inboundRows, error: inboundErr } = await supabase
+        .from('outreach_replies')
+        .select('website_id, id, subject, body, direction, received_at, intent, sentiment')
+        .or('direction.is.null,direction.eq.inbound')
+        .not('website_id', 'is', null)
+        .order('received_at', { ascending: false })
+        .limit(1000);
+
+      if (inboundErr) throw new Error(inboundErr.message);
+      if (!inboundRows || inboundRows.length === 0) return [];
+
+      const uniqueWebsiteIds = [...new Set(inboundRows.map(r => r.website_id))];
+
+      // Step 2: fetch outbound replies + messages + websites only for those ids
+      const [allRepliesRes, messagesRes, websitesRes] = await Promise.all([
+        supabase
+          .from('outreach_replies')
+          .select('id, website_id, subject, body, direction, received_at, intent, sentiment')
+          .in('website_id', uniqueWebsiteIds)
+          .order('received_at', { ascending: false })
+          .limit(2000),
         supabase
           .from('outreach_messages')
           .select('id, website_id, subject, body_text, sent_at, created_at, status')
           .in('status', ['sent', 'delivered', 'opened', 'replied', 'approved'])
+          .in('website_id', uniqueWebsiteIds)
           .order('created_at', { ascending: false })
-          .limit(1000),
-        supabase
-          .from('outreach_replies')
-          .select('id, website_id, subject, body, direction, received_at, intent, sentiment')
-          .order('received_at', { ascending: false })
-          .limit(1000),
+          .limit(2000),
         supabase
           .from('outreach_websites')
           .select('id, domain, name')
-          .limit(1000),
+          .in('id', uniqueWebsiteIds),
       ]);
 
       const messages = messagesRes.data || [];
-      const replies = repliesRes.data || [];
+      const replies = allRepliesRes.data || [];
       const websites = websitesRes.data || [];
 
       const websiteMap = Object.fromEntries(websites.map(w => [w.id, w]));
 
-      // Group by website_id
-      const groups = {};
-      messages.forEach(m => {
-        if (!m.website_id) return;
-        if (!groups[m.website_id]) groups[m.website_id] = { messages: [], replies: [] };
-        groups[m.website_id].messages.push(m);
-      });
-      replies.forEach(r => {
-        if (!r.website_id) return;
-        if (!groups[r.website_id]) groups[r.website_id] = { messages: [], replies: [] };
-        groups[r.website_id].replies.push(r);
-      });
+      return uniqueWebsiteIds.map(websiteId => {
+        const msgs = messages.filter(m => m.website_id === websiteId);
+        const reps = replies.filter(r => r.website_id === websiteId);
 
-      return Object.entries(groups).map(([websiteId, { messages: msgs, replies: reps }]) => {
         const allTimes = [
           ...msgs.map(m => new Date(m.sent_at || m.created_at)),
           ...reps.map(r => new Date(r.received_at)),

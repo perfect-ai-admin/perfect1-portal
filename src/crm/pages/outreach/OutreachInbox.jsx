@@ -11,6 +11,7 @@ import OutreachStatusBadge from '../../components/outreach/OutreachStatusBadge';
 import { REPLY_INTENTS, REPLY_SENTIMENTS, INTENT_MAP, SENTIMENT_MAP } from '../../constants/outreach';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
+// Note: Select kept for ChatPanel classify dropdowns
 import { Inbox, Sparkles, Send } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -281,9 +282,19 @@ export default function OutreachInbox() {
   const [selectedWebsiteId, setSelectedWebsiteId] = useState(null);
   const [filterIntent, setFilterIntent] = useState('all');
 
+  const INBOX_FILTERS = [
+    { value: 'all', label: 'הכל' },
+    { value: 'interested', label: 'מעוניינים' },
+    { value: 'ask_price', label: 'שואלי מחיר' },
+    { value: 'not_interested', label: 'לא מעוניינים' },
+    { value: 'needs_review', label: 'צריך מענה' },
+  ];
+
   const filtered = filterIntent === 'all'
     ? threads
-    : threads.filter(t => t.last_intent === filterIntent);
+    : filterIntent === 'needs_review'
+      ? threads.filter(t => t.unread_count > 0)
+      : threads.filter(t => t.last_intent === filterIntent);
 
   const selectedThread = threads.find(t => t.website_id === selectedWebsiteId);
 
@@ -309,29 +320,39 @@ export default function OutreachInbox() {
       <h1 className="text-2xl font-bold text-[#1E3A5F]">תיבת דואר נכנס</h1>
 
       {threads.length === 0 ? (
-        <div className="text-center py-12 text-slate-400">
-          <Inbox size={40} className="mx-auto mb-2 text-slate-300" />
-          <p>אין שיחות</p>
+        <div className="flex flex-col items-center justify-center py-16 px-6 text-center border border-slate-200 rounded-xl bg-white shadow-sm">
+          <div className="text-4xl mb-4">📬</div>
+          <p className="text-lg font-semibold text-slate-700 mb-2">עדיין אין תגובות מלידים</p>
+          <p className="text-sm text-slate-400 max-w-xs leading-relaxed">
+            כשמישהו יענה על מייל outreach, השיחה תופיע כאן אוטומטית.
+          </p>
         </div>
       ) : (
         <div className="flex gap-0 h-[calc(100vh-200px)] border border-slate-200 rounded-xl overflow-hidden shadow-sm">
           {/* Thread List */}
           <div className="w-full md:w-[340px] flex-shrink-0 border-l border-slate-200 bg-white flex flex-col">
-            <div className="p-3 border-b border-slate-100 bg-[#f0f2f5]">
-              <Select value={filterIntent} onValueChange={setFilterIntent}>
-                <SelectTrigger className="h-8 text-xs bg-white border-slate-200">
-                  <SelectValue placeholder="סנן לפי כוונה" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">כל השיחות ({threads.length})</SelectItem>
-                  {REPLY_INTENTS.map(i => {
-                    const count = threads.filter(t => t.last_intent === i.value).length;
-                    return count > 0 ? (
-                      <SelectItem key={i.value} value={i.value}>{i.label} ({count})</SelectItem>
-                    ) : null;
-                  })}
-                </SelectContent>
-              </Select>
+            <div className="p-2 border-b border-slate-100 bg-[#f0f2f5] flex flex-wrap gap-1">
+              {INBOX_FILTERS.map(f => {
+                const count = f.value === 'all'
+                  ? threads.length
+                  : f.value === 'needs_review'
+                    ? threads.filter(t => t.unread_count > 0).length
+                    : threads.filter(t => t.last_intent === f.value).length;
+                if (f.value !== 'all' && count === 0) return null;
+                return (
+                  <button
+                    key={f.value}
+                    onClick={() => setFilterIntent(f.value)}
+                    className={`text-[11px] px-2.5 py-1 rounded-full font-medium transition-colors border ${
+                      filterIntent === f.value
+                        ? 'bg-[#075E54] text-white border-[#075E54]'
+                        : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-100'
+                    }`}
+                  >
+                    {f.label} ({count})
+                  </button>
+                );
+              })}
             </div>
             <div className="overflow-y-auto flex-1 p-2 space-y-1">
               {filtered.map(t => (
