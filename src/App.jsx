@@ -99,6 +99,7 @@ const OpenOsekPaturOnline = lazyWithRetry(() => import('./pages/OpenOsekPaturOnl
 const OsekZeirLanding = lazyWithRetry(() => import('./pages/OsekZeirLanding'));
 const OpenOsekZeirOnline = lazyWithRetry(() => import('./pages/OpenOsekZeirOnline'));
 const OpenCompanyOnline = lazyWithRetry(() => import('./pages/OpenCompanyOnline'));
+const CompanyProposal = lazyWithRetry(() => import('./pages/CompanyProposal'));
 
 // Blog articles REMOVED — these belong to perfect-dashboard.com, not the portal
 
@@ -233,6 +234,8 @@ const PortalRoutes = () => (
     <Route path="/accountant-osek-patur" element={<SafePage><AccountantLanding /></SafePage>} />
     <Route path="/open-osek-patur-online" element={<SafePage><OpenOsekPaturOnline /></SafePage>} />
     <Route path="/open-hevra-bam-online" element={<SafePage><OpenCompanyOnline /></SafePage>} />
+    <Route path="/company-proposal" element={<SafePage><CompanyProposal /></SafePage>} />
+    <Route path="/hevra-bam-proposal" element={<SafePage><CompanyProposal /></SafePage>} />
     <Route path="/atzmaim-berega" element={<SafePage><AtzmaimBerega /></SafePage>} />
     <Route path="/atzmaim-berega-final" element={<Navigate to="/atzmaim-berega" replace />} />
     {/* Osek Zeir — מסלול נפרד לחלוטין. חייב להישאר מנותק מעוסק פטור בכל המסרים */}
@@ -372,6 +375,8 @@ const DevRoutes = () => (
     <Route path="/accountant-osek-patur" element={<SafePage><AccountantLanding /></SafePage>} />
     <Route path="/open-osek-patur-online" element={<SafePage><OpenOsekPaturOnline /></SafePage>} />
     <Route path="/open-hevra-bam-online" element={<SafePage><OpenCompanyOnline /></SafePage>} />
+    <Route path="/company-proposal" element={<SafePage><CompanyProposal /></SafePage>} />
+    <Route path="/hevra-bam-proposal" element={<SafePage><CompanyProposal /></SafePage>} />
     <Route path="/atzmaim-berega" element={<SafePage><AtzmaimBerega /></SafePage>} />
     <Route path="/atzmaim-berega-final" element={<Navigate to="/atzmaim-berega" replace />} />
     {/* Osek Zeir — מסלול נפרד לחלוטין (Dev) */}

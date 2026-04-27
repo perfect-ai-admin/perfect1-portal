@@ -626,6 +626,9 @@ function generateSPAFallbacks() {
     '/open-osek-patur',
     '/atzmaim-berega',
     '/atzmaim-berega-final',
+    // Digital proposal (noindex — internal sales link)
+    '/company-proposal',
+    '/hevra-bam-proposal',
     // Calculators (React pages, not JSON content)
     '/calculators',
     '/calculators/net-income',
