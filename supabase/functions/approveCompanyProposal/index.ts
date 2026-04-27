@@ -49,7 +49,6 @@ Deno.serve(async (req) => {
     const company  = sanitizeString(body.requested_company_name || '', 200).trim();
     const idNumber = sanitizeString(body.id_number || '', 20).trim();
     const notes    = sanitizeString(body.notes || '', 1000).trim();
-    const terms    = body.approved_terms === true;
 
     if (!fullName)           return errorResponse('שם מלא חובה', 400, req);
     if (!phoneRaw)           return errorResponse('טלפון חובה', 400, req);
@@ -57,7 +56,6 @@ Deno.serve(async (req) => {
     if (!validateEmail(email))            return errorResponse('כתובת אימייל לא תקינה', 400, req);
     const phone = validatePhone(phoneRaw);
     if (!phone)              return errorResponse('מספר טלפון לא תקין', 400, req);
-    if (!terms)              return errorResponse('יש לאשר את תנאי השירות', 400, req);
 
     const ipAddress = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || null;
     const userAgent = req.headers.get('user-agent') || null;
@@ -120,12 +118,12 @@ Deno.serve(async (req) => {
       await Promise.allSettled([
         sendResend({
           to: email,
-          subject: 'אישור הצעת מחיר להקמת חברה בע״מ',
+          subject: 'הצעת המחיר להקמת חברה בע״מ — הצעד הבא',
           html: customerHtml,
         }),
         sendResend({
           to: ADMIN_EMAIL,
-          subject: 'לקוח אישר הצעת מחיר להקמת חברה בע״מ',
+          subject: 'ליד חדש — הצעת מחיר להקמת חברה בע״מ',
           html: adminHtml,
         }),
       ]).catch((err) => console.error('[approveCompanyProposal] mail batch error:', err));
@@ -166,22 +164,21 @@ function renderCustomerEmail({ fullName }: { fullName: string }) {
   return `
     <div style="direction:rtl;font-family:Arial,Heebo,sans-serif;max-width:600px;margin:0 auto;color:#1f2937;line-height:1.7">
       <div style="background:linear-gradient(135deg,#0f2a4a,#1e3a8a);color:#fff;padding:28px 24px;border-radius:14px 14px 0 0">
-        <h1 style="margin:0;font-size:22px">אישור הצעת מחיר להקמת חברה בע״מ</h1>
+        <h1 style="margin:0;font-size:22px">תודה ${name} — הצעד הבא בדרך</h1>
       </div>
       <div style="background:#fff;border:1px solid #e5e7eb;border-top:0;padding:24px;border-radius:0 0 14px 14px">
         <p>שלום ${name},</p>
-        <p>תודה שאישרת את הצעת המחיר להקמת חברה בע״מ.</p>
+        <p>קיבלנו את הפרטים שלך — שמחים שהתעניינת בהקמת חברה בע״מ דרכנו.</p>
 
-        <h3 style="color:#0f2a4a;margin-top:24px;margin-bottom:8px">פרטי ההצעה שאושרה</h3>
+        <h3 style="color:#0f2a4a;margin-top:24px;margin-bottom:8px">תזכורת לפרטי ההצעה</h3>
         <ul style="padding-inline-start:20px;margin:0">
-          <li><strong>הקמת חברה בע״מ:</strong> 1,999 ₪ (תשלום חד־פעמי)</li>
-          <li><strong>ניהול חודשי לשנה הראשונה:</strong> 899 ₪ + מע״מ לחודש</li>
-          <li><strong>דוח שנתי לחברה:</strong> 4,000 ₪ + מע״מ (משולם בנפרד)</li>
-          <li>השירות כולל ליווי יועץ ומענה לשאלות מיסויות לאורך הדרך.</li>
+          <li><strong>הקמת חברה בע״מ:</strong> 1,999 ₪ (תשלום חד־פעמי) — כולל בדיקת שם, תקנון, אימות חתימות, פרוטוקול מורשה חתימה ופתיחת תיקים ברשויות.</li>
+          <li><strong>ניהול חודשי לשנה הראשונה:</strong> 899 ₪ + מע״מ לחודש — כולל הנהלת חשבונות שוטפת, עד 3 תלושי שכר, וליווי יועץ.</li>
+          <li><strong>דוח שנתי לחברה:</strong> 4,000 ₪ + מע״מ (משולם בנפרד אחת לשנה).</li>
         </ul>
 
-        <h3 style="color:#0f2a4a;margin-top:24px;margin-bottom:8px">השלב הבא</h3>
-        <p>ניצור איתך קשר להשלמת פרטים, מסמכים ותחילת תהליך ההקמה.</p>
+        <h3 style="color:#0f2a4a;margin-top:24px;margin-bottom:8px">הצעד הבא</h3>
+        <p>נציג מהצוות שלנו יחזור אליך בקרוב טלפונית כדי לעבור על הפרטים, לבחור שם לחברה ולהתחיל בתהליך ההקמה. אין מה למלא או לחתום בשלב הזה — אנחנו עושים בשבילך את כל העבודה.</p>
 
         <p style="margin-top:24px;color:#6b7280;font-size:13px">
           המחירים אינם כוללים אגרות ממשלתיות אלא אם צוין אחרת במפורש.
