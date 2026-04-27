@@ -44,15 +44,4 @@ CREATE POLICY "service_role_full_access_proposal_approvals"
   USING (TRUE)
   WITH CHECK (TRUE);
 
--- Admin customers can read approvals from the CRM.
-CREATE POLICY "admin_read_proposal_approvals"
-  ON proposal_approvals
-  FOR SELECT
-  TO authenticated
-  USING (
-    EXISTS (
-      SELECT 1 FROM customers
-      WHERE customers.email = (SELECT email FROM auth.users WHERE id = auth.uid())
-        AND customers.role = 'admin'
-    )
-  );
+-- Reads happen via service-role from CRM/admin tooling. No authenticated/anon policy.
