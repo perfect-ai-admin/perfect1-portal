@@ -62,7 +62,8 @@ export function buildLeadPatch(thenUpdate: unknown, now: Date = new Date()): Rec
 }
 
 // ============================================================
-// Quiet hours check (Asia/Jerusalem 21:00-08:00)
+// Quiet hours check (Asia/Jerusalem) — bot active 08:00-18:00 only.
+// Outside this window, send_whatsapp rules are deferred.
 // ============================================================
 export function inQuietHours(at: Date = new Date()): boolean {
   const fmt = new Intl.DateTimeFormat('en-US', {
@@ -71,7 +72,7 @@ export function inQuietHours(at: Date = new Date()): boolean {
     hour12: false,
   });
   const hour = parseInt(fmt.format(at), 10);
-  return hour >= 21 || hour < 8;
+  return hour >= 18 || hour < 8;
 }
 
 // ============================================================
