@@ -294,6 +294,69 @@ export async function storeInboundMessage(
   return data;
 }
 
+// Send a media file (image/PDF/video) by public URL via Green API + log to DB.
+// Used by automation rules with action_config.media_url.
+export async function sendAndStoreFile(
+  db: SupabaseClient,
+  opts: SendMessageOptions & { media_url: string; caption?: string; filename?: string },
+): Promise<SendResult> {
+  const fullPhone = formatPhone(opts.phone);
+  let greenApiMsgId: string | null = null;
+  let success = false;
+  // Derive a sensible default filename from URL
+  const filename = opts.filename || (opts.media_url.split('/').pop() || 'media').split('?')[0];
+
+  if (GREEN_API_TOKEN && GREEN_API_INSTANCE) {
+    try {
+      const res = await fetch(
+        `https://api.green-api.com/waInstance${GREEN_API_INSTANCE}/sendFileByUrl/${GREEN_API_TOKEN}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            chatId: `${fullPhone}@c.us`,
+            urlFile: opts.media_url,
+            fileName: filename,
+            caption: opts.caption || '',
+          }),
+        },
+      );
+      if (res.ok) {
+        const data = await res.json();
+        greenApiMsgId = data.idMessage || null;
+        success = true;
+      }
+      console.log('WhatsApp file send status:', res.status);
+    } catch (e: any) {
+      console.warn('WhatsApp file send failed:', e.message);
+    }
+  } else {
+    console.warn('GreenAPI credentials missing, skipping file send');
+  }
+
+  // Store in DB regardless (audit trail). Caption goes into message_text.
+  const { data: stored } = await db.from('whatsapp_messages').insert({
+    phone: fullPhone,
+    direction: 'outbound',
+    message_text: opts.caption || `[media: ${filename}]`,
+    message_type: 'media',
+    greenapi_message_id: greenApiMsgId,
+    delivery_status: success ? 'sent' : 'failed',
+    sender_type: opts.sender_type,
+    lead_id: opts.lead_id || null,
+    session_id: opts.session_id || null,
+    agent_id: opts.agent_id || null,
+    source: 'sales_portal',
+    raw_payload: { ...(opts.raw_payload || {}), media_url: opts.media_url, filename },
+  }).select('id').single();
+
+  return {
+    success,
+    greenapi_message_id: greenApiMsgId,
+    stored_id: stored?.id || null,
+  };
+}
+
 // Update a stored message with lead_id and session_id after session lookup
 export async function linkMessageToSession(
   db: SupabaseClient,

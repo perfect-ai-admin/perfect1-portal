@@ -11,7 +11,7 @@
 // Invoked by service-role only (pg_net from triggers/cron OR authenticated users via triggerManualFollowup).
 
 import { supabaseAdmin, jsonResponse, errorResponse, getCorsHeaders } from '../_shared/supabaseAdmin.ts';
-import { sendAndStoreMessage, storeInboundMessage, formatPhone } from '../_shared/whatsappHelper.ts';
+import { sendAndStoreMessage, sendAndStoreFile, storeInboundMessage, formatPhone } from '../_shared/whatsappHelper.ts';
 import {
   eventKey,
   renderTemplate,
@@ -168,14 +168,29 @@ async function executeRule(lead: Lead, rule: Rule, event: EventBody): Promise<Ex
         if (!lead.phone) throw new Error('lead has no phone');
         const body = renderTemplate(cfg.body, lead);
         sentBody = body;
-        const sendResult = await sendAndStoreMessage(supabaseAdmin, {
-          phone: lead.phone,
-          message: body,
-          lead_id: lead.id,
-          sender_type: 'bot',
-          message_type: 'text',
-          raw_payload: { rule_name: rule.name, rule_id: rule.id },
-        });
+
+        // If rule has media_url, send media (image/PDF) with body as caption.
+        // Otherwise send plain text.
+        const mediaUrl = (cfg.media_url || cfg.image_url) as string | undefined;
+        const sendResult = mediaUrl
+          ? await sendAndStoreFile(supabaseAdmin, {
+              phone: lead.phone,
+              message: body,
+              caption: body,
+              media_url: mediaUrl,
+              filename: cfg.media_filename as string | undefined,
+              lead_id: lead.id,
+              sender_type: 'bot',
+              raw_payload: { rule_name: rule.name, rule_id: rule.id },
+            })
+          : await sendAndStoreMessage(supabaseAdmin, {
+              phone: lead.phone,
+              message: body,
+              lead_id: lead.id,
+              sender_type: 'bot',
+              message_type: 'text',
+              raw_payload: { rule_name: rule.name, rule_id: rule.id },
+            });
 
         if (!sendResult.success) {
           // Fallback: create task for agent to handle manually
