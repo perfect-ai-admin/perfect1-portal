@@ -30,8 +30,45 @@ function buildOwnerNotifyMsg(name: string, phone: string, amount: number | strin
   return `💳 *תשלום התקבל!*\n\n👤 שם: ${name}\n📞 טלפון: ${phone}\n💰 סכום: ₪${amount}\n🛎️ שירות: ${serviceLabel}\n🆔 Payment: ${paymentId.slice(0, 8)}\n\n⏰ יש ליצור קשר תוך 24 שעות.`;
 }
 
-function buildPaidEmailHtml(name: string, amount: number | string, serviceLabel: string, paymentId: string, businessName?: string): string {
+interface PaidEmailDetails {
+  name: string;
+  amount: number | string;
+  serviceLabel: string;
+  paymentId: string;
+  businessName?: string;
+  email?: string;
+  phone?: string;
+  idNumber?: string;
+  businessType?: string;
+  income?: string;
+  isEmployee?: string;
+  salary?: string;
+  fileUrl?: string;
+}
+
+function buildPaidEmailHtml(d: PaidEmailDetails): string {
   const safe = (s: string | number | undefined) => String(s ?? '').replace(/[<>&"]/g, (c) => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c] as string));
+  const isEmployeeText = d.isEmployee === 'yes' ? 'כן' : d.isEmployee === 'no' ? 'לא' : (d.isEmployee || '');
+
+  // Personal details — only render rows that have values
+  const personalRows = [
+    d.name && { label: 'שם מלא', value: safe(d.name) },
+    d.idNumber && { label: 'תעודת זהות', value: safe(d.idNumber) },
+    d.phone && { label: 'טלפון', value: `<a href="tel:${safe(d.phone)}" style="color:#10b981;font-weight:600;">${safe(d.phone)}</a>` },
+    d.email && { label: 'אימייל', value: `<a href="mailto:${safe(d.email)}" style="color:#1e40af;">${safe(d.email)}</a>` },
+    isEmployeeText && { label: 'עובד שכיר במקביל', value: safe(isEmployeeText) },
+    d.salary && d.isEmployee === 'yes' && { label: 'גובה שכר', value: `₪${safe(d.salary)}` },
+  ].filter(Boolean) as { label: string; value: string }[];
+
+  const businessRows = [
+    d.businessName && { label: 'שם העסק', value: safe(d.businessName) },
+    d.businessType && { label: 'סוג העסק', value: safe(d.businessType) },
+    d.income && { label: 'צפי הכנסה חודשי', value: `₪${safe(d.income)}` },
+  ].filter(Boolean) as { label: string; value: string }[];
+
+  const renderRows = (rows: { label: string; value: string }[]) =>
+    rows.map((r) => `<tr><td style="padding:10px 16px;border-bottom:1px solid #e5e7eb;color:#6b7280;font-weight:500;width:160px;">${r.label}</td><td style="padding:10px 16px;border-bottom:1px solid #e5e7eb;color:#1f2937;">${r.value}</td></tr>`).join('');
+
   return `<!DOCTYPE html>
 <html dir="rtl" lang="he">
 <head><meta charset="UTF-8"></head>
@@ -42,14 +79,31 @@ function buildPaidEmailHtml(name: string, amount: number | string, serviceLabel:
       <p style="color:rgba(255,255,255,0.95);margin:8px 0 0 0;font-size:16px;">התשלום שלך התקבל בהצלחה</p>
     </td></tr>
     <tr><td style="padding:32px 24px;">
-      <p style="color:#1f2937;font-size:16px;margin:0 0 20px 0;">שלום <strong>${safe(name)}</strong>,</p>
-      <p style="color:#4b5563;line-height:1.7;margin:0 0 24px 0;">תודה שבחרת בנו לטפל ב<strong>${safe(serviceLabel)}</strong>. זו ההתחלה של מסלול שבו אנחנו דואגים לכל הבירוקרטיה — ואתה מתמקד בעסק.</p>
+      <p style="color:#1f2937;font-size:16px;margin:0 0 20px 0;">שלום <strong>${safe(d.name)}</strong>,</p>
+      <p style="color:#4b5563;line-height:1.7;margin:0 0 24px 0;">תודה שבחרת בנו לטפל ב<strong>${safe(d.serviceLabel)}</strong>. זו ההתחלה של מסלול שבו אנחנו דואגים לכל הבירוקרטיה — ואתה מתמקד בעסק.</p>
       <table style="width:100%;border-collapse:collapse;background:#f9fafb;border-radius:8px;margin:0 0 24px 0;">
-        <tr><td style="padding:12px 16px;border-bottom:1px solid #e5e7eb;color:#6b7280;width:140px;">שירות</td><td style="padding:12px 16px;border-bottom:1px solid #e5e7eb;color:#1f2937;font-weight:600;">${safe(serviceLabel)}</td></tr>
-        <tr><td style="padding:12px 16px;border-bottom:1px solid #e5e7eb;color:#6b7280;">סכום ששולם</td><td style="padding:12px 16px;border-bottom:1px solid #e5e7eb;color:#10b981;font-weight:700;font-size:18px;">₪${safe(amount)}</td></tr>
-        ${businessName ? `<tr><td style="padding:12px 16px;border-bottom:1px solid #e5e7eb;color:#6b7280;">שם העסק</td><td style="padding:12px 16px;border-bottom:1px solid #e5e7eb;color:#1f2937;">${safe(businessName)}</td></tr>` : ''}
-        <tr><td style="padding:12px 16px;color:#6b7280;">מספר עסקה</td><td style="padding:12px 16px;color:#1f2937;font-family:monospace;font-size:13px;">${safe(paymentId.slice(0, 8))}</td></tr>
+        <tr><td style="padding:12px 16px;border-bottom:1px solid #e5e7eb;color:#6b7280;width:140px;">שירות</td><td style="padding:12px 16px;border-bottom:1px solid #e5e7eb;color:#1f2937;font-weight:600;">${safe(d.serviceLabel)}</td></tr>
+        <tr><td style="padding:12px 16px;border-bottom:1px solid #e5e7eb;color:#6b7280;">סכום ששולם</td><td style="padding:12px 16px;border-bottom:1px solid #e5e7eb;color:#10b981;font-weight:700;font-size:18px;">₪${safe(d.amount)}</td></tr>
+        <tr><td style="padding:12px 16px;color:#6b7280;">מספר עסקה</td><td style="padding:12px 16px;color:#1f2937;font-family:monospace;font-size:13px;">${safe(d.paymentId.slice(0, 8))}</td></tr>
       </table>
+
+      ${personalRows.length > 0 ? `
+      <h3 style="color:#1f2937;font-size:18px;margin:24px 0 12px 0;">פרטים אישיים</h3>
+      <table style="width:100%;border-collapse:collapse;background:#fff;border:1px solid #e5e7eb;border-radius:8px;margin:0 0 16px 0;">
+        ${renderRows(personalRows)}
+      </table>` : ''}
+
+      ${businessRows.length > 0 ? `
+      <h3 style="color:#1f2937;font-size:18px;margin:24px 0 12px 0;">פרטי העסק</h3>
+      <table style="width:100%;border-collapse:collapse;background:#fff;border:1px solid #e5e7eb;border-radius:8px;margin:0 0 16px 0;">
+        ${renderRows(businessRows)}
+      </table>` : ''}
+
+      ${d.fileUrl ? `
+      <div style="margin:16px 0;padding:16px;background:#fef3c7;border-radius:8px;border-right:4px solid #f59e0b;">
+        <p style="margin:0 0 8px 0;color:#78350f;font-weight:600;">📎 צילום תעודת זהות שהועלה</p>
+        <a href="${safe(d.fileUrl)}" target="_blank" style="display:inline-block;background:#2563eb;color:#fff;padding:8px 18px;border-radius:6px;text-decoration:none;font-weight:600;">צפה בצילום ת.ז.</a>
+      </div>` : ''}
       <h2 style="color:#1f2937;font-size:20px;margin:24px 0 12px 0;">מה הלאה?</h2>
       <ol style="color:#4b5563;line-height:1.8;padding-right:20px;margin:0 0 24px 0;">
         <li>נציג מקצועי מהצוות שלנו ייצור איתך קשר תוך <strong>24 שעות</strong></li>
@@ -355,35 +409,48 @@ Deno.serve(async (req) => {
     // Lead email > customer email > skip.
     const resendApiKey = Deno.env.get('RESEND_API_KEY');
     if (resendApiKey) {
-      // Re-fetch lead in case payment.lead_id was set
-      let recipientEmail: string | null = customer?.email || null;
-      let recipientName: string = customer?.full_name || '';
-      let recipientBusiness: string | undefined;
+      // Re-fetch full lead — we need ALL questionnaire data for the email
+      let leadDetails: any = null;
       if (payment.lead_id) {
         const { data: leadAgain } = await supabaseAdmin
           .from('leads')
-          .select('name, email, business_name, service_type')
+          .select('name, email, phone, id_number, business_name, business_type, income, is_employee, salary, file_url, service_type')
           .eq('id', payment.lead_id)
           .single();
-        if (leadAgain?.email) recipientEmail = leadAgain.email;
-        if (leadAgain?.name) recipientName = leadAgain.name;
-        if (leadAgain?.business_name) recipientBusiness = leadAgain.business_name;
+        leadDetails = leadAgain;
       }
       const serviceLabelForEmail = SERVICE_LABELS[product_type] || payment.product_name || 'שירות';
+      const recipientName = leadDetails?.name || customer?.full_name || 'לקוח יקר';
+      const recipientEmail = leadDetails?.email || customer?.email || null;
 
-      // Owner email — always sent so business owner has audit trail.
+      const emailDetails: PaidEmailDetails = {
+        name: recipientName,
+        amount: payment.amount,
+        serviceLabel: serviceLabelForEmail,
+        paymentId: payment_id,
+        businessName: leadDetails?.business_name,
+        email: leadDetails?.email,
+        phone: leadDetails?.phone,
+        idNumber: leadDetails?.id_number,
+        businessType: leadDetails?.business_type,
+        income: leadDetails?.income,
+        isEmployee: leadDetails?.is_employee,
+        salary: leadDetails?.salary,
+        fileUrl: leadDetails?.file_url,
+      };
+
+      // Owner email — always sent. Includes all questionnaire details + ID upload link.
       const ownerEmail = Deno.env.get('OWNER_NOTIFY_EMAIL') || 'yosi5919@gmail.com';
-      const ownerSubject = `💰 תשלום התקבל — ${recipientName || 'ללא שם'} — ₪${payment.amount}`;
-      const ownerHtml = buildPaidEmailHtml(recipientName || 'הלקוח', payment.amount, serviceLabelForEmail, payment_id, recipientBusiness)
+      const ownerSubject = `💰 תשלום התקבל — ${recipientName} — ₪${payment.amount}`;
+      const ownerHtml = buildPaidEmailHtml(emailDetails)
         .replace('🎉 ברוך הבא לפרפקט וואן!', '💰 תשלום חדש התקבל')
-        .replace('התשלום שלך התקבל בהצלחה', `${recipientName || 'לקוח'} שילם — צריך ליצור קשר תוך 24 שעות`);
+        .replace('התשלום שלך התקבל בהצלחה', `${recipientName} שילם — צריך ליצור קשר תוך 24 שעות`);
       await sendResendEmail(resendApiKey, ownerEmail, ownerSubject, ownerHtml);
 
       // Customer email — only if we have one
       if (recipientEmail) {
         const subject = `🎉 תודה ${recipientName} — ${serviceLabelForEmail}`;
-        const html = buildPaidEmailHtml(recipientName || 'לקוח יקר', payment.amount, serviceLabelForEmail, payment_id, recipientBusiness);
-        await sendResendEmail(resendApiKey, recipientEmail, subject, html, 'support@perfect1.co.il');
+        await sendResendEmail(resendApiKey, recipientEmail, subject, buildPaidEmailHtml(emailDetails), 'support@perfect1.co.il');
       }
     }
 
