@@ -212,23 +212,9 @@ Deno.serve(async (req) => {
             .eq('id', payment.lead_id)
             .single();
 
-          // Send immediate "thanks + please send ID" WhatsApp to customer
-          if (lead?.phone) {
-            try {
-              const customerPhone = formatPhone(lead.phone);
-              const thanksMsg = `תודה, קיבלנו את התשלום שלך 🙏\nאנחנו מתחילים לטפל בפתיחת התיק שלך.\n\nכדי שנוכל להתקדם, יש לשלוח לנו כאן אחד מהבאים:\n\n📄 צילום רישיון נהיגה\n📄 צילום דרכון\n📄 או מספר ת״ז של אחד ההורים\n\nברגע שנקבל את הפרטים נמשיך לטפל עבורך.`;
-
-              await sendAndStoreMessage(supabaseAdmin, {
-                phone: customerPhone,
-                message: thanksMsg,
-                lead_id: payment.lead_id,
-                sender_type: 'system',
-                message_type: 'text',
-              });
-            } catch (e: any) {
-              console.warn('Failed to send post-payment thanks msg:', e.message);
-            }
-          }
+          // Note: thank-you + doc-request WhatsApp messages are now sent by
+          // fulfillPayment (single source of truth). Removed the duplicate that
+          // used to live here so customers don't get two doc-request messages.
 
           // Fetch bot session answers (questionnaire data)
           const { data: botSession } = await supabaseAdmin
