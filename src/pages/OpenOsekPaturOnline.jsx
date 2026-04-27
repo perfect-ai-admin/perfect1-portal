@@ -190,10 +190,32 @@ export default function OpenOsekPaturOnline() {
             }));
           } catch {}
 
+          // Build full questionnaire snapshot — sent to handshake so it's
+          // persisted in payments.metadata BEFORE payment. Survives even if
+          // payment fails; fulfillPayment reads it back to enrich the lead.
+          const questionnaireSnapshot = {
+            name: form.name,
+            email: form.email,
+            businessName: form.businessName,
+            businessType: form.businessType,
+            id_number: form.idNumber,
+            income: form.income,
+            is_employee: form.isEmployee,
+            salary: form.salary,
+            file_url: fileUrl,
+            gclid,
+            utm_source: utmSource,
+            utm_campaign: utmCampaign,
+            referrer,
+            landingUrl: window.location.href,
+          };
+
           // Call Tranzila handshake directly — no lead_id yet, it's
-          // optional on the backend.
+          // optional on the backend. We attach the questionnaire so the
+          // server has a copy even if Tranzila never confirms.
           const handshakeResult = await invokeFunction('tranzilaHandshake', {
             sum: 299,
+            questionnaire: questionnaireSnapshot,
           });
 
           if (handshakeResult?.thtk) {

@@ -10,7 +10,10 @@ Deno.serve(async (req) => {
     // service_type אופציונלי: אם העמוד שולח 'osek_zeir' — ההזמנה תירשם
      // כ"פתיחת עוסק זעיר אונליין" ולא תתערבב עם עוסק פטור במסך התשלום /
      // ב-reporting של Tranzila / בטבלת payments. ברירת מחדל: osek_patur.
-    const { sum, lead_id, service_type } = await req.json();
+    const { sum, lead_id, service_type, questionnaire } = await req.json();
+    // questionnaire (optional) — full form data captured before payment so it
+    // survives even if payment fails. Shape: { name, email, businessName,
+    // businessType, id_number, income, is_employee, salary, file_url, ... }
 
     if (typeof sum !== 'number' || sum <= 0) {
       return errorResponse('Invalid sum', 400, req);
@@ -55,6 +58,7 @@ Deno.serve(async (req) => {
       payment_method: 'tranzila',
       status: 'pending',
       source: 'sales_portal',
+      metadata: questionnaire ? { questionnaire, captured_at: new Date().toISOString() } : {},
     };
 
     if (lead_id) {

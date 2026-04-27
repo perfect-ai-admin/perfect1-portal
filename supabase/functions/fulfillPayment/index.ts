@@ -419,6 +419,29 @@ Deno.serve(async (req) => {
           .single();
         leadDetails = leadAgain;
       }
+
+      // Fallback: if lead has no questionnaire data but the payment captured
+      // it before checkout (tranzilaHandshake stores it in metadata), pull
+      // from there. Also enrich the lead row so the CRM card shows it.
+      const metaQ = (payment.metadata as any)?.questionnaire;
+      if (metaQ && payment.lead_id) {
+        const enriched: Record<string, unknown> = {};
+        if (!leadDetails?.email && metaQ.email) enriched.email = metaQ.email;
+        if (!leadDetails?.id_number && metaQ.id_number) enriched.id_number = metaQ.id_number;
+        if (!leadDetails?.business_name && metaQ.businessName) enriched.business_name = metaQ.businessName;
+        if (!leadDetails?.business_type && metaQ.businessType) enriched.business_type = metaQ.businessType;
+        if (!leadDetails?.income && metaQ.income) enriched.income = metaQ.income;
+        if (!leadDetails?.is_employee && metaQ.is_employee) enriched.is_employee = metaQ.is_employee;
+        if (!leadDetails?.salary && metaQ.salary) enriched.salary = metaQ.salary;
+        if (!leadDetails?.file_url && metaQ.file_url) enriched.file_url = metaQ.file_url;
+        if (Object.keys(enriched).length > 0) {
+          await supabaseAdmin.from('leads').update({
+            ...enriched,
+            questionnaire_data: { ...(metaQ || {}), submitted_at: payment.created_at, source: 'payment_metadata_recovery' },
+          }).eq('id', payment.lead_id);
+          leadDetails = { ...(leadDetails || {}), ...enriched };
+        }
+      }
       const serviceLabelForEmail = SERVICE_LABELS[product_type] || payment.product_name || 'שירות';
       const recipientName = leadDetails?.name || customer?.full_name || 'לקוח יקר';
       const recipientEmail = leadDetails?.email || customer?.email || null;
