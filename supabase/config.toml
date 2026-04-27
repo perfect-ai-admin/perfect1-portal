@@ -10,3 +10,6 @@ port = 54322
 [studio]
 enabled = true
 port = 54323
+
+[functions.inboundWebhook]
+verify_jwt = false
