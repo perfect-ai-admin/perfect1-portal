@@ -127,7 +127,7 @@ export default function CompanyProposal() {
           </div>
         </section>
 
-        <main className="max-w-4xl mx-auto px-4 -mt-6 sm:-mt-8 space-y-5 sm:space-y-7">
+        <main className="max-w-4xl mx-auto px-4 mt-6 sm:mt-8 space-y-5 sm:space-y-7">
           {/* ===== חבילות ===== */}
           <section className="grid sm:grid-cols-2 gap-4 sm:gap-5">
             <PackageCard
