@@ -378,33 +378,60 @@ const GENERIC_FLOW: BotFlow = {
 // 5 free-text questions to profile the lead before the real call
 export const SERVICES_PDF_URL = 'https://rtlpqjqdmomyptcdkmrq.supabase.co/storage/v1/object/public/public-assets/perfect-one-services.pdf';
 
+// Shared button sets — same wording everywhere these concepts appear,
+// so we feel consistent across post-payment / pre-payment / accountant flows.
+const STAGE_BUTTONS = [
+  { id: 'stage_just_starting', label: 'בתחילת הדרך' },
+  { id: 'stage_already_active', label: 'פעיל בצד / חצי משרה' },
+  { id: 'stage_growing', label: 'עסק קיים שצומח' },
+];
+
+const LEAD_GEN_BUTTONS = [
+  { id: 'leads_paid_ads', label: 'פרסום ממומן' },
+  { id: 'leads_organic_social', label: 'אורגני / רשתות' },
+  { id: 'leads_referrals', label: 'המלצות' },
+  // Note: Green API max 3 buttons. "Other" handled via free-text fallback.
+];
+
+const MONTHLY_GOAL_BUTTONS = [
+  { id: 'goal_under_5k', label: 'עד 5,000 ₪' },
+  { id: 'goal_5_15k', label: '5,000-15,000 ₪' },
+  { id: 'goal_over_15k', label: 'מעל 15,000 ₪' },
+];
+
+const YEARLY_GOAL_BUTTONS = [
+  { id: 'yr_side_income', label: 'הכנסה צדדית' },
+  { id: 'yr_full_independent', label: 'עצמאות מלאה' },
+  { id: 'yr_grow_existing', label: 'הגדלת עסק קיים' },
+];
+
 export const ACCOUNTANT_CALLBACK_FLOW: BotFlow = {
   flow_type: 'accountant_callback_flow',
-  goal: 'Keep the lead engaged + collect profile info before accountant calls back',
-  tone: 'חם, אישי, סקרני באמת — כאילו חבר ששואל בכנות',
+  goal: 'Profile lead before the real accountant call — short, premium, dignified',
+  tone: 'מקצועי, אישי, מכבד את הזמן של הלקוח',
   max_steps: 4,
   steps: [
     {
       step_id: 'ac_q1',
-      question: 'ספר לי קצת — באיזה תחום אתה רוצה לפתוח את העסק?\n\nזה יכול להיות כל דבר — שיווק, בנייה, קוסמטיקה, ייעוץ, אונליין... מה שבא לך 😊',
+      question: '✨ *שאלה 1 מתוך 4*\n\nאשמח להכיר — באיזה תחום אתה רוצה לפתוח את העסק? 🎯\n\n_כתוב חופשי, ככל שיותר מפורט — ככה נוכל להתאים לך את ההצעה הכי מדויקת._',
       buttons: [],
       crm_field: 'business_field',
     },
     {
       step_id: 'ac_q2',
-      question: 'מגניב!\nואיך אתה רואה את עצמך מביא לקוחות? יש כבר איזה רעיון?\n\nהרבה פותחים דרך המלצות, פרסום ברשתות, או עבודה מול חברות — אין תשובה לא נכונה 😉',
-      buttons: [],
+      question: '*שאלה 2 מתוך 4* 🚀\n\nאיך אתה רואה את עצמך מביא לקוחות?',
+      buttons: LEAD_GEN_BUTTONS,
       crm_field: 'lead_gen_plan',
     },
     {
       step_id: 'ac_q3',
-      question: 'אהבתי.\nאם אתה מסתכל שנה קדימה — מה המטרה שלך?\n\nלהתחיל להרוויח בצד? לעבור לעצמאות מלאה? להגיע לסכום מסוים? 🎯',
-      buttons: [],
+      question: '*שאלה 3 מתוך 4* 🎯\n\nכשאתה מסתכל שנה קדימה — מה המטרה שלך?',
+      buttons: YEARLY_GOAL_BUTTONS,
       crm_field: 'yearly_goal',
     },
     {
       step_id: 'ac_q4',
-      question: 'שאלה אחרונה ואני מעביר הכל לרואה החשבון —\n\nאיך אתה מתכנן להגיע למטרה הזו?\n\nאפשר במשפט אחד, בלי לחץ 🙂',
+      question: '*שאלה אחרונה* 💎\n\nאיך אתה מתכנן להגיע למטרה הזו?\n\n_משפט אחד, בלי לחץ — זה רק כדי שרואה החשבון יבוא מוכן._',
       buttons: [],
       crm_field: 'goal_plan',
     },
@@ -412,57 +439,108 @@ export const ACCOUNTANT_CALLBACK_FLOW: BotFlow = {
 };
 
 /**
- * Pre-payment recovery flow — triggered 7 min after lead clicks pay link
- * but hasn't completed payment. 5 free-text questions to keep them engaged.
+ * Pre-payment recovery flow — triggered ~4 min after lead clicks pay link
+ * but hasn't completed payment. 5 questions, mix of buttons + free-text.
  */
 export const PRE_PAYMENT_RECOVERY_FLOW: BotFlow = {
   flow_type: 'pre_payment_recovery_flow',
-  goal: 'Re-engage abandoned checkout + collect qualifying info',
-  tone: 'אמפתי, לא לוחץ, אנושי',
+  goal: 'Re-engage abandoned checkout — premium feel, no pressure',
+  tone: 'אמפתי, מכבד, ללא לחץ',
   max_steps: 5,
   steps: [
-    { step_id: 'pp_q1', question: 'באיזה תחום העסק שאתה רוצה לפתוח? 🎯', buttons: [], crm_field: 'business_field' },
-    { step_id: 'pp_q2', question: 'מה השירות או המוצר שאתה מתכנן למכור? 🛍️', buttons: [], crm_field: 'offer_type' },
-    { step_id: 'pp_q3', question: 'איך חשבת להביא לקוחות לעסק? 🚀', buttons: [], crm_field: 'lead_gen_plan' },
-    { step_id: 'pp_q4', question: 'מה המטרה שלך בחודשים הקרובים? 💼', buttons: [], crm_field: 'near_term_goal' },
-    { step_id: 'pp_q5', question: 'יש משהו שחשוב לנו לדעת מראש כדי לעזור לך נכון? 💡', buttons: [], crm_field: 'important_notes' },
+    {
+      step_id: 'pp_q1',
+      question: '✨ *שאלה 1 מתוך 5*\n\nבאיזה תחום העסק שאתה רוצה לפתוח? 🎯\n\n_ספר חופשי כדי שנוכל להכין הכל מראש._',
+      buttons: [],
+      crm_field: 'business_field',
+    },
+    {
+      step_id: 'pp_q2',
+      question: '*שאלה 2 מתוך 5* 🛍️\n\nמה השירות או המוצר העיקרי שלך?',
+      buttons: [],
+      crm_field: 'offer_type',
+    },
+    {
+      step_id: 'pp_q3',
+      question: '*שאלה 3 מתוך 5* 🚀\n\nאיך חשבת להביא לקוחות?',
+      buttons: LEAD_GEN_BUTTONS,
+      crm_field: 'lead_gen_plan',
+    },
+    {
+      step_id: 'pp_q4',
+      question: '*שאלה 4 מתוך 5* 💼\n\nמה היעד החודשי שלך לחצי שנה הקרובה?',
+      buttons: MONTHLY_GOAL_BUTTONS,
+      crm_field: 'near_term_goal',
+    },
+    {
+      step_id: 'pp_q5',
+      question: '*שאלה אחרונה* 💡\n\nיש משהו שחשוב לנו לדעת מראש כדי לעזור לך נכון?\n\n_כל פרט עוזר — אבל גם "אין כרגע" זו תשובה לגיטימית._',
+      buttons: [],
+      crm_field: 'important_notes',
+    },
   ],
 };
 
 export function buildPrePaymentRecoveryOpening(leadName: string): string {
-  const name = leadName || '';
-  return `שלום ${name} 👋\n\nראיתי שהתחלת את התהליך לפתיחת תיק אונליין אבל עדיין לא הושלם התשלום.\n\nבינתיים, כדי שנוכל להכיר את העסק שלך טוב יותר ולהתקדם מהר יותר, אשמח לשאול אותך כמה שאלות קצרות 👇`;
+  const name = leadName ? leadName + ' ' : '';
+  return `היי ${name}👋\n\nראיתי שהתחלת את התהליך לפתיחת תיק אונליין — אבל התשלום לא הושלם.\n\nאין לחץ 🙏 בינתיים, אשאל אותך *5 שאלות קצרות* על העסק שלך — זה יחסוך לנו זמן בהמשך וייתן לרואה החשבון תמונה מלאה כשנמשיך.`;
 }
 
 export function buildPrePaymentRecoveryClosing(): string {
-  return `תודה רבה על השיתוף 🙏\n\nכשתהיה מוכן, הנה שוב הקישור לפתיחת התיק:\n👉 https://perfect1.co.il/open-osek-patur-online\n\nאם יש לך שאלה — אני כאן 💬`;
+  return `🎉 מעולה — סיימנו!\n\nכל המידע שמסרת נשמר אצלנו ומחכה לך.\n\nכשתרצה להשלים את התשלום ולהמשיך — הנה הקישור:\n👉 https://perfect1.co.il/open-osek-patur-online\n\nכל שאלה — אני כאן 💬`;
 }
 
 /**
- * Post-payment onboarding flow — triggered 7 min after successful payment
- * to deeply understand the business for better service delivery.
+ * Post-payment onboarding flow — triggered after the customer uploads the
+ * required documents (or 7 min after payment as fallback). 5 questions,
+ * mix of buttons + free-text, premium feel.
  */
 export const POST_PAYMENT_ONBOARDING_FLOW: BotFlow = {
   flow_type: 'post_payment_onboarding_flow',
-  goal: 'Deep-dive into business profile after payment for service delivery',
-  tone: 'ברוך הבא, מקצועי, מעניין',
+  goal: 'Deep business profile after payment — premium delivery experience',
+  tone: 'מקצועי, יוקרתי, מכבד',
   max_steps: 5,
   steps: [
-    { step_id: 'po_q1', question: 'מה תחום הפעילות שלך? 🎯', buttons: [], crm_field: 'business_field' },
-    { step_id: 'po_q2', question: 'מה בדיוק אתה מתכנן למכור או איזה שירות לתת? 🛍️', buttons: [], crm_field: 'offer_type' },
-    { step_id: 'po_q3', question: 'האם כבר התחלת לפעול או שאתה רק בתחילת הדרך? 🏁', buttons: [], crm_field: 'business_stage' },
-    { step_id: 'po_q4', question: 'איך אתה מתכנן להביא לקוחות? 🚀', buttons: [], crm_field: 'lead_gen_plan' },
-    { step_id: 'po_q5', question: 'מה המטרה שלך מהעסק בתקופה הקרובה? 💼', buttons: [], crm_field: 'short_term_goal' },
+    {
+      step_id: 'po_q1',
+      question: '✨ *שאלה 1 מתוך 5*\n\nספר לי על העסק שלך —\nמה תחום הפעילות העיקרי? 🎯\n\n_כתוב חופשי וככל שיותר מפורט — ככה רואה החשבון יבוא מוכן עם הצעות מדויקות לתחום שלך._',
+      buttons: [],
+      crm_field: 'business_field',
+    },
+    {
+      step_id: 'po_q2',
+      question: '*שאלה 2 מתוך 5* 🛍️\n\nמה בדיוק השירות או המוצר העיקרי שלך?',
+      buttons: [],
+      crm_field: 'offer_type',
+    },
+    {
+      step_id: 'po_q3',
+      question: '*שאלה 3 מתוך 5* 🏁\n\nבאיזה שלב העסק שלך כרגע?',
+      buttons: STAGE_BUTTONS,
+      crm_field: 'business_stage',
+    },
+    {
+      step_id: 'po_q4',
+      question: '*שאלה 4 מתוך 5* 🚀\n\nאיך אתה מתכנן להביא לקוחות?',
+      buttons: LEAD_GEN_BUTTONS,
+      crm_field: 'lead_gen_plan',
+    },
+    {
+      step_id: 'po_q5',
+      question: '*שאלה אחרונה* 💎\n\nמה היעד החודשי שלך לחצי שנה הקרובה?',
+      buttons: MONTHLY_GOAL_BUTTONS,
+      crm_field: 'short_term_goal',
+    },
   ],
 };
 
 export function buildPostPaymentOnboardingOpening(leadName: string): string {
-  const name = leadName || '';
-  return `שלום ${name} 👋\n\nכדי שנפתח עבורך את התיק בצורה מדויקת ונכיר את הפעילות שלך טוב יותר, אשמח לשאול אותך כמה שאלות קצרות 👇`;
+  const name = leadName ? leadName + ' ' : '';
+  return `מצוין ${name}🎉\n\nקיבלנו את כל מה שצריך כדי להתחיל לטפל בפתיחת התיק שלך.\n\nכדי שרואה החשבון שלנו יוכל לבוא מוכן עם הצעה מותאמת בדיוק לעסק שלך, אשאל אותך *5 שאלות קצרות*. זה לוקח דקה.`;
 }
 
 export function buildPostPaymentOnboardingClosing(): string {
-  return `מעולה, תודה על כל המידע 🙏\n\nאנחנו כבר מתחילים לטפל בפתיחת התיק שלך.\nתוך 72 שעות התיק יהיה פתוח ומוכן לעבודה 🚀\n\nאם יש לך שאלה בדרך — אני כאן 💬`;
+  return `🎉 מעולה — סיימנו!\n\nכל המידע נשמר בכרטיס שלך, והמומחה שיטפל בפתיחה יקבל את התמונה המלאה מראש.\n\n📞 ניצור איתך קשר תוך 24 שעות בשעות העבודה.\n\n📅 התיק שלך יהיה פתוח ומוכן לעבודה תוך 7-14 ימי עסקים.\n\nאם יש לך שאלה — אני כאן 💬`;
 }
 
 /**
@@ -605,6 +683,20 @@ export function buildAccountantQ1Followup(): string {
  */
 export function buildAccountantCallbackClosing(): string {
   return `תודה רבה, אני מעריך שלקחת רגע לשתף 🙏\n\nאני מעביר את הכל לרואה החשבון — ככה הוא כבר יגיע לשיחה מוכן ויוכל לתת לך תשובות מדויקות.\n\nהוא יחזור אליך בהקדם.\nאם יש לך שאלה בינתיים — אני כאן 💬`;
+}
+
+/**
+ * Look up the human-readable label for a button id within a flow step.
+ * Used when storing the answer to a button-driven step — we save the label
+ * (e.g. "פרסום ממומן") not the raw id (e.g. "leads_paid_ads").
+ */
+export function getButtonLabel(flowType: string, stepId: string, buttonId: string): string | null {
+  const flow = getFlow(flowType);
+  if (!flow) return null;
+  const step = flow.steps.find((s) => s.step_id === stepId);
+  if (!step) return null;
+  const btn = step.buttons.find((b) => b.id === buttonId);
+  return btn?.label || null;
 }
 
 /**

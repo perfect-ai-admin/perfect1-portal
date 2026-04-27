@@ -13,7 +13,7 @@ import {
   buildPrePaymentRecoveryOpening,
   buildPostPaymentOnboardingOpening,
 } from '../_shared/botFlowTemplates.ts';
-import { sendAndStoreMessage, formatPhone } from '../_shared/whatsappHelper.ts';
+import { sendAndStoreMessage, sendAndStoreButtons, formatPhone } from '../_shared/whatsappHelper.ts';
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: getCorsHeaders(req) });
@@ -127,10 +127,18 @@ Deno.serve(async (req) => {
     // Send opening
     await sendAndStoreMessage(supabaseAdmin, { ...sendOpts, message: openingMessage });
 
-    // Send first question
+    // Send first question — with buttons if defined, else plain text
     const q1 = getStep(flow_type, firstStepId);
     if (q1) {
-      await sendAndStoreMessage(supabaseAdmin, { ...sendOpts, message: q1.question });
+      if (q1.buttons && q1.buttons.length > 0) {
+        await sendAndStoreButtons(supabaseAdmin, {
+          ...sendOpts,
+          message: q1.question,
+          buttons: q1.buttons.map((b) => ({ id: b.id, label: b.label })),
+        });
+      } else {
+        await sendAndStoreMessage(supabaseAdmin, { ...sendOpts, message: q1.question });
+      }
     }
 
     // Update session messages count

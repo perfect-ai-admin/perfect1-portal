@@ -5,7 +5,7 @@
 
 import { supabaseAdmin, getCorsHeaders, jsonResponse, errorResponse, escapeHtml } from '../_shared/supabaseAdmin.ts';
 import {
-  getFlow, getStep, getNextStepId,
+  getFlow, getStep, getNextStepId, getButtonLabel,
   buildCtaMessage, buildPricingMessage, buttonToOutcome,
   buildAccountantCallbackOpening, buildAccountantQ1Followup, buildAccountantCallbackClosing,
   buildPrePaymentRecoveryClosing, buildPostPaymentOnboardingClosing,
@@ -631,12 +631,25 @@ Deno.serve(async (req) => {
         return jsonResponse({ success: true, message: 'Accountant flow already completed' }, 200, req);
       }
 
-      // Save the free-text answer
-      const textAnswer = (messageText || '').trim();
+      // Save the answer — prefer button label (cleaner) over raw button id,
+      // fall back to free text. Steps without buttons accept any text.
+      let textAnswer = (messageText || '').trim();
+      if (buttonId) {
+        const label = getButtonLabel(session.flow_type, session.current_step, buttonId);
+        if (label) textAnswer = label;
+      }
       if (!textAnswer) {
-        // Empty reply — resend current question
-        await sendAndStoreMessage(supabaseAdmin, { ...sendOpts, message: currentStepDef.question });
-        return jsonResponse({ success: true, message: 'Resent accountant question' }, 200, req);
+        // Empty reply — resend current question (with buttons if defined)
+        if (currentStepDef.buttons && currentStepDef.buttons.length > 0) {
+          await sendAndStoreButtons(supabaseAdmin, {
+            ...sendOpts,
+            message: currentStepDef.question,
+            buttons: currentStepDef.buttons.map((b) => ({ id: b.id, label: b.label })),
+          });
+        } else {
+          await sendAndStoreMessage(supabaseAdmin, { ...sendOpts, message: currentStepDef.question });
+        }
+        return jsonResponse({ success: true, message: 'Resent question' }, 200, req);
       }
 
       const acAnswers = session.answers || {};
@@ -730,7 +743,15 @@ Deno.serve(async (req) => {
         // Send next question
         const nextStep = getStep(session.flow_type, nextAcStepId);
         if (nextStep) {
-          await sendAndStoreMessage(supabaseAdmin, { ...sendOpts, message: nextStep.question });
+          if (nextStep.buttons && nextStep.buttons.length > 0) {
+            await sendAndStoreButtons(supabaseAdmin, {
+              ...sendOpts,
+              message: nextStep.question,
+              buttons: nextStep.buttons.map((b) => ({ id: b.id, label: b.label })),
+            });
+          } else {
+            await sendAndStoreMessage(supabaseAdmin, { ...sendOpts, message: nextStep.question });
+          }
           acSessionUpdate.current_step = nextAcStepId;
           acLeadUpdate.bot_current_step = nextAcStepId;
         }
