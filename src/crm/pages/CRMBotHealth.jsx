@@ -6,21 +6,143 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
   Activity, CheckCircle2, XCircle, AlertTriangle, RefreshCw, Send, Inbox,
-  Phone, ExternalLink, Zap, MessageSquare, Workflow, ArrowRightLeft,
+  ExternalLink, Zap, MessageSquare, Workflow, ArrowRightLeft,
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { supabase } from '@/api/supabaseClient';
 
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
-const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
-const HEALTHCHECK_URL = `${SUPABASE_URL}/functions/v1/botHealthCheck`;
+// All data is fetched directly from Supabase (DB tables) so no edge-function
+// CORS dance is needed. Green API state is INFERRED from recent message stats
+// (if any 'sent' in last X minutes, Green API is working). For deeper checks
+// hit the raw endpoint via the "JSON גולמי" link.
 
-async function fetchBotHealth(testInvoke = false) {
-  const url = testInvoke ? `${HEALTHCHECK_URL}?test_invoke=1` : HEALTHCHECK_URL;
-  const res = await fetch(url, {
-    headers: { Authorization: `Bearer ${SUPABASE_ANON_KEY}` },
+async function fetchBotHealth() {
+  const now = new Date();
+  const since30m = new Date(now.getTime() - 30 * 60 * 1000).toISOString();
+  const since24h = new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString();
+  const since2h = new Date(now.getTime() - 2 * 60 * 60 * 1000).toISOString();
+  const before30s = new Date(now.getTime() - 30 * 1000).toISOString();
+
+  // Run all queries in parallel — fail individually rather than all-or-nothing.
+  const [
+    msgs30mRes, msgs24hRes, sampleMsgsRes,
+    inboundRes, sessionsRes, logsRes, stageChangesRes,
+    stuckCountRes, stuckSampleRes,
+  ] = await Promise.all([
+    supabase.from('whatsapp_messages').select('delivery_status').eq('direction', 'outbound').gte('created_at', since30m),
+    supabase.from('whatsapp_messages').select('delivery_status').eq('direction', 'outbound').gte('created_at', since24h),
+    supabase.from('whatsapp_messages').select('phone, delivery_status, greenapi_message_id, created_at, message_text')
+      .eq('direction', 'outbound').gte('created_at', since24h).order('created_at', { ascending: false }).limit(8),
+    supabase.from('whatsapp_messages').select('id', { count: 'exact', head: true }).eq('direction', 'inbound').gte('created_at', since24h),
+    supabase.from('bot_sessions').select('id, phone, current_step, flow_type, last_message_at, messages_count')
+      .is('completed_at', null).gte('last_message_at', since24h).order('last_message_at', { ascending: false }).limit(8),
+    supabase.from('automation_logs').select('rule_name, result, lead_id, created_at, error_message')
+      .gte('created_at', since24h).order('created_at', { ascending: false }).limit(10),
+    supabase.from('leads').select('id, name, pipeline_stage, updated_at')
+      .gte('updated_at', since24h).neq('pipeline_stage', 'new_lead').order('updated_at', { ascending: false }).limit(5),
+    supabase.from('leads').select('id', { count: 'exact', head: true })
+      .is('flow_type', null).is('bot_current_step', null).not('phone', 'is', null).neq('phone', '')
+      .gte('created_at', since2h).lte('created_at', before30s).eq('source', 'sales_portal'),
+    supabase.from('leads').select('id, name, phone, flow_type, bot_current_step, source_page, created_at')
+      .not('phone', 'is', null).neq('phone', '').gte('created_at', since24h).order('created_at', { ascending: false }).limit(8),
+  ]);
+
+  const tally = (rows) => {
+    const arr = rows?.data || [];
+    return {
+      total: arr.length,
+      sent: arr.filter((m) => m.delivery_status === 'sent').length,
+      failed: arr.filter((m) => m.delivery_status === 'failed').length,
+    };
+  };
+
+  const recent30 = tally(msgs30mRes);
+  const recent24 = tally(msgs24hRes);
+
+  // Look up sessions for stuck-sample leads in one shot
+  const stuckSample = stuckSampleRes?.data || [];
+  let sessByLead = new Map();
+  if (stuckSample.length > 0) {
+    const ids = stuckSample.map((l) => l.id);
+    const { data: ses } = await supabase.from('bot_sessions')
+      .select('lead_id, current_step, completed_at, created_at').in('lead_id', ids);
+    sessByLead = new Map((ses || []).map((s) => [s.lead_id, s]));
+  }
+
+  const logCounts = {};
+  (logsRes?.data || []).forEach((l) => {
+    logCounts[l.result] = (logCounts[l.result] || 0) + 1;
   });
-  if (!res.ok) throw new Error(`Health check failed: ${res.status}`);
-  return res.json();
+
+  // Infer Green API health: if we sent something successfully in the last hour,
+  // it's authorized. If recent attempts are all 'failed', it's offline.
+  const lastSent = (sampleMsgsRes?.data || []).find((m) => m.delivery_status === 'sent');
+  const lastSentMinutesAgo = lastSent ? Math.floor((now - new Date(lastSent.created_at)) / 60000) : null;
+  let greenApiState;
+  if (recent30.failed > 0 && recent30.sent === 0) greenApiState = 'failing';
+  else if (lastSent && lastSentMinutesAgo <= 60) greenApiState = 'authorized';
+  else if (lastSent && lastSentMinutesAgo <= 1440) greenApiState = 'idle';
+  else greenApiState = 'unknown';
+
+  // Diagnosis
+  const diagnosis = [];
+  if (greenApiState === 'failing') diagnosis.push('🔴 Green API דוחה הודעות אחרונות. בדוק QR code.');
+  else if (greenApiState === 'unknown') diagnosis.push('⚠️ אין הודעות יוצאות ב-24 שעות אחרונות.');
+  else diagnosis.push('✅ Green API נראה פעיל (הודעה אחרונה לפני ' + lastSentMinutesAgo + ' דקות).');
+  if (stuckCountRes?.count > 0) {
+    diagnosis.push(`⚠️ ${stuckCountRes.count} לידים תקועים — catchup ינסה שוב כל דקה.`);
+  }
+  if ((logCounts.failed || 0) > 3) {
+    diagnosis.push(`⚠️ ${logCounts.failed} כללי automation נכשלו ב-24 שעות.`);
+  }
+  if ((stageChangesRes?.data?.length || 0) > 0 && (logsRes?.data?.length || 0) === 0) {
+    diagnosis.push('⚠️ קרו שינויי סטטוס אבל אף כלל automation לא הופעל. ייתכן שה-trigger DB לא מגיע ל-followupDispatch.');
+  }
+
+  return {
+    generated_at: now.toISOString(),
+    green_api: { instance_state: greenApiState, last_sent_minutes_ago: lastSentMinutesAgo },
+    recent_outbound_messages: {
+      last_30_min: recent30,
+      last_24_hours: recent24,
+      sample: sampleMsgsRes?.data || [],
+    },
+    inbound_messages: { last_24h_count: inboundRes?.count || 0 },
+    active_sessions: { count: sessionsRes?.data?.length || 0, sample: sessionsRes?.data || [] },
+    automation_logs: { last_24h_count: logsRes?.data?.length || 0, breakdown_by_result: logCounts },
+    recent_status_changes: { last_24h_count: stageChangesRes?.data?.length || 0 },
+    stuck_leads: {
+      count_no_bot_started: stuckCountRes?.count || 0,
+      sample: stuckSample.map((l) => ({
+        ...l,
+        _session: sessByLead.get(l.id)
+          ? { step: sessByLead.get(l.id).current_step, completed: sessByLead.get(l.id).completed_at !== null }
+          : null,
+      })),
+    },
+    diagnosis,
+  };
+}
+
+async function triggerBotForFirstStuckLead() {
+  // Find first stuck lead with no session yet
+  const { data: lead } = await supabase.from('leads')
+    .select('id, name, phone, source_page')
+    .is('bot_current_step', null).not('phone', 'is', null).neq('phone', '')
+    .order('created_at', { ascending: false }).limit(1).single();
+  if (!lead) return { skipped: true, reason: 'אין ליד תקוע' };
+
+  // Call botStartFlow (it has CORS + --no-verify-jwt, accepts anon)
+  const { data, error } = await supabase.functions.invoke('botStartFlow', {
+    body: {
+      lead_id: lead.id,
+      lead_name: lead.name || 'Test',
+      phone: lead.phone,
+      page_slug: lead.source_page || 'open-osek-patur',
+    },
+  });
+  if (error) throw error;
+  return { ok: true, lead_phone: lead.phone, response: data };
 }
 
 function StatusBadge({ ok, okLabel = 'תקין', failLabel = 'בעיה' }) {
@@ -64,22 +186,16 @@ function formatTime(iso) {
 export default function CRMBotHealth() {
   const { data, isLoading, error, refetch, isFetching } = useQuery({
     queryKey: ['bot-health'],
-    queryFn: () => fetchBotHealth(false),
+    queryFn: fetchBotHealth,
     refetchInterval: 30000,
   });
 
   const handleTestInvoke = async () => {
     try {
       toast.info('מריץ botStartFlow על ליד תקוע...');
-      const result = await fetchBotHealth(true);
-      const t = result.test_invoke;
-      if (!t) {
-        toast.success('אין לידים תקועים — הכל תקין');
-      } else if (t.http_status === 200) {
-        toast.success(`נשלחה ברכה ל-${t.target_phone}`);
-      } else {
-        toast.error(`נכשל: HTTP ${t.http_status}`);
-      }
+      const result = await triggerBotForFirstStuckLead();
+      if (result.skipped) toast.success('אין לידים תקועים — הכל תקין');
+      else toast.success(`נשלחה ברכה ל-${result.lead_phone}`);
       refetch();
     } catch (e) {
       toast.error(`שגיאה: ${e.message}`);
@@ -115,19 +231,17 @@ export default function CRMBotHealth() {
   }
 
   const greenAuth = data.green_api?.instance_state === 'authorized';
-  const recent30 = data.recent_outbound_messages?.last_30_min || { sent: 0, failed: 0, total: 0 };
-  const recent24 = data.recent_outbound_messages?.last_24_hours || { sent: 0, failed: 0, total: 0 };
-  const stuckCount = data.stuck_leads?.count_no_bot_started || 0;
-  const sample = data.recent_outbound_messages?.sample || [];
-  const stuckSample = data.stuck_leads?.sample || [];
-  const phoneChecks = data.green_api_phone_checks || [];
+  const recent30 = data.recent_outbound_messages.last_30_min;
+  const recent24 = data.recent_outbound_messages.last_24_hours;
+  const stuckCount = data.stuck_leads.count_no_bot_started || 0;
+  const sample = data.recent_outbound_messages.sample;
+  const stuckSample = data.stuck_leads.sample;
+  const inboundCount = data.inbound_messages.last_24h_count;
+  const activeSessions = data.active_sessions;
+  const automationLogs = data.automation_logs;
+  const statusChanges = data.recent_status_changes;
   const diagnosis = data.diagnosis || [];
-  const inboundCount = data.inbound_messages?.last_24h_count || 0;
-  const activeSessions = data.active_sessions || { count: 0, sample: [] };
-  const automationLogs = data.automation_logs || { last_24h_count: 0, breakdown_by_result: {}, recent_sample: [] };
-  const statusChanges = data.recent_status_changes || { last_24h_count: 0, sample: [] };
 
-  // Tone calculations
   const recent30Tone = recent30.failed > 0 ? 'bad' : recent30.sent > 0 ? 'good' : 'default';
   const recent24Tone = recent24.failed > 0 ? 'warn' : recent24.sent > 0 ? 'good' : 'default';
   const stuckTone = stuckCount > 0 ? 'warn' : 'good';
@@ -138,7 +252,6 @@ export default function CRMBotHealth() {
         <title>בריאות הבוט — CRM</title>
       </Helmet>
 
-      {/* Header */}
       <div className="flex items-start justify-between flex-wrap gap-3">
         <div>
           <h1 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
@@ -154,11 +267,11 @@ export default function CRMBotHealth() {
             <RefreshCw className={`ml-2 h-4 w-4 ${isFetching ? 'animate-spin' : ''}`} />
             רענן
           </Button>
-          <Button onClick={handleTestInvoke} size="sm" variant="default" className="bg-[#1E3A5F] hover:bg-[#2C5282]">
+          <Button onClick={handleTestInvoke} size="sm" className="bg-[#1E3A5F] hover:bg-[#2C5282]">
             <Zap className="ml-2 h-4 w-4" />
-            בדוק שליחה (ליד תקוע)
+            בדוק שליחה
           </Button>
-          <a href={HEALTHCHECK_URL} target="_blank" rel="noopener noreferrer">
+          <a href="https://rtlpqjqdmomyptcdkmrq.supabase.co/functions/v1/botHealthCheck" target="_blank" rel="noopener noreferrer">
             <Button variant="ghost" size="sm">
               <ExternalLink className="ml-2 h-4 w-4" />
               JSON גולמי
@@ -167,9 +280,8 @@ export default function CRMBotHealth() {
         </div>
       </div>
 
-      {/* Diagnosis banner */}
       {diagnosis.length > 0 && (
-        <Card className={diagnosis.some(d => d.startsWith('🔴')) ? 'border-red-200 bg-red-50' : diagnosis.some(d => d.startsWith('⚠️')) ? 'border-amber-200 bg-amber-50' : 'border-emerald-200 bg-emerald-50'}>
+        <Card className={diagnosis.some((d) => d.startsWith('🔴')) ? 'border-red-200 bg-red-50' : diagnosis.some((d) => d.startsWith('⚠️')) ? 'border-amber-200 bg-amber-50' : 'border-emerald-200 bg-emerald-50'}>
           <CardContent className="pt-4">
             {diagnosis.map((d, i) => (
               <div key={i} className="text-sm font-medium text-slate-800">{d}</div>
@@ -178,123 +290,36 @@ export default function CRMBotHealth() {
         </Card>
       )}
 
-      {/* Top metrics — Row 1: WhatsApp pulse */}
+      {/* Row 1: WhatsApp pulse */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <Card>
-          <CardHeader className="pb-2"><CardTitle className="text-sm font-medium text-slate-500">Green API</CardTitle></CardHeader>
+          <CardHeader className="pb-2"><CardTitle className="text-sm font-medium text-slate-500">Green API (מצב משוער)</CardTitle></CardHeader>
           <CardContent>
             <div className="flex items-center justify-between">
-              <span className="text-lg font-semibold">{data.green_api?.instance_state || 'unknown'}</span>
-              <StatusBadge ok={greenAuth} okLabel="מחובר" failLabel="מנותק" />
+              <span className="text-lg font-semibold">{data.green_api.instance_state}</span>
+              <StatusBadge ok={greenAuth} okLabel="פעיל" failLabel="בעיה" />
             </div>
-            {data.green_api?.error && <div className="text-xs text-red-600 mt-1">{data.green_api.error}</div>}
+            {data.green_api.last_sent_minutes_ago !== null && (
+              <div className="text-xs text-slate-500 mt-1">הודעה אחרונה לפני {data.green_api.last_sent_minutes_ago} דק'</div>
+            )}
           </CardContent>
         </Card>
-
-        <Card>
-          <CardContent className="pt-6">
-            <MetricCard
-              icon={Send}
-              label="הודעות 30 דק׳ אחרונות"
-              value={`${recent30.sent}/${recent30.total}`}
-              hint={recent30.failed > 0 ? `${recent30.failed} נכשלו` : 'אין כשלים'}
-              tone={recent30Tone}
-            />
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="pt-6">
-            <MetricCard
-              icon={Inbox}
-              label="הודעות 24 שעות אחרונות"
-              value={`${recent24.sent}/${recent24.total}`}
-              hint={recent24.failed > 0 ? `${recent24.failed} נכשלו` : 'אין כשלים'}
-              tone={recent24Tone}
-            />
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="pt-6">
-            <MetricCard
-              icon={AlertTriangle}
-              label="לידים תקועים (ללא בוט)"
-              value={stuckCount}
-              hint={stuckCount > 0 ? 'catchup ינסה שוב כל דקה' : 'הכל זרים'}
-              tone={stuckTone}
-            />
-          </CardContent>
-        </Card>
+        <Card><CardContent className="pt-6"><MetricCard icon={Send} label="הודעות 30 דק'" value={`${recent30.sent}/${recent30.total}`} hint={recent30.failed > 0 ? `${recent30.failed} נכשלו` : 'אין כשלים'} tone={recent30Tone} /></CardContent></Card>
+        <Card><CardContent className="pt-6"><MetricCard icon={Inbox} label="הודעות 24 שעות" value={`${recent24.sent}/${recent24.total}`} hint={recent24.failed > 0 ? `${recent24.failed} נכשלו` : 'אין כשלים'} tone={recent24Tone} /></CardContent></Card>
+        <Card><CardContent className="pt-6"><MetricCard icon={AlertTriangle} label="לידים תקועים" value={stuckCount} hint={stuckCount > 0 ? 'catchup ינסה כל דקה' : 'הכל זרים'} tone={stuckTone} /></CardContent></Card>
       </div>
 
-      {/* Top metrics — Row 2: Engagement + automation */}
+      {/* Row 2: Engagement + automation */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <Card>
-          <CardContent className="pt-6">
-            <MetricCard
-              icon={MessageSquare}
-              label="הודעות נכנסות 24ש'"
-              value={inboundCount}
-              hint={inboundCount > 0 ? 'לידים מגיבים' : 'אין תגובות'}
-              tone={inboundCount > 0 ? 'good' : 'default'}
-            />
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="pt-6">
-            <MetricCard
-              icon={Workflow}
-              label="שיחות פעילות עכשיו"
-              value={activeSessions.count}
-              hint="bot_sessions פתוחות"
-              tone={activeSessions.count > 0 ? 'good' : 'default'}
-            />
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="pt-6">
-            <MetricCard
-              icon={Zap}
-              label="כללי automation 24ש'"
-              value={automationLogs.last_24h_count}
-              hint={
-                Object.keys(automationLogs.breakdown_by_result).length > 0
-                  ? Object.entries(automationLogs.breakdown_by_result).map(([k, v]) => `${k}:${v}`).join(' · ')
-                  : 'אין הפעלות'
-              }
-              tone={
-                (automationLogs.breakdown_by_result.failed || 0) > 3 ? 'warn'
-                  : automationLogs.last_24h_count > 0 ? 'good' : 'default'
-              }
-            />
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="pt-6">
-            <MetricCard
-              icon={ArrowRightLeft}
-              label="שינויי סטטוס 24ש'"
-              value={statusChanges.last_24h_count}
-              hint="trigger ל-followupDispatch"
-              tone={statusChanges.last_24h_count > 0 ? 'good' : 'default'}
-            />
-          </CardContent>
-        </Card>
+        <Card><CardContent className="pt-6"><MetricCard icon={MessageSquare} label="הודעות נכנסות 24ש'" value={inboundCount} hint={inboundCount > 0 ? 'לידים מגיבים' : 'אין תגובות'} tone={inboundCount > 0 ? 'good' : 'default'} /></CardContent></Card>
+        <Card><CardContent className="pt-6"><MetricCard icon={Workflow} label="שיחות פעילות" value={activeSessions.count} hint="bot_sessions פתוחות" tone={activeSessions.count > 0 ? 'good' : 'default'} /></CardContent></Card>
+        <Card><CardContent className="pt-6"><MetricCard icon={Zap} label="כללי automation 24ש'" value={automationLogs.last_24h_count} hint={Object.keys(automationLogs.breakdown_by_result).length > 0 ? Object.entries(automationLogs.breakdown_by_result).map(([k, v]) => `${k}:${v}`).join(' · ') : 'אין הפעלות'} tone={(automationLogs.breakdown_by_result.failed || 0) > 3 ? 'warn' : automationLogs.last_24h_count > 0 ? 'good' : 'default'} /></CardContent></Card>
+        <Card><CardContent className="pt-6"><MetricCard icon={ArrowRightLeft} label="שינויי סטטוס 24ש'" value={statusChanges.last_24h_count} hint="trigger ל-followupDispatch" tone={statusChanges.last_24h_count > 0 ? 'good' : 'default'} /></CardContent></Card>
       </div>
 
-      {/* Stuck leads table */}
       {stuckSample.length > 0 && (
         <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <AlertTriangle className="h-5 w-5 text-amber-600" />
-              לידים אחרונים — סטטוס בוט
-            </CardTitle>
-          </CardHeader>
+          <CardHeader><CardTitle className="flex items-center gap-2"><AlertTriangle className="h-5 w-5 text-amber-600" />לידים אחרונים — סטטוס בוט</CardTitle></CardHeader>
           <CardContent>
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
@@ -316,27 +341,19 @@ export default function CRMBotHealth() {
                       <td className="p-2 font-mono text-xs">{lead.phone || '—'}</td>
                       <td className="p-2 text-xs text-slate-600 max-w-[150px] truncate">{lead.source_page || '—'}</td>
                       <td className="p-2">
-                        {lead.flow_type ? (
-                          <Badge variant="outline" className="text-xs">{lead.flow_type}</Badge>
-                        ) : (
-                          <Badge className="bg-amber-100 text-amber-700 text-xs">∅ NULL</Badge>
-                        )}
+                        {lead.flow_type
+                          ? <Badge variant="outline" className="text-xs">{lead.flow_type}</Badge>
+                          : <Badge className="bg-amber-100 text-amber-700 text-xs">∅ NULL</Badge>}
                       </td>
                       <td className="p-2">
-                        {lead.bot_current_step ? (
-                          <span className="text-xs text-slate-700">{lead.bot_current_step}</span>
-                        ) : (
-                          <span className="text-xs text-amber-600">∅</span>
-                        )}
+                        {lead.bot_current_step
+                          ? <span className="text-xs text-slate-700">{lead.bot_current_step}</span>
+                          : <span className="text-xs text-amber-600">∅</span>}
                       </td>
                       <td className="p-2">
-                        {lead._session ? (
-                          <Badge className="bg-emerald-100 text-emerald-700 text-xs">
-                            {lead._session.completed ? 'closed' : lead._session.step}
-                          </Badge>
-                        ) : (
-                          <Badge className="bg-red-100 text-red-700 text-xs">לא נוצר</Badge>
-                        )}
+                        {lead._session
+                          ? <Badge className="bg-emerald-100 text-emerald-700 text-xs">{lead._session.completed ? 'closed' : lead._session.step}</Badge>
+                          : <Badge className="bg-red-100 text-red-700 text-xs">לא נוצר</Badge>}
                       </td>
                       <td className="p-2 text-xs text-slate-500">{formatTime(lead.created_at)}</td>
                     </tr>
@@ -348,15 +365,9 @@ export default function CRMBotHealth() {
         </Card>
       )}
 
-      {/* Recent outbound sample */}
       {sample.length > 0 && (
         <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Send className="h-5 w-5 text-[#1E3A5F]" />
-              הודעות יוצאות אחרונות (8)
-            </CardTitle>
-          </CardHeader>
+          <CardHeader><CardTitle className="flex items-center gap-2"><Send className="h-5 w-5 text-[#1E3A5F]" />הודעות יוצאות אחרונות (8)</CardTitle></CardHeader>
           <CardContent>
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
@@ -374,53 +385,17 @@ export default function CRMBotHealth() {
                     <tr key={i} className="border-b hover:bg-slate-50">
                       <td className="p-2 font-mono text-xs">{m.phone}</td>
                       <td className="p-2">
-                        <Badge
-                          className={
-                            m.status === 'sent'
-                              ? 'bg-emerald-100 text-emerald-700 text-xs'
-                              : m.status === 'failed'
-                              ? 'bg-red-100 text-red-700 text-xs'
-                              : 'bg-slate-100 text-slate-700 text-xs'
-                          }
-                        >
-                          {m.status}
+                        <Badge className={m.delivery_status === 'sent' ? 'bg-emerald-100 text-emerald-700 text-xs' : m.delivery_status === 'failed' ? 'bg-red-100 text-red-700 text-xs' : 'bg-slate-100 text-slate-700 text-xs'}>
+                          {m.delivery_status}
                         </Badge>
                       </td>
-                      <td className="p-2 text-xs text-slate-700 max-w-[300px] truncate">{m.preview || '—'}</td>
-                      <td className="p-2 font-mono text-[10px] text-slate-500 max-w-[120px] truncate">
-                        {m.greenapi_id || '—'}
-                      </td>
+                      <td className="p-2 text-xs text-slate-700 max-w-[300px] truncate">{(m.message_text || '').slice(0, 60) || '—'}</td>
+                      <td className="p-2 font-mono text-[10px] text-slate-500 max-w-[120px] truncate">{m.greenapi_message_id || '—'}</td>
                       <td className="p-2 text-xs text-slate-500">{formatTime(m.created_at)}</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Phone validation */}
-      {phoneChecks.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Phone className="h-5 w-5 text-slate-600" />
-              בדיקת מספרי טלפון ב-Green API
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-2">
-              {phoneChecks.map((c, i) => (
-                <div key={i} className="flex items-center justify-between p-2 rounded border border-slate-200">
-                  <span className="font-mono text-sm">{c.phone}</span>
-                  <StatusBadge
-                    ok={c.response?.existsWhatsapp === true}
-                    okLabel="WhatsApp רשום"
-                    failLabel="לא נמצא ב-WhatsApp"
-                  />
-                </div>
-              ))}
             </div>
           </CardContent>
         </Card>
