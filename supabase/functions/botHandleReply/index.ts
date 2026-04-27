@@ -352,8 +352,32 @@ Deno.serve(async (req) => {
       // Thank the user
       await sendAndStoreMessage(supabaseAdmin, {
         ...sendOpts,
-        message: 'תודה רבה! 🙏\nקיבלנו את המסמך המזהה שלך. אנחנו מתחילים לטפל בפתיחת התיק שלך.\n\nתוך 72 שעות התיק שלך יהיה פתוח ומוכן לעבודה 🚀',
+        message: 'תודה רבה! 🙏\nקיבלנו את המסמך המזהה שלך. רגע אחד ואני אשאל אותך כמה שאלות קצרות על העסק שלך — זה יעזור לרואה החשבון להגיע מוכן לשיחה איתך.',
       });
+
+      // === Trigger post-payment qualification flow if lead is paid and not already in flow ===
+      // Fire-and-forget so document-receipt response doesn't wait.
+      try {
+        if (leadForMedia?.payment_status === 'paid') {
+          const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+          const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+          fetch(`${supabaseUrl}/functions/v1/triggerFollowupFlow`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${serviceKey}`,
+              'apikey': serviceKey,
+            },
+            body: JSON.stringify({
+              lead_id: session.lead_id,
+              flow_type: 'post_payment_onboarding_flow',
+              source: 'document_received',
+            }),
+          }).catch(e => console.warn('triggerFollowupFlow fire-and-forget failed:', e.message));
+        }
+      } catch (e: any) {
+        console.warn('Post-document qualification trigger failed:', e.message);
+      }
 
       // Email notification to owner
       try {
@@ -401,7 +425,19 @@ Deno.serve(async (req) => {
         }).eq('id', session.lead_id);
 
         await addLeadScore(supabaseAdmin, session.lead_id, 'identity_sent', { id_number: 'masked' });
-        await sendAndStoreMessage(supabaseAdmin, { ...sendOpts, message: 'תודה! קיבלנו את מספר הזהות. אנחנו ממשיכים בתהליך ✅' });
+        await sendAndStoreMessage(supabaseAdmin, { ...sendOpts, message: 'תודה! קיבלנו את מספר הזהות ✅\nרגע אחד ואני אשאל אותך כמה שאלות קצרות על העסק שלך.' });
+
+        // Trigger post-payment qualification flow
+        try {
+          const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+          const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+          fetch(`${supabaseUrl}/functions/v1/triggerFollowupFlow`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${serviceKey}`, 'apikey': serviceKey },
+            body: JSON.stringify({ lead_id: session.lead_id, flow_type: 'post_payment_onboarding_flow', source: 'id_number_received' }),
+          }).catch(e => console.warn('triggerFollowupFlow fire-and-forget failed:', e.message));
+        } catch (e: any) { console.warn('Trigger failed:', e.message); }
+
         return jsonResponse({ success: true, message: 'ID number saved' }, 200, req);
       }
     }
