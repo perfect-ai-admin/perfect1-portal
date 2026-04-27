@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import {
   LayoutDashboard, Columns3, Users, ListTodo, Settings, ChevronRight, ChevronLeft,
   Bell, Menu, X, LogOut, CreditCard, AlertTriangle,
-  Globe, Users2, Mail, Inbox, FileText, Activity, Send
+  Globe, Users2, Mail, Inbox, FileText, Activity, Send, Bot
 } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { entities, supabase } from '@/api/supabaseClient';
@@ -18,6 +18,7 @@ const NAV_ITEMS = [
   { to: '/CRM/tasks', label: 'משימות', icon: ListTodo },
   { to: '/CRM/subscriptions', label: 'מנויים', icon: CreditCard },
   { to: '/CRM/billing-alerts', label: 'התראות בילינג', icon: AlertTriangle, badgeKey: 'billingAlerts' },
+  { to: '/CRM/bot-health', label: 'בריאות הבוט', icon: Bot },
   { to: '/CRM/settings', label: 'הגדרות', icon: Settings },
 ];
 

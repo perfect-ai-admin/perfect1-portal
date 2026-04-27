@@ -123,6 +123,7 @@ const CRMTasks = lazyWithRetry(() => import('./crm/pages/CRMTasks'));
 const CRMSettings = lazyWithRetry(() => import('./crm/pages/CRMSettings'));
 const CRMSubscriptions = lazyWithRetry(() => import('./crm/pages/CRMSubscriptions'));
 const CRMBillingAlerts = lazyWithRetry(() => import('./crm/pages/CRMBillingAlerts'));
+const CRMBotHealth = lazyWithRetry(() => import('./crm/pages/CRMBotHealth'));
 
 // Outreach Pages
 const OutreachOverview = lazyWithRetry(() => import('./crm/pages/outreach/OutreachOverview'));
@@ -299,6 +300,7 @@ const PortalRoutes = () => (
       <Route path="tasks" element={<CRMTasks />} />
       <Route path="subscriptions" element={<CRMSubscriptions />} />
       <Route path="billing-alerts" element={<CRMBillingAlerts />} />
+      <Route path="bot-health" element={<CRMBotHealth />} />
       <Route path="settings" element={<CRMSettings />} />
       <Route path="outreach" element={<OutreachOverview />} />
       <Route path="outreach/websites" element={<OutreachWebsites />} />
@@ -334,6 +336,7 @@ const AppOnlyRoutes = () => (
       <Route path="tasks" element={<CRMTasks />} />
       <Route path="subscriptions" element={<CRMSubscriptions />} />
       <Route path="billing-alerts" element={<CRMBillingAlerts />} />
+      <Route path="bot-health" element={<CRMBotHealth />} />
       <Route path="settings" element={<CRMSettings />} />
       <Route path="outreach" element={<OutreachOverview />} />
       <Route path="outreach/websites" element={<OutreachWebsites />} />
@@ -423,6 +426,7 @@ const DevRoutes = () => (
       <Route path="tasks" element={<CRMTasks />} />
       <Route path="subscriptions" element={<CRMSubscriptions />} />
       <Route path="billing-alerts" element={<CRMBillingAlerts />} />
+      <Route path="bot-health" element={<CRMBotHealth />} />
       <Route path="settings" element={<CRMSettings />} />
       <Route path="outreach" element={<OutreachOverview />} />
       <Route path="outreach/websites" element={<OutreachWebsites />} />
