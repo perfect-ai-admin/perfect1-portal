@@ -668,6 +668,7 @@ function generateSPAFallbacks() {
     '/CRM/tasks',
     '/CRM/subscriptions',
     '/CRM/billing-alerts',
+    '/CRM/bot-health',
     '/CRM/settings',
     '/calculators/income-tax',
     '/calculators/national-insurance',

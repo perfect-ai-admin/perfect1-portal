@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
   Activity, CheckCircle2, XCircle, AlertTriangle, RefreshCw, Send, Inbox,
-  Phone, ExternalLink, Zap,
+  Phone, ExternalLink, Zap, MessageSquare, Workflow, ArrowRightLeft,
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -122,6 +122,10 @@ export default function CRMBotHealth() {
   const stuckSample = data.stuck_leads?.sample || [];
   const phoneChecks = data.green_api_phone_checks || [];
   const diagnosis = data.diagnosis || [];
+  const inboundCount = data.inbound_messages?.last_24h_count || 0;
+  const activeSessions = data.active_sessions || { count: 0, sample: [] };
+  const automationLogs = data.automation_logs || { last_24h_count: 0, breakdown_by_result: {}, recent_sample: [] };
+  const statusChanges = data.recent_status_changes || { last_24h_count: 0, sample: [] };
 
   // Tone calculations
   const recent30Tone = recent30.failed > 0 ? 'bad' : recent30.sent > 0 ? 'good' : 'default';
@@ -174,7 +178,7 @@ export default function CRMBotHealth() {
         </Card>
       )}
 
-      {/* Top metrics */}
+      {/* Top metrics — Row 1: WhatsApp pulse */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <Card>
           <CardHeader className="pb-2"><CardTitle className="text-sm font-medium text-slate-500">Green API</CardTitle></CardHeader>
@@ -219,6 +223,64 @@ export default function CRMBotHealth() {
               value={stuckCount}
               hint={stuckCount > 0 ? 'catchup ינסה שוב כל דקה' : 'הכל זרים'}
               tone={stuckTone}
+            />
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Top metrics — Row 2: Engagement + automation */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <Card>
+          <CardContent className="pt-6">
+            <MetricCard
+              icon={MessageSquare}
+              label="הודעות נכנסות 24ש'"
+              value={inboundCount}
+              hint={inboundCount > 0 ? 'לידים מגיבים' : 'אין תגובות'}
+              tone={inboundCount > 0 ? 'good' : 'default'}
+            />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="pt-6">
+            <MetricCard
+              icon={Workflow}
+              label="שיחות פעילות עכשיו"
+              value={activeSessions.count}
+              hint="bot_sessions פתוחות"
+              tone={activeSessions.count > 0 ? 'good' : 'default'}
+            />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="pt-6">
+            <MetricCard
+              icon={Zap}
+              label="כללי automation 24ש'"
+              value={automationLogs.last_24h_count}
+              hint={
+                Object.keys(automationLogs.breakdown_by_result).length > 0
+                  ? Object.entries(automationLogs.breakdown_by_result).map(([k, v]) => `${k}:${v}`).join(' · ')
+                  : 'אין הפעלות'
+              }
+              tone={
+                (automationLogs.breakdown_by_result.failed || 0) > 3 ? 'warn'
+                  : automationLogs.last_24h_count > 0 ? 'good' : 'default'
+              }
+            />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="pt-6">
+            <MetricCard
+              icon={ArrowRightLeft}
+              label="שינויי סטטוס 24ש'"
+              value={statusChanges.last_24h_count}
+              hint="trigger ל-followupDispatch"
+              tone={statusChanges.last_24h_count > 0 ? 'good' : 'default'}
             />
           </CardContent>
         </Card>

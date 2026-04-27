@@ -182,6 +182,59 @@ Deno.serve(async (_req: Request) => {
   }
   report.cron.catchup_bot_last_5_runs = [];
 
+  // 5a. Inbound messages — proof bot is receiving replies
+  const { data: inbound24h } = await supabaseAdmin
+    .from('whatsapp_messages')
+    .select('id', { count: 'exact', head: false })
+    .eq('direction', 'inbound')
+    .gte('created_at', since24h);
+  (report as any).inbound_messages = {
+    last_24h_count: inbound24h?.length ?? 0,
+  };
+
+  // 5a.1 Active bot sessions — leads currently in conversation
+  const { data: activeSessions } = await supabaseAdmin
+    .from('bot_sessions')
+    .select('id, phone, current_step, flow_type, last_message_at, messages_count')
+    .is('completed_at', null)
+    .gte('last_message_at', since24h)
+    .order('last_message_at', { ascending: false })
+    .limit(8);
+  (report as any).active_sessions = {
+    count: activeSessions?.length ?? 0,
+    sample: activeSessions ?? [],
+  };
+
+  // 5a.2 Recent automation_logs — proof status_change rules are firing
+  const { data: recentLogs } = await supabaseAdmin
+    .from('automation_logs')
+    .select('rule_name, result, lead_id, created_at, error_message')
+    .gte('created_at', since24h)
+    .order('created_at', { ascending: false })
+    .limit(10);
+  const logCounts: Record<string, number> = {};
+  (recentLogs || []).forEach((l: any) => {
+    logCounts[l.result] = (logCounts[l.result] || 0) + 1;
+  });
+  (report as any).automation_logs = {
+    last_24h_count: recentLogs?.length ?? 0,
+    breakdown_by_result: logCounts,
+    recent_sample: (recentLogs || []).slice(0, 5),
+  };
+
+  // 5a.3 Recent status_change events (pipeline_stage changes in last 24h)
+  const { data: recentStageChanges } = await supabaseAdmin
+    .from('leads')
+    .select('id, name, pipeline_stage, updated_at')
+    .gte('updated_at', since24h)
+    .neq('pipeline_stage', 'new_lead')
+    .order('updated_at', { ascending: false })
+    .limit(5);
+  (report as any).recent_status_changes = {
+    last_24h_count: recentStageChanges?.length ?? 0,
+    sample: recentStageChanges ?? [],
+  };
+
   // 5b. Inspect the service role key format (safely — only first/last chars and shape)
   const sk = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || '';
   (report as any).service_key_check = {
@@ -248,6 +301,13 @@ Deno.serve(async (_req: Request) => {
   }
   if (report.stuck_leads.count_no_bot_started > 0) {
     d.push(`⚠️ ${report.stuck_leads.count_no_bot_started} לידים תקועים (flow_type ו-bot_current_step ריקים) — ה-catchup לא מצליח לשלוח להם.`);
+  }
+  const failedLogs = (((report as any).automation_logs?.breakdown_by_result?.failed) || 0);
+  if (failedLogs > 3) {
+    d.push(`⚠️ ${failedLogs} כללי automation נכשלו ב-24 שעות אחרונות — בדוק automation_logs לפרטים.`);
+  }
+  if (((report as any).inbound_messages?.last_24h_count || 0) === 0 && report.recent_outbound_messages.last_24_hours.sent > 0) {
+    d.push('ℹ️ הבוט שלח הודעות אך לא קיבל תגובות ב-24 שעות אחרונות.');
   }
   if (d.length === 0) {
     d.push('✅ לא נמצאו בעיות.');
