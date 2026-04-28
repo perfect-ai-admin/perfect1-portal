@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import {
@@ -133,23 +134,25 @@ export default function CRMLeadDetail() {
 
   const handleEmail = () => window.open(`mailto:${lead.email}`, '_self');
 
-  // Refer this lead to Omri (digital marketing partner) via WhatsApp.
-  // The partner number + service label are hard-coded by design — operators
-  // shouldn't have to retype them every time. To add more partners later,
-  // turn this into a small dropdown with a config table.
-  const handleReferToOmri = async () => {
+  // Refer lead to a marketing partner (Omri or Sharon Dagan) via WhatsApp.
+  const MARKETING_PARTNERS = [
+    { name: 'עומרי', phone: '972525704092', service: 'שיווק דיגיטלי' },
+    { name: 'שרון דגן', phone: '972585961560', service: 'שיווק דיגיטלי' },
+  ];
+
+  const handleReferToPartner = async (partner) => {
     if (referralLoading) return;
-    if (!confirm('לשלוח את הליד לעומרי במייל ווצאפ — שיווק דיגיטלי?')) return;
+    if (!confirm(`לשלוח את הליד ל${partner.name} בוואצאפ — ${partner.service}?`)) return;
     setReferralLoading(true);
     try {
       const res = await invokeFunction('crmReferLeadToPartner', {
         lead_id: lead.id,
-        partner_phone: '972525704092',
-        partner_name: 'עומרי',
-        service_label: 'שיווק דיגיטלי',
+        partner_phone: partner.phone,
+        partner_name: partner.name,
+        service_label: partner.service,
       });
       if (res?.success) {
-        toast.success(`נשלח לעומרי ✓`);
+        toast.success(`נשלח ל${partner.name} ✓`);
       } else {
         toast.error('השליחה נכשלה');
       }
@@ -264,15 +267,25 @@ export default function CRMLeadDetail() {
               <Mail size={14} /> מייל
             </Button>
           )}
-          <Button
-            size="sm"
-            onClick={handleReferToOmri}
-            disabled={referralLoading || !lead.phone}
-            className="bg-orange-600 hover:bg-orange-700 text-white gap-1.5"
-            title="שלח לעומרי בוואצאפ עם פרטי הליד — לסגירת שיווק דיגיטלי"
-          >
-            <Megaphone size={14} /> {referralLoading ? 'שולח...' : 'שלח לעומרי - שיווק'}
-          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                size="sm"
+                disabled={referralLoading || !lead.phone}
+                className="bg-orange-600 hover:bg-orange-700 text-white gap-1.5"
+                title="שלח את הליד לפרטנר שיווק בוואצאפ"
+              >
+                <Megaphone size={14} /> {referralLoading ? 'שולח...' : 'שלח לשיווק'}
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start">
+              {MARKETING_PARTNERS.map((p) => (
+                <DropdownMenuItem key={p.phone} onClick={() => handleReferToPartner(p)}>
+                  📤 שלח ל{p.name}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
           <Button size="sm" variant="outline" onClick={() => setShowCommLogger(!showCommLogger)} className="gap-1.5">
             <StickyNote size={14} /> תקשורת
           </Button>
