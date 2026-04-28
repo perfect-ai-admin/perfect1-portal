@@ -18,7 +18,7 @@ import {
   storeInboundMessage, linkMessageToSession,
 } from '../_shared/whatsappHelper.ts';
 import { detectIntent, looksLikeIdNumber, getSimpleFAQAnswer } from '../_shared/intentDetection.ts';
-import { classifyGrowthIntent, generateGrowthResponse, shouldEngageGrowthMentor } from '../_shared/growthMentor.ts';
+import { classifyGrowthIntent, generateGrowthResponse, shouldEngageGrowthMentor, diagnosticButtonToIntent, scoreDelta, GrowthIntent } from '../_shared/growthMentor.ts';
 import { addLeadScore, logLeadEvent } from '../_shared/leadScoring.ts';
 
 // Extract media URL from Green API webhook payload
@@ -413,8 +413,10 @@ Deno.serve(async (req) => {
           return jsonResponse({ success: true, action: 'growth_dismissed' }, 200, req);
         }
 
-        // Free-text path — classify and respond.
-        const intent = classifyGrowthIntent(messageText || '');
+        // Diagnostic-button path: user picked one of the diag_* options.
+        // Re-classify as the refined intent and continue at mid-stage.
+        const diagnosticIntent = buttonId ? diagnosticButtonToIntent(buttonId) : null;
+        const intent: GrowthIntent = diagnosticIntent || classifyGrowthIntent(messageText || '');
 
         if (intent === 'negative_stop') {
           await supabaseAdmin.from('leads').update({
@@ -433,16 +435,31 @@ Deno.serve(async (req) => {
           return jsonResponse({ success: true, action: 'growth_opted_out' }, 200, req);
         }
 
-        // Engagement count = how many growth-mentor turns we've had with this lead
-        // before this one. Stored in bot_messages_count for simplicity.
-        const engagementCount = leadByPhone.bot_state?.startsWith('growth_mentor_engaged_')
-          ? parseInt(leadByPhone.bot_state.split('_').pop() || '0', 10) || 0
-          : 0;
+        // Engagement count + topic memory from prior growth_mentor_reply events.
+        // Lets the mentor reference past pain ("אם קודם הזכרת ש...").
+        const { data: priorEvents } = await supabaseAdmin
+          .from('lead_events')
+          .select('event_data, created_at')
+          .eq('lead_id', leadByPhone.id)
+          .eq('event_type', 'growth_mentor_reply')
+          .order('created_at', { ascending: false })
+          .limit(5);
+
+        const previousIntents: GrowthIntent[] = [];
+        const previousTopics: string[] = [];
+        (priorEvents || []).forEach((e: any) => {
+          if (e.event_data?.intent) previousIntents.push(e.event_data.intent);
+          if (e.event_data?.topic) previousTopics.push(e.event_data.topic);
+        });
+        const engagementCount = priorEvents?.length || 0;
 
         const response = generateGrowthResponse(intent, {
           engagementCount,
           leadScore: leadByPhone.lead_score || 0,
           leadName: leadByPhone.name,
+          businessType: undefined,
+          previousIntents,
+          previousTopics,
         });
 
         // Send the mentor reply (buttons or text)
@@ -463,11 +480,11 @@ Deno.serve(async (req) => {
           });
         }
 
-        // Update lead state — bump score, store last intent + topic in bot_state.
-        const scoreBump = response.escalate ? 30 : 10;
+        // Update lead state — bump score, store stage + intent + topic in events.
+        const bump = scoreDelta({ intent, escalate: response.escalate, textLength: (messageText || '').length });
         await supabaseAdmin.from('leads').update({
-          lead_score: (leadByPhone.lead_score || 0) + scoreBump,
-          bot_state: `growth_mentor_engaged_${engagementCount + 1}`,
+          lead_score: Math.max(0, (leadByPhone.lead_score || 0) + bump),
+          bot_state: `growth_mentor_${response.stage}_${engagementCount + 1}`,
           temperature: response.escalate ? 'hot' : 'warm',
           updated_at: new Date().toISOString(),
         }).eq('id', leadByPhone.id);
@@ -475,7 +492,15 @@ Deno.serve(async (req) => {
         await supabaseAdmin.from('lead_events').insert({
           lead_id: leadByPhone.id,
           event_type: 'growth_mentor_reply',
-          event_data: { intent, topic: response.topic, engagement: engagementCount + 1, escalate: response.escalate },
+          event_data: {
+            intent,
+            topic: response.topic,
+            stage: response.stage,
+            engagement: engagementCount + 1,
+            escalate: response.escalate,
+            score_bump: bump,
+            via_button: !!buttonId,
+          },
           source: 'sales_portal',
         });
 
