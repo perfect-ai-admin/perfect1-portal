@@ -41,6 +41,8 @@ Deno.serve(async (req) => {
       id_number, income, is_employee, salary, file_url,
       gclid, fbclid, utm_source, utm_medium, utm_campaign, utm_term, utm_content,
       referrer, landingUrl,
+      payment_id, // Optional: passed from /open-osek-patur-online after Tranzila success
+                  // so we can link the just-created payment to this lead.
     } = await req.json();
 
     if (!phone && !email && !name) {
@@ -175,6 +177,21 @@ Deno.serve(async (req) => {
       .single();
     if (leadErr) throw new Error(leadErr.message);
     console.log('Lead saved to CRM:', leadResult.id);
+
+    // Link the payment (created earlier at tranzilaHandshake time) to this lead.
+    // Without this, fulfillPayment can't find the lead and the post-payment
+    // WhatsApp + email + qualification flow never runs.
+    if (payment_id) {
+      try {
+        await supabaseAdmin.from('payments')
+          .update({ lead_id: leadResult.id })
+          .eq('id', payment_id)
+          .is('lead_id', null);
+        console.log('Linked payment', payment_id, 'to lead', leadResult.id);
+      } catch (e: any) {
+        console.warn('Failed to link payment to lead:', e.message);
+      }
+    }
 
     // Trigger botStartFlow — FIRE AND FORGET (no await)
     // The WhatsApp greeting is sent async so the lead form gets an instant response.

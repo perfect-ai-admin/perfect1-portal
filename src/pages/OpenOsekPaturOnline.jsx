@@ -333,6 +333,7 @@ export default function OpenOsekPaturOnline() {
           businessType: pending.businessType || pending.business_type || '',
           pageSlug: 'open-osek-patur-online',
           message: 'שולם 299 ₪ — עוסק פטור אונליין',
+          payment_id: paymentId, // Link the just-created payment to this lead
         }).catch(err => console.warn('Post-payment lead creation failed:', err));
         try { sessionStorage.removeItem('pendingLead'); } catch {}
       }
