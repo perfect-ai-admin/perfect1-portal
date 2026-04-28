@@ -18,6 +18,7 @@ import {
   storeInboundMessage, linkMessageToSession,
 } from '../_shared/whatsappHelper.ts';
 import { detectIntent, looksLikeIdNumber, getSimpleFAQAnswer } from '../_shared/intentDetection.ts';
+import { classifyGrowthIntent, generateGrowthResponse, shouldEngageGrowthMentor } from '../_shared/growthMentor.ts';
 import { addLeadScore, logLeadEvent } from '../_shared/leadScoring.ts';
 
 // Extract media URL from Green API webhook payload
@@ -343,18 +344,142 @@ Deno.serve(async (req) => {
     if (!sessions || sessions.length === 0) {
       console.log('No active session for phone:', cleanPhone);
 
-      // Try to find lead by phone and link inbound message
-      if (storedInbound) {
-        const { data: leadByPhone } = await supabaseAdmin
-          .from('leads')
-          .select('id')
-          .eq('phone', cleanPhone)
-          .order('created_at', { ascending: false })
-          .limit(1)
-          .maybeSingle();
-        if (leadByPhone) {
-          await linkMessageToSession(supabaseAdmin, storedInbound.id, leadByPhone.id, null);
+      // Look up lead — needed both for linking the inbound message and for the
+      // growth-mentor branch below.
+      const { data: leadByPhone } = await supabaseAdmin
+        .from('leads')
+        .select('id, name, phone, pipeline_stage, followup_paused, do_not_contact, lead_score, bot_state, agent_id, sub_status')
+        .eq('phone', cleanPhone)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      if (storedInbound && leadByPhone) {
+        await linkMessageToSession(supabaseAdmin, storedInbound.id, leadByPhone.id, null);
+      }
+
+      // === GROWTH MENTOR ===
+      // For cold leads (not_interested / no_answer / nurture_alt / follow_up)
+      // who reply with free text, run an AI-style mentor that gives a short
+      // value response + soft expert-handoff. Pattern-based intent classifier
+      // (no LLM call → <2s response). See growthMentor.ts for templates.
+      if (leadByPhone && shouldEngageGrowthMentor(leadByPhone) && (messageText || buttonId)) {
+        // Handle growth-mentor button replies (the buttons we send below)
+        if (buttonId === 'growth_consult_yes' || buttonId === 'growth_show_me') {
+          await supabaseAdmin.from('leads').update({
+            sub_status: 'warm_growth_interest',
+            temperature: 'hot',
+            followup_paused: true,
+            bot_state: 'growth_mentor_handoff',
+            updated_at: new Date().toISOString(),
+          }).eq('id', leadByPhone.id);
+
+          await supabaseAdmin.from('tasks').insert({
+            title: `מומחה Growth: ${leadByPhone.name || cleanPhone}`,
+            description: 'הליד הביע עניין דרך ה-Growth Mentor. צור קשר היום עם הצעת ייעוץ שיווק/AI.',
+            task_type: 'growth_consult_request',
+            assigned_to: leadByPhone.agent_id,
+            priority: 'high',
+            status: 'pending',
+            is_automated: true,
+            lead_id: leadByPhone.id,
+            due_date: new Date(Date.now() + 4 * 60 * 60 * 1000).toISOString(),
+          });
+
+          await sendAndStoreMessage(supabaseAdmin, {
+            phone: cleanPhone,
+            message: 'מצוין! 🙌\nמומחה Growth שלנו ייצור איתך קשר תוך כמה שעות עם פרטים מותאמים בדיוק לעסק שלך.\n\nבינתיים אם יש לך שאלה — פשוט תכתוב כאן.',
+            lead_id: leadByPhone.id,
+            sender_type: 'bot',
+            message_type: 'text',
+            raw_payload: { source: 'growth_mentor', button: buttonId },
+          });
+          return jsonResponse({ success: true, action: 'growth_handoff' }, 200, req);
         }
+
+        if (buttonId === 'growth_not_now' || buttonId === 'growth_consult_later') {
+          await supabaseAdmin.from('leads').update({
+            bot_state: 'growth_mentor_paused',
+            updated_at: new Date().toISOString(),
+          }).eq('id', leadByPhone.id);
+          await sendAndStoreMessage(supabaseAdmin, {
+            phone: cleanPhone,
+            message: 'אין בעיה 👌\nאם יהיה לך זמן בעתיד — אני כאן.',
+            lead_id: leadByPhone.id,
+            sender_type: 'bot',
+            message_type: 'text',
+            raw_payload: { source: 'growth_mentor', button: buttonId },
+          });
+          return jsonResponse({ success: true, action: 'growth_dismissed' }, 200, req);
+        }
+
+        // Free-text path — classify and respond.
+        const intent = classifyGrowthIntent(messageText || '');
+
+        if (intent === 'negative_stop') {
+          await supabaseAdmin.from('leads').update({
+            followup_paused: true,
+            do_not_contact: true,
+            bot_state: 'growth_mentor_opted_out',
+            sub_status: 'opted_out',
+            updated_at: new Date().toISOString(),
+          }).eq('id', leadByPhone.id);
+          const stopResp = generateGrowthResponse(intent, { engagementCount: 0, leadScore: 0, leadName: leadByPhone.name });
+          await sendAndStoreMessage(supabaseAdmin, {
+            phone: cleanPhone, message: stopResp.message,
+            lead_id: leadByPhone.id, sender_type: 'system', message_type: 'text',
+            raw_payload: { source: 'growth_mentor', intent, action: 'opted_out' },
+          });
+          return jsonResponse({ success: true, action: 'growth_opted_out' }, 200, req);
+        }
+
+        // Engagement count = how many growth-mentor turns we've had with this lead
+        // before this one. Stored in bot_messages_count for simplicity.
+        const engagementCount = leadByPhone.bot_state?.startsWith('growth_mentor_engaged_')
+          ? parseInt(leadByPhone.bot_state.split('_').pop() || '0', 10) || 0
+          : 0;
+
+        const response = generateGrowthResponse(intent, {
+          engagementCount,
+          leadScore: leadByPhone.lead_score || 0,
+          leadName: leadByPhone.name,
+        });
+
+        // Send the mentor reply (buttons or text)
+        if (response.buttons && response.buttons.length > 0) {
+          await sendAndStoreButtons(supabaseAdmin, {
+            phone: cleanPhone,
+            message: response.message,
+            buttons: response.buttons,
+            lead_id: leadByPhone.id,
+            sender_type: 'bot',
+            raw_payload: { source: 'growth_mentor', intent, topic: response.topic, escalate: response.escalate },
+          });
+        } else {
+          await sendAndStoreMessage(supabaseAdmin, {
+            phone: cleanPhone, message: response.message,
+            lead_id: leadByPhone.id, sender_type: 'bot', message_type: 'text',
+            raw_payload: { source: 'growth_mentor', intent, topic: response.topic },
+          });
+        }
+
+        // Update lead state — bump score, store last intent + topic in bot_state.
+        const scoreBump = response.escalate ? 30 : 10;
+        await supabaseAdmin.from('leads').update({
+          lead_score: (leadByPhone.lead_score || 0) + scoreBump,
+          bot_state: `growth_mentor_engaged_${engagementCount + 1}`,
+          temperature: response.escalate ? 'hot' : 'warm',
+          updated_at: new Date().toISOString(),
+        }).eq('id', leadByPhone.id);
+
+        await supabaseAdmin.from('lead_events').insert({
+          lead_id: leadByPhone.id,
+          event_type: 'growth_mentor_reply',
+          event_data: { intent, topic: response.topic, engagement: engagementCount + 1, escalate: response.escalate },
+          source: 'sales_portal',
+        });
+
+        return jsonResponse({ success: true, action: 'growth_replied', intent }, 200, req);
       }
 
       return jsonResponse({ success: true, message: 'No active session' }, 200, req);
