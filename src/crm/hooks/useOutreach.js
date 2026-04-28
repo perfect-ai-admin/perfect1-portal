@@ -397,7 +397,7 @@ export function useOutreachThreads() {
       const { data: inboundRows, error: inboundErr } = await supabase
         .from('outreach_replies')
         .select('website_id, id, subject, body, direction, received_at, intent, sentiment')
-        .or('direction.is.null,direction.eq.inbound')
+        .eq('direction', 'inbound')
         .not('website_id', 'is', null)
         .order('received_at', { ascending: false })
         .limit(1000);
