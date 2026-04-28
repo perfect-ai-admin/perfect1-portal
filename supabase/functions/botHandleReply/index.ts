@@ -249,6 +249,88 @@ Deno.serve(async (req) => {
       return jsonResponse({ success: true, deduplicated: true }, 200, req);
     }
 
+    // === Alt-services nurture button handlers ===
+    // These fire from followupDispatch send_whatsapp rules (standalone, no
+    // bot_session exists), so they must be handled BEFORE the session lookup.
+    if (buttonId === 'alt_unsubscribe' || buttonId === 'alt_interested' || buttonId === 'alt_consult') {
+      const { data: leadByPhone } = await supabaseAdmin
+        .from('leads')
+        .select('id, name, phone, agent_id')
+        .eq('phone', cleanPhone)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      if (!leadByPhone) {
+        return jsonResponse({ success: true, message: 'No lead found for alt-button' }, 200, req);
+      }
+
+      if (storedInbound) {
+        await linkMessageToSession(supabaseAdmin, storedInbound.id, leadByPhone.id, null);
+      }
+
+      if (buttonId === 'alt_unsubscribe') {
+        await supabaseAdmin.from('leads').update({
+          do_not_contact: true,
+          followup_paused: true,
+          followup_sequence_name: null,
+          followup_sequence_step: null,
+          next_followup_date: null,
+          sub_status: 'opted_out_alt_nurture',
+          updated_at: new Date().toISOString(),
+        }).eq('id', leadByPhone.id);
+
+        await sendAndStoreMessage(supabaseAdmin, {
+          phone: cleanPhone,
+          message: 'הבנתי, מסירים אותך מהרשימה 🙏\nלא נפנה אליך יותר. אם תשנה את דעתך — תוכל לפנות אלינו תמיד.\n\nבהצלחה בעסק!',
+          lead_id: leadByPhone.id,
+          sender_type: 'system',
+          message_type: 'text',
+          raw_payload: { button: buttonId, action: 'opted_out' },
+        });
+
+        await supabaseAdmin.from('lead_events').insert({
+          lead_id: leadByPhone.id,
+          event_type: 'opted_out_alt_nurture',
+          event_data: { source: 'whatsapp_button' },
+          source: 'sales_portal',
+        });
+
+        return jsonResponse({ success: true, action: 'opted_out' }, 200, req);
+      }
+
+      // alt_interested or alt_consult — pause sequence + notify agent
+      await supabaseAdmin.from('leads').update({
+        followup_paused: true,
+        sub_status: buttonId === 'alt_consult' ? 'requested_alt_consult' : 'expressed_alt_interest',
+        temperature: 'hot',
+        updated_at: new Date().toISOString(),
+      }).eq('id', leadByPhone.id);
+
+      await supabaseAdmin.from('tasks').insert({
+        title: `${buttonId === 'alt_consult' ? 'ביקש שיחת ייעוץ' : 'הביע עניין'} — ${leadByPhone.name}`,
+        description: `הליד הגיב לטיפ של מעקב חלופי. צור קשר היום.`,
+        task_type: buttonId === 'alt_consult' ? 'alt_consult_request' : 'alt_interest_followup',
+        assigned_to: leadByPhone.agent_id,
+        priority: 'high',
+        status: 'pending',
+        is_automated: true,
+        lead_id: leadByPhone.id,
+        due_date: new Date(Date.now() + 4 * 60 * 60 * 1000).toISOString(),
+      });
+
+      await sendAndStoreMessage(supabaseAdmin, {
+        phone: cleanPhone,
+        message: 'מצוין! 🙌\nנציג מטעמנו ייצור איתך קשר תוך כמה שעות עם פרטים נוספים.\n\nבינתיים אם יש לך שאלה ספציפית — פשוט תכתוב לי כאן.',
+        lead_id: leadByPhone.id,
+        sender_type: 'bot',
+        message_type: 'text',
+        raw_payload: { button: buttonId, action: 'expressed_interest' },
+      });
+
+      return jsonResponse({ success: true, action: 'agent_notified' }, 200, req);
+    }
+
     // Find active session
     const { data: sessions } = await supabaseAdmin
       .from('bot_sessions')

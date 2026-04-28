@@ -13,6 +13,7 @@ export const PIPELINE_STAGES = [
   { slug: 'paid_opening_file', label: 'שילם – פתיחת תיק', color: '#10B981', type: 'open' },
   { slug: 'converted', label: 'נסגר', color: '#22C55E', type: 'closed_won' },
   { slug: 'not_interested', label: 'לא מעוניין', color: '#EF4444', type: 'closed_lost' },
+  { slug: 'nurture_alt', label: 'מעקב חלופי - שירות אחר', color: '#A855F7', type: 'open' },
   { slug: 'disqualified', label: 'פסול', color: '#6B7280', type: 'closed_lost' },
   { slug: 'duplicate', label: 'כפול', color: '#9CA3AF', type: 'closed' },
   { slug: 'spam', label: 'ספאם', color: '#374151', type: 'closed' },

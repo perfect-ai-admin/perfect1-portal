@@ -11,7 +11,7 @@
 // Invoked by service-role only (pg_net from triggers/cron OR authenticated users via triggerManualFollowup).
 
 import { supabaseAdmin, jsonResponse, errorResponse, getCorsHeaders } from '../_shared/supabaseAdmin.ts';
-import { sendAndStoreMessage, sendAndStoreFile, storeInboundMessage, formatPhone } from '../_shared/whatsappHelper.ts';
+import { sendAndStoreMessage, sendAndStoreFile, sendAndStoreButtons, storeInboundMessage, formatPhone } from '../_shared/whatsappHelper.ts';
 import {
   eventKey,
   renderTemplate,
@@ -169,9 +169,10 @@ async function executeRule(lead: Lead, rule: Rule, event: EventBody): Promise<Ex
         const body = renderTemplate(cfg.body, lead);
         sentBody = body;
 
-        // If rule has media_url, send media (image/PDF) with body as caption.
-        // Otherwise send plain text.
+        // Routing: media_url > buttons > plain text. media + buttons aren't
+        // combined (Green API doesn't support a single message that's both).
         const mediaUrl = (cfg.media_url || cfg.image_url) as string | undefined;
+        const buttons = Array.isArray(cfg.buttons) ? cfg.buttons as Array<{ id: string; label: string }> : null;
         const sendResult = mediaUrl
           ? await sendAndStoreFile(supabaseAdmin, {
               phone: lead.phone,
@@ -179,6 +180,15 @@ async function executeRule(lead: Lead, rule: Rule, event: EventBody): Promise<Ex
               caption: body,
               media_url: mediaUrl,
               filename: cfg.media_filename as string | undefined,
+              lead_id: lead.id,
+              sender_type: 'bot',
+              raw_payload: { rule_name: rule.name, rule_id: rule.id },
+            })
+          : (buttons && buttons.length > 0)
+          ? await sendAndStoreButtons(supabaseAdmin, {
+              phone: lead.phone,
+              message: body,
+              buttons: buttons.slice(0, 3).map((b) => ({ id: b.id, label: b.label })),
               lead_id: lead.id,
               sender_type: 'bot',
               raw_payload: { rule_name: rule.name, rule_id: rule.id },
